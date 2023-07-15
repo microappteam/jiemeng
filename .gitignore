@@ -1,1 +1,28 @@
+# 忽略所有的编译文件
+*.class
+*.war
+*.jar
+
+# 忽略所有的IDE生成文件和文件夹
+.idea/
+.vscode/
+*.iml
+
+# 忽略所有的依赖文件夹
 /node_modules/
+/bower_components/
+
+# 忽略所有的构建输出
+/dist/
+/build/
+
+# 忽略所有的日志文件
+*.log
+
+# 忽略所有的临时文件
+*.tmp
+*.swp
+
+# 忽略特定的文件
+config.ini
+secrets.txt
