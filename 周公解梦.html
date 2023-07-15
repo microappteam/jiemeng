@@ -5,16 +5,6 @@
   <title>周公解梦</title>
 </head>
 <body>
-  <div class="header">
-    <div class="logo">
-      <a href="https://www.jiemeng.cn/">
-        <img src="./logo.png" alt="123" width="220">
-      </a>
-    </div>
-    <div class="banner">
-    </div>
-  </div>
-
   <div>
     <input type="text" id="inputText" placeholder="请输入内容">
     <button onclick="submitForm()">提交</button>
@@ -22,13 +12,35 @@
 
   <div id="displayBox"></div>
 
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script>
     function submitForm() {
       var inputText = document.getElementById("inputText").value;
       var displayBox = document.getElementById("displayBox");
-      displayBox.innerHTML = inputText;
+      
+      // 构建请求数据
+      var requestData = {
+        prompt: inputText,
+        max_tokens: 100,  // 控制生成文本的长度
+        temperature: 0.7  // 控制生成文本的创造性
+      };
+
+      // 发送请求到 ChatGPT API
+      axios.post('https://api.openai.com/v1/engines/davinci-codex/completions', requestData, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': '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'  // 替换为你的 OpenAI API 密钥
+        }
+      })
+      .then(function (response) {
+        // 处理 API 返回的结果
+        var dreamResult = response.data.choices[0].text.trim();
+        displayBox.innerHTML = dreamResult;
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
     }
   </script>
 </body>
 </html>
-
