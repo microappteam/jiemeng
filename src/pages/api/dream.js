@@ -2,33 +2,32 @@ import axios from "axios";
 
 export default async function handler(req, res) {
   if (req.method === "POST") {
-    const { content } = req.body;
-
     try {
+      const { dream } = req.body;
       const response = await axios.post(
-        "https://api.openai.com/v1/engines/davinci-codex/completions",
+        "https://api.openai.com/v1/chat/completions",
         {
-          prompt: `周公解梦：${content}`,
-          max_tokens: 100,
-          temperature: 0.7,
-          n: 1,
+          model: "gpt-3.5-turbo",
+          messages: [
+            { role: "system", content: "You are a dream interpreter." },
+            { role: "user", content: dream },
+          ],
         },
         {
           headers: {
+            Authorization: `Bearer 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`,
             "Content-Type": "application/json",
-            Authorization:
-              "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", 
           },
         }
       );
 
-      const dreamResult = response.data.choices[0].text.trim();
-      res.status(200).json({ result: dreamResult });
+      const answer = response.data.choices[0].message.content;
+      res.status(200).json(answer);
     } catch (error) {
       console.error(error);
-      res.status(500).json({ error: "解梦失败" });
+      res.status(500).json({ error: "Something went wrong" });
     }
   } else {
-    res.status(405).end();
+    res.status(405).json({ error: "Method not allowed" });
   }
 }

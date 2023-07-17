@@ -1,22 +1,15 @@
 import { useState } from "react";
 import axios from "axios";
 
-export default function DreamPage() {
-  const [content, setContent] = useState("");
-  const [result, setResult] = useState("");
+export default function Home() {
+  const [dream, setDream] = useState("");
+  const [response, setResponse] = useState("");
 
-  const handleInputChange = (event) => {
-    setContent(event.target.value);
-  };
-
-  const handleFormSubmit = async (event) => {
-    event.preventDefault();
-
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:3000/api/dream", {
-        content,
-      });
-      setResult(response.data.result);
+      const response = await axios.post("/api/dream", { dream });
+      setResponse(response.data);
     } catch (error) {
       console.error(error);
     }
@@ -25,14 +18,18 @@ export default function DreamPage() {
   return (
     <div>
       <h1>周公解梦</h1>
-      <form onSubmit={handleFormSubmit}>
+      <form onSubmit={handleSubmit}>
         <label>
-          输入需解梦的内容：
-          <input type="text" value={content} onChange={handleInputChange} />
+          梦境内容：
+          <input
+            type="text"
+            value={dream}
+            onChange={(e) => setDream(e.target.value)}
+          />
         </label>
         <button type="submit">解梦</button>
       </form>
-      {result && <div>解梦结果：{result}</div>}
+      {response && <p>解梦结果：{response}</p>}
     </div>
   );
 }
