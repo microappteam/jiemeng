@@ -25,9 +25,10 @@ export default async function handler(req, res) {
         },
         {
           headers: {
-            Authorization: `Bearer YOUR_OPENAI_API_KEY`,
+            Authorization: `Bearer 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`,
             "Content-Type": "application/json",
           },
+          timeout: 30000,
         }
       );
 
