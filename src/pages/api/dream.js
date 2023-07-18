@@ -11,11 +11,19 @@ export default async function handler(req, res) {
           messages: [
             { role: "system", content: "You are a dream interpreter." },
             { role: "user", content: dream },
+            {
+              role: "system",
+              content: "Can you provide more details about your dream?",
+            },
+            {
+              role: "user",
+              content: "I dreamt about flying over a beautiful landscape.",
+            },
           ],
         },
         {
           headers: {
-            Authorization: `Bearer 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`,
+            Authorization: `Bearer YOUR_OPENAI_API_KEY`,
             "Content-Type": "application/json",
           },
         }
