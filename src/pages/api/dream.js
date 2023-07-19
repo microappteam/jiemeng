@@ -1,11 +1,9 @@
 import { Configuration, OpenAIApi } from "openai";
 
-// 创建 OpenAI 配置
 const configuration = new Configuration({
-  apiKey: "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",
+  apiKey: "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",
 });
 
-// 创建 OpenAI 实例
 const openai = new OpenAIApi(configuration);
 
 export default async function handler(req, res) {
@@ -16,18 +14,15 @@ export default async function handler(req, res) {
 
       作为周公，你将帮助参与者理解和解读他们的梦境，揭示其中的深层信息，并为他们提供宝贵的建议和指导。`;
 
-      const response = await openai.createCompletion({
-        engine: "text-davinci-003",
-        prompt: rolePlayText,
-        maxTokens: 100,
-        temperature: 0.7,
+      const chatCompletion = await openai.createChatCompletion({
+        model: "gpt-3.5-turbo",
         messages: [
           { role: "system", content: rolePlayText },
           { role: "user", content: dream },
         ],
       });
 
-      const answer = response.choices[0].message.content;
+      const answer = chatCompletion.data.choices[0].message.content;
       res.status(200).json(answer);
     } catch (error) {
       console.error(error);
