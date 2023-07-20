@@ -1,4 +1,3 @@
-require("dotenv").config();
 import { useState } from "react";
 import axios from "axios";
 
@@ -9,7 +8,11 @@ export default function Home() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("/api/dream", { dream });
+      const response = await axios.post(
+        "/api/dream",
+        { dream },
+        { timeout: 60000 }
+      );
       setResponse(response.data);
     } catch (error) {
       console.error(error);
