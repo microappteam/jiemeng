@@ -9,5 +9,12 @@
         "dest": "/api/dream.js",
         "timeout": 60 
       }
-    ]
+    ],
+    
+    "build": {
+        "env": {
+            "EXECUTION_DURATION": "60"
+          }
+        }
+      
   }
