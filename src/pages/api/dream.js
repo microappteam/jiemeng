@@ -22,8 +22,9 @@ export default async function handler(req, res) {
           { role: "system", content: rolePlayText },
           { role: "user", content: `UserId: ${userId}\n${dream}` },
         ],
-        temperature: 1,
-        max_tokens: 300,
+        temperature: 0.8,
+        max_tokens: 150,
+        timeout: 45000,
       });
 
       const answer = chatCompletion.data.choices[0].message.content;
