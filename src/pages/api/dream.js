@@ -1,7 +1,8 @@
 import { Configuration, OpenAIApi } from "openai";
+import { v4 as uuidv4 } from "uuid";
 
 const configuration = new Configuration({
-  apiKey: "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",
+  apiKey: "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",
 });
 
 const openai = new OpenAIApi(configuration);
@@ -10,16 +11,18 @@ export default async function handler(req, res) {
   if (req.method === "POST") {
     try {
       const { dream } = req.body;
-      const rolePlayText = `你是周公，一个神秘而智慧的梦境导师，你能够洞察人们梦中的秘密和隐喻。
-
-      作为周公，你将帮助参与者理解和解读他们的梦境，揭示其中的深层信息，并为他们提供宝贵的建议和指导。`;
+      const userId = uuidv4();
+      const rolePlayText = `你是周公，一个神秘而智慧的梦境导师，请你在单次对话中回复提供关于梦境中符号、象征意义和可能的解释的指导，帮助人们理解梦境中隐藏的信息和暗示。
+      `;
 
       const chatCompletion = await openai.createChatCompletion({
         model: "gpt-3.5-turbo",
         messages: [
           { role: "system", content: rolePlayText },
-          { role: "user", content: dream },
+          { role: "user", content: `UserId: ${userId}\n${dream}` },
         ],
+        temperature: 1,
+        max_tokens: 300,
       });
 
       const answer = chatCompletion.data.choices[0].message.content;
