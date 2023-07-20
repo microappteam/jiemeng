@@ -1,20 +1,16 @@
 {
+    "version": 2,
     "routes": [
       {
-        "src": "/api/dream", 
-        "methods": ["POST"],
-        "headers": {
-          "Content-Type": "application/json"
-        },
-        "dest": "/api/dream.js",
-        "timeout": 60 
-      }
-    ],
-    
-    "build": {
-        "env": {
-            "EXECUTION_DURATION": "60"
+        "src": "/api/dream",
+        "dest": "pages/api/dream.js",
+        "methods": ["GET", "POST"],
+        "config": {
+          "api": {
+            "timeout": 45000
           }
         }
-      
+      }
+    ]
   }
+  
