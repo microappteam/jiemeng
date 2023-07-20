@@ -1,0 +1,3 @@
+functions:
+  myFunction:
+    maxDurationSeconds: 60
