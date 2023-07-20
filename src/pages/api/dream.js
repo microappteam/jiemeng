@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 
 const configuration = new Configuration({
   apiKey: process.env.API_KEY,
+  timeout: 60000,
 });
 
 const openai = new OpenAIApi(configuration);
