@@ -21,8 +21,8 @@ export default async function handler(req, res) {
           { role: "system", content: rolePlayText },
           { role: "user", content: `UserId: ${userId}\n${dream}` },
         ],
-        temperature: 0.7,
-        max_tokens: 180,
+        temperature: 0.8,
+        max_tokens: 160,
       });
 
       // 等待异步任务完成
