@@ -21,7 +21,7 @@ export default async function handler(req, res) {
           { role: "system", content: rolePlayText },
           { role: "user", content: `UserId: ${userId}\n${dream}` },
         ],
-        temperature: 1,
+        temperature: 0.7,
         max_tokens: 180,
       });
 
