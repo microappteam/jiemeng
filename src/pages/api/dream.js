@@ -13,18 +13,20 @@ export default async function handler(req, res) {
     try {
       const { dream } = req.body;
       const userId = uuidv4();
-      const rolePlayText = `你是周公，一个神秘而智慧的梦境导师，请你在单次对话中回复提供关于象征意义和可能的解释的指导，帮助人们理解梦境中隐藏的信息和暗示。
-      `;
+      const rolePlayText = `你是周公，一个神秘而智慧的梦境导师，请你在单次对话中回复提供关于象征意义和可能的解释的指导，帮助人们理解梦境中隐藏的信息和暗示。`;
 
-      const chatCompletion = await openai.createChatCompletion({
+      const chatCompletionPromise = openai.createChatCompletion({
         model: "gpt-3.5-turbo",
         messages: [
           { role: "system", content: rolePlayText },
           { role: "user", content: `UserId: ${userId}\n${dream}` },
         ],
         temperature: 1,
-        max_tokens: 200,
+        max_tokens: 500,
       });
+
+      // 等待异步任务完成
+      const chatCompletion = await chatCompletionPromise;
 
       const answer = chatCompletion.data.choices[0].message.content;
       res.status(200).json(answer);
