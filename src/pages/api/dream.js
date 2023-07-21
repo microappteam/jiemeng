@@ -14,13 +14,13 @@ const processDreamInBackground = async (dream) => {
     const rolePlayText = `你是周公，一个神秘而智慧的梦境导师，请你在单次对话中回复提供关于象征意义和可能的解释的指导，帮助人们理解梦境中隐藏的信息和暗示。`;
 
     const chatCompletion = await openai.createChatCompletion({
-      model: "gpt-3.5-turbo",
+      model: "text-davinci-003",
       messages: [
         { role: "system", content: rolePlayText },
         { role: "user", content: `UserId: ${userId}\n${dream}` },
       ],
       temperature: 0.8,
-      max_tokens: 150,
+      max_tokens: 100,
       timeout: 45000,
     });
 
