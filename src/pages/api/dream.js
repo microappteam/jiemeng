@@ -22,7 +22,7 @@ export default async function handler(req, res) {
           { role: "user", content: `UserId: ${userId}\n${dream}` },
         ],
         temperature: 0.8,
-        max_tokens: 160,
+        max_tokens: 400,
       });
 
       // 等待异步任务完成
