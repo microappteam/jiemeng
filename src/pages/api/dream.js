@@ -34,7 +34,7 @@ export default async function handler(req, res) {
           { role: "user", content: `UserId: ${userId}\n${dream}` },
         ],
         temperature: 1,
-        max_tokens: 555,
+        max_tokens: 888,
       });
 
       // 等待异步任务完成
