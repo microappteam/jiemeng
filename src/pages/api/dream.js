@@ -13,6 +13,7 @@ export default async function handler(req, res) {
     try {
       const { dream } = req.body;
       const userId = uuidv4();
+
       const rolePlayText = `我希望你扮演周公解梦的解梦人的角色。我将给你提供梦境，请你结合梦境并做出一些合理的对现实生活的推测来解读我的梦境，
       
       你的回答只需包含两部分内容，其一先重申一下梦境再做出总体的解梦，其二按分类再对梦境做出各自的简短的解读，
@@ -75,18 +76,21 @@ export default async function handler(req, res) {
     
     /n/n老人梦见买彩票中大奖，此梦预兆近期梦者身体健康运势不佳，会有突发疾病缠身，平时要多注意保养和休息。`;
 
-      const response = await openai.complete({
-        engine: "text-davinci-003",
-        prompt: rolePlayText,
-        maxTokens: 100,
-        n: 1,
-        stop: ["<br><br>"],
-        temperature: 0.8,
+      const chatCompletionPromise = openai.createChatCompletion({
+        model: "gpt-3.5-turbo",
+        messages: [
+          { role: "system", content: rolePlayText },
+          { role: "user", content: `UserId: ${userId}\n${dream}` },
+        ],
+        temperature: 1,
+        max_tokens: 888,
       });
 
-      const answer = response.choices[0].text.replace(/<br>/g, "\n");
+      // 等待异步任务完成
+      const chatCompletion = await chatCompletionPromise;
 
-      res.status(200).json({ answer });
+      const answer = chatCompletion.data.choices[0].message.content;
+      res.status(200).json(answer);
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: "Something went wrong" });
