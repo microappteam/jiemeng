@@ -20,25 +20,69 @@ export default function Home() {
   };
 
   return (
-    <div>
-      <h1>周公解梦</h1>
-      <form onSubmit={handleSubmit}>
-        <label>
-          梦境内容：
-          <input
-            type="text"
-            value={dream}
-            onChange={(e) => setDream(e.target.value)}
-          />
-        </label>
-        <button type="submit">解梦</button>
-      </form>
-      {response && (
-        <p>
-          解梦结果：
-          <pre style={{ whiteSpace: "pre-line" }}>{response}</pre>
-        </p>
-      )}
+    <div className="container">
+      <div className="content">
+        <h1 className="title">周公解梦</h1>
+        <form onSubmit={handleSubmit}>
+          <label>
+            梦境内容：
+            <input
+              type="text"
+              value={dream}
+              onChange={(e) => setDream(e.target.value)}
+              className="input"
+            />
+          </label>
+          <button type="submit" className="button">
+            解梦
+          </button>
+        </form>
+        {response && (
+          <div className="response">
+            <p>解梦结果：</p>
+            <pre className="response-text">{response}</pre>
+          </div>
+        )}
+      </div>
+
+      <style jsx>{`
+        .container {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          background-color: #bd254b;
+        }
+
+        .content {
+          text-align: center;
+          background-color: #f9f0e1;
+        }
+
+        .title {
+          background-color: #f9f0e1;
+        }
+
+        .input {
+          background-color: #f9f0e1;
+        }
+
+        .button {
+          background-color: #f9f0e1;
+        }
+
+        .response {
+          width: 400px;
+          margin-top: 20px;
+          text-align: left;
+        }
+
+        .response-text {
+          font-size: 18px; /* 设置你想要的字体大小 */
+          background-color: #f9f0e1; /* 设置背景颜色为 #f9f0e1 */
+          white-space: pre-line;
+          overflow-wrap: break-word;
+        }
+      `}</style>
     </div>
   );
 }
