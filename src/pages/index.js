@@ -33,7 +33,12 @@ export default function Home() {
         </label>
         <button type="submit">解梦</button>
       </form>
-      {response && <p>解梦结果：{response}</p>}
+      {response && (
+        <p>
+          解梦结果：
+          <pre style={{ whiteSpace: "pre-line" }}>{response}</pre>
+        </p>
+      )}
     </div>
   );
 }
