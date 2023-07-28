@@ -57,6 +57,8 @@ export default function Home() {
         }
 
         .content {
+          padding: 12px;
+          margin-top: -64vh;
           text-align: center;
           background-color: #f9f0e1;
         }
