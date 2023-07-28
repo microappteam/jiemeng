@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import ReactMarkdown from "react-markdown";
 
 export default function Home() {
   const [dream, setDream] = useState("");
@@ -40,7 +41,7 @@ export default function Home() {
         {response && (
           <div className="response">
             <p>解梦结果：</p>
-            <pre className="response-text">{response}</pre>
+            <ReactMarkdown className="response-text">{response}</ReactMarkdown>
           </div>
         )}
       </div>
