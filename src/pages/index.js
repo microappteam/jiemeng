@@ -26,11 +26,11 @@ export default function Home() {
         <form onSubmit={handleSubmit}>
           <label>
             梦境内容：
-            <input
-              type="text"
+            <textarea
               value={dream}
               onChange={(e) => setDream(e.target.value)}
               className="input"
+              placeholder="请输入梦境"
             />
           </label>
           <button type="submit" className="button">
@@ -58,7 +58,6 @@ export default function Home() {
 
         .content {
           padding: 12px;
-          margin-top: -64vh;
           text-align: center;
           background-color: #f9f0e1;
         }
@@ -69,6 +68,11 @@ export default function Home() {
 
         .input {
           background-color: #f9f0e1;
+          width: 100%;
+          height: 200px;
+          resize: vertical;
+          padding: 8px;
+          font-size: 16px;
         }
 
         .button {
