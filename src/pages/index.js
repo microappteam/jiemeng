@@ -50,7 +50,10 @@ export default function Home() {
           display: flex;
           justify-content: center;
           align-items: center;
-          background-color: #bd254b;
+          background-image: url("/980.jpg");
+          background-size: 100% auto;
+          background-repeat: no-repeat;
+          height: 100vh; /* 设置高度为视口高度 */
         }
 
         .content {
@@ -77,8 +80,8 @@ export default function Home() {
         }
 
         .response-text {
-          font-size: 18px; /* 设置你想要的字体大小 */
-          background-color: #f9f0e1; /* 设置背景颜色为 #f9f0e1 */
+          font-size: 18px;
+          background-color: #f9f0e1;
           white-space: pre-line;
           overflow-wrap: break-word;
         }
