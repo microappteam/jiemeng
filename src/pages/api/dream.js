@@ -14,6 +14,20 @@ export default async function handler(req, res) {
       const { dream } = req.body;
       const userId = uuidv4();
 
+      // 使用 ChatGPT 进行梦境总结
+      const summaryCompletionPromise = openai.createCompletion({
+        model: "gpt-3.5-turbo",
+        prompt: `总结以下梦境：\n${dream}`,
+        max_tokens: 256,
+        temperature: 0.5,
+      });
+
+      // 等待异步任务完成
+      const summaryCompletion = await summaryCompletionPromise;
+
+      const summary = summaryCompletion.data.choices[0].text.trim();
+
+      // 使用 ChatGPT 进行解梦
       const rolePlayText = `我希望你扮演周公解梦的解梦人的角色。我将给你提供梦境，请你结合梦境并做出一些合理的对现实生活的推测来解读我的梦境，
 
       你的回答只需包含两部分内容，其一先重申一下梦境再做出总体的解梦，其二按分类再对梦境做出各自的简短的解读，
@@ -31,6 +45,7 @@ export default async function handler(req, res) {
       格式为梦境+预示着什么。
 
       下面是一些示例：
+
       Q:梦见别人送馒头
 
       A:/n/n梦见别人送馒头，预示着运势很不错，自己不管遇到什么问题，很快就可以解决掉。
@@ -74,16 +89,18 @@ export default async function handler(req, res) {
       /n/n病人梦见买彩票中大奖，病情恶化的凶兆，要想恢复健康的身体，还需要治疗一段时间，耐心等待吧。
       
       /n/n老人梦见买彩票中大奖，此梦预兆近期梦者身体健康运势不佳，会有突发疾病缠身，平时要多注意保养和休息。
-`;
+
+
+  `;
 
       const chatCompletionPromise = openai.createChatCompletion({
         model: "gpt-3.5-turbo",
         messages: [
           { role: "system", content: rolePlayText },
-          { role: "user", content: `UserId: ${userId}\n${dream}` },
+          { role: "user", content: `UserId: ${userId}\n${summary}` },
         ],
         temperature: 1,
-        max_tokens: 888,
+        max_tokens: 777,
       });
 
       // 等待异步任务完成
