@@ -17,7 +17,7 @@ export default async function handler(req, res) {
       // 使用 ChatGPT 进行梦境总结
       const summaryCompletionPromise = openai.createCompletion({
         model: "gpt-3.5-turbo",
-        prompt: `总结以下梦境：\n${dream}`,
+        messages: [{ role: "user", content: `总结以下梦境：\n${dream}` }],
         max_tokens: 500,
         temperature: 0.5,
       });
