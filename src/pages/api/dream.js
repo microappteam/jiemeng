@@ -14,7 +14,6 @@ export default async function handler(req, res) {
       const { dream } = req.body;
       const userId = uuidv4();
       const summaryText = `你需要将我给你的梦境进行总结，返回不超过十五个字的梦境主题。`;
-      // 使用 ChatGPT 进行梦境总结
       const summaryCompletionPromise = openai.createChatCompletion({
         model: "gpt-3.5-turbo",
         messages: [
@@ -45,11 +44,7 @@ export default async function handler(req, res) {
 
       注意解读尽量精简，尽量多使用短句，符合汉语使用习惯。
 
-      语气要确凿一些，不要出现可能等模棱两可的字眼。
-
-      在解梦的最后不需要进行总结。
-
-      格式为梦境+预示着什么。
+      语气确凿，不要出现可能等模棱两可的字眼。
       
       下面是一些示例：
 
