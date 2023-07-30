@@ -13,19 +13,26 @@ export default async function handler(req, res) {
     try {
       const { dream } = req.body;
       const userId = uuidv4();
-
+      const summaryText = `你需要将我给你的梦境进行总结，返回不超过十五个字的梦境主题。`;
       // 使用 ChatGPT 进行梦境总结
-      const summaryCompletionPromise = openai.createCompletion({
+      const summaryCompletionPromise = openai.createChatCompletion({
         model: "gpt-3.5-turbo",
-        messages: [{ role: "user", content: `总结以下梦境：\n${dream}` }],
+        messages: [
+          { role: "system", content: summaryText },
+          {
+            role: "user",
+            content: `UserId: ${userId}\n${dream}`,
+          },
+        ],
         max_tokens: 500,
         temperature: 0.5,
       });
 
-      // 等待异步任务完成
       const summaryCompletion = await summaryCompletionPromise;
 
-      const summary = summaryCompletion.data.choices[0].text.trim();
+      const summaryChoice = summaryCompletion.data.choices[0];
+      const summary =
+        summaryChoice && summaryChoice.text ? summaryChoice.text.trim() : "";
 
       // 使用 ChatGPT 进行解梦
       const rolePlayText = `我希望你扮演周公解梦的解梦人的角色。我将给你提供梦境，请你结合梦境并做出一些合理的对现实生活的推测来解读我的梦境，
@@ -43,7 +50,7 @@ export default async function handler(req, res) {
       在解梦的最后不需要进行总结。
 
       格式为梦境+预示着什么。
-
+      
       下面是一些示例：
 
       Q:梦见别人送馒头
