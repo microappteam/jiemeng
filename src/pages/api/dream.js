@@ -18,7 +18,7 @@ export default async function handler(req, res) {
       const summaryCompletionPromise = openai.createCompletion({
         model: "gpt-3.5-turbo",
         prompt: `总结以下梦境：\n${dream}`,
-        max_tokens: 256,
+        max_tokens: 500,
         temperature: 0.5,
       });
 
@@ -100,7 +100,7 @@ export default async function handler(req, res) {
           { role: "user", content: `UserId: ${userId}\n${summary}` },
         ],
         temperature: 1,
-        max_tokens: 777,
+        max_tokens: 888,
       });
 
       // 等待异步任务完成
