@@ -93,16 +93,22 @@ export default async function handler(req, res) {
       \n\n老人梦见买彩票中大奖，此梦预兆近期梦者身体健康运势不佳，会有突发疾病缠身，平时要多注意保养和休息。
 
 
+      
   `;
 
-      const chatCompletionPromise = openai.createChatCompletion({
-        model: "gpt-3.5-turbo",
-        messages: [
-          { role: "system", content: rolePlayText },
-          { role: "user", content: `UserId: ${userId}\n${summary}` },
-        ],
-        temperature: 1,
-        max_tokens: 888,
+      const chatCompletionPromise = new Promise((resolve) => {
+        setTimeout(async () => {
+          const chatCompletion = await openai.createChatCompletion({
+            model: "gpt-3.5-turbo",
+            messages: [
+              { role: "system", content: rolePlayText },
+              { role: "user", content: `UserId: ${userId}\n${summary}` },
+            ],
+            temperature: 1,
+            max_tokens: 888,
+          });
+          resolve(chatCompletion);
+        }, 12000); // 12秒延迟
       });
 
       // 等待异步任务完成
