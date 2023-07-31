@@ -13,39 +13,48 @@ export default async function handler(req, res) {
     try {
       const { dream } = req.body;
       const userId = uuidv4();
-      const summaryText = `你需要将我给你的梦境进行总结，返回不超过十五个字的梦境主题。`;
+      const summaryText = `你需要将我给你的梦境进行总结，去掉一些修饰词，保留句子的谓语和宾语。`;
       const summaryCompletionPromise = openai.createChatCompletion({
         model: "gpt-3.5-turbo",
         messages: [
           { role: "system", content: summaryText },
-          {
-            role: "user",
-            content: `UserId: ${userId}\n${dream}`,
-          },
+          { role: "user", content: `UserId: ${userId}` },
+          { role: "user", content: dream },
         ],
-        max_tokens: 500,
-        temperature: 0.5,
+        max_tokens: 35,
+        temperature: 0.9,
       });
 
-      const summaryCompletion = await summaryCompletionPromise;
+      // 添加延迟等待时间
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
+      const summaryCompletion = await summaryCompletionPromise;
       const summaryChoice = summaryCompletion.data.choices[0];
       const summary =
-        summaryChoice && summaryChoice.text ? summaryChoice.text.trim() : "";
+        summaryChoice && summaryChoice.message && summaryChoice.message.content
+          ? summaryChoice.message.content.trim()
+          : "";
 
+      console.log("summary=" + summary);
       // 使用 ChatGPT 进行解梦
-      const rolePlayText = `我希望你扮演周公解梦的解梦人的角色。我将给你提供梦境，请你结合梦境并做出一些合理的对现实生活的推测来解读我的梦境，
+      const rolePlayText = `我希望你扮演周公解梦的解梦人的角色。我将给你提供梦境，请你结合梦境并做出一些合理的对现实生活的推测来解读我的梦境。
 
-      你的回答只需包含两部分内容，其一先重申一下梦境再做出总体的解梦，其二按分类再对梦境做出各自的简短的解读，
+      你的回答只需包含两部分内容，其一先重申一下梦境再做出总体的解梦，其二按分类再对梦境做出各自的简短的解读。
 
-      分类可以在商人、办公族、学生、病人、出行者、求学者这六者的组合或者未成年、男人、女人、老年人、青年人、中年人这六者的组合任意选择一组进行解梦。
+      分类可以在商人、办公族、学生、病人、出行者、求学者这六者的组合或者未成年、男人、女人、老年人、青年人、中年人这六者的组合任意选择一组进行解梦。（不用告诉我你选了什么）
 
       单个分类完毕后进行换行操作再继续下一分类。
 
       注意解读尽量精简，尽量多使用短句，符合汉语使用习惯。
 
-      语气确凿，不要出现可能等模棱两可的字眼。
-      
+      语气要确凿一些，不要出现可能等模棱两可的字眼。
+
+      在解梦的最后不需要进行总结。
+
+      格式为梦境+预示着什么。
+
+      下面是一些示例：
+
       下面是一些示例：
 
       Q:梦见别人送馒头
@@ -94,21 +103,18 @@ export default async function handler(req, res) {
 
 
       
+      
   `;
 
-      const chatCompletionPromise = new Promise((resolve) => {
-        setTimeout(async () => {
-          const chatCompletion = await openai.createChatCompletion({
-            model: "gpt-3.5-turbo",
-            messages: [
-              { role: "system", content: rolePlayText },
-              { role: "user", content: `UserId: ${userId}\n${summary}` },
-            ],
-            temperature: 1,
-            max_tokens: 888,
-          });
-          resolve(chatCompletion);
-        }, 12000); // 12秒延迟
+      const chatCompletionPromise = openai.createChatCompletion({
+        model: "gpt-3.5-turbo",
+        messages: [
+          { role: "system", content: rolePlayText },
+          { role: "user", content: `UserId: ${userId}` },
+          { role: "user", content: summary },
+        ],
+        temperature: 1,
+        max_tokens: 888,
       });
 
       // 等待异步任务完成
