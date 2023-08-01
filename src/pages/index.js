@@ -54,13 +54,19 @@ export default function Home() {
           background-image: url("/980.jpg");
           background-size: 100% auto;
           background-repeat: no-repeat;
-          height: 100vh; /* 设置高度为视口高度 */
+          height: 100vh;
         }
 
         .content {
+          display: flex;
+          justify-content: center; /* 将内容容器居中对齐 */
+          align-items: center;
+          flex-direction: column; /* 垂直布局 */
           padding: 12px;
           text-align: center;
           background-color: #f9f0e1;
+          width: 90%;
+          max-width: 400px;
         }
 
         .title {
@@ -69,8 +75,8 @@ export default function Home() {
 
         .input {
           background-color: #f9f0e1;
-          width: 100%;
-          height: 200px;
+          width: 90%; /* 调整输入框的宽度 */
+          height: 150px;
           resize: vertical;
           padding: 8px;
           font-size: 16px;
@@ -78,16 +84,18 @@ export default function Home() {
 
         .button {
           background-color: #f9f0e1;
+          width: 100%;
+          padding: 12px;
+          font-size: 18px;
         }
 
         .response {
-          width: 400px;
           margin-top: 20px;
           text-align: left;
         }
 
         .response-text {
-          font-size: 18px;
+          font-size: 16px;
           background-color: #f9f0e1;
           white-space: pre-line;
           overflow-wrap: break-word;
