@@ -49,22 +49,20 @@ export default function Home() {
       <style jsx>{`
         .container {
           display: flex;
-          justify-content: center;
-          align-items: center;
-          background-image: url("/980.jpg");
-          background-size: 100% auto;
-          background-repeat: no-repeat;
+          justify-content: center; /* 水平方向居中对齐 */
+          align-items: flex-start; /* 垂直方向上不居中，内容向上对齐 */
+          background-color: #f9f0e1; /* 替换背景图片为背景颜色 */
           height: 100vh;
+          padding-top: 20px; /* 向上移动整体内容，根据需要调整值 */
         }
 
         .content {
           display: flex;
-          justify-content: center; /* 将内容容器居中对齐 */
+          justify-content: center;
           align-items: center;
-          flex-direction: column; /* 垂直布局 */
+          flex-direction: column;
           padding: 12px;
           text-align: center;
-          background-color: #f9f0e1;
           width: 90%;
           max-width: 400px;
         }
@@ -75,7 +73,7 @@ export default function Home() {
 
         .input {
           background-color: #f9f0e1;
-          width: 90%; /* 调整输入框的宽度 */
+          width: 90%;
           height: 150px;
           resize: vertical;
           padding: 8px;
