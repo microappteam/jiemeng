@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import ReactMarkdown from "react-markdown";
+import Head from "next/head";
 
 export default function Home() {
   const [dream, setDream] = useState("");
@@ -22,6 +23,10 @@ export default function Home() {
 
   return (
     <div className="container">
+      <Head>
+        <title>周公解梦</title>
+        <link rel="icon" href="/dream.png" />
+      </Head>
       <div className="content">
         <h1 className="title">周公解梦</h1>
         <form onSubmit={handleSubmit}>
@@ -49,11 +54,11 @@ export default function Home() {
       <style jsx>{`
         .container {
           display: flex;
-          justify-content: center; /* 水平方向居中对齐 */
-          align-items: flex-start; /* 垂直方向上不居中，内容向上对齐 */
-          background-color: #f9f0e1; /* 替换背景图片为背景颜色 */
+          justify-content: center;
+          align-items: flex-start;
+          background-color: #f9f0e1;
           height: 100vh;
-          padding-top: 20px; /* 向上移动整体内容，根据需要调整值 */
+          padding-top: 20px;
         }
 
         .content {
