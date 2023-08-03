@@ -1,9 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
-import ReactMarkdown from "react-markdown";
 import Head from "next/head";
 import { Button, Input } from "antd";
-import styled from "styled-components"; // Import styled-components
+import styled from "styled-components";
 
 const { TextArea } = Input;
 
@@ -34,17 +33,75 @@ const StyledResponse = styled.div`
 
 const StyledResponseText = styled.p`
   font-size: 16px;
-  background-color: #e3caa5;
   white-space: pre-line;
   overflow-wrap: break-word;
 `;
 
+const StyledButtonContainer = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+`;
+
+const StyledButton = styled(Button)`
+  background-color: #ceab93;
+  border-color: #ceab93;
+  border-width: 1px;
+  color: #000;
+
+  &:hover,
+  &:focus {
+    background-color: #ceab93;
+    border-color: #ceab93;
+    color: #000;
+  }
+
+  &:active {
+    background-color: #ceab93;
+    border-color: #ceab93;
+    color: #000;
+    box-shadow: none;
+  }
+
+  &:disabled {
+    background-color: #ceab93;
+    border-color: #ceab93;
+    color: #000;
+    opacity: 0.7;
+  }
+`;
+
+const loadingMessages = [
+  "Loading...",
+  "正在询问周公...",
+  "正在翻阅梦书...",
+  "好运正在路上...",
+  "Loading 101% ...",
+  "慢工出细活，久久方为功...",
+  "周公正在解读梦境，请稍候...",
+  "加载中，请稍候...",
+  "卖力加载中...",
+  "O.o ...",
+  "马上就要写完咯...",
+];
+
 export default function Home() {
   const [dream, setDream] = useState("");
   const [response, setResponse] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [randomMessage, setRandomMessage] = useState("");
+
+  useEffect(() => {
+    if (loading) {
+      const randomIndex = Math.floor(Math.random() * loadingMessages.length);
+      setRandomMessage(loadingMessages[randomIndex]);
+    }
+  }, [loading]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const response = await axios.post(
         "/api/dream",
@@ -54,6 +111,8 @@ export default function Home() {
       setResponse(response.data);
     } catch (error) {
       console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -82,19 +141,16 @@ export default function Home() {
           <br />
           <br />
 
-          <Button
-            block
-            size="large"
-            style={{
-              backgroundColor: "#CEAB93",
-              borderColor: "#CEAB93",
-              borderWidth: "1px",
-              color: "#000",
-            }}
-            onClick={handleSubmit}
-          >
-            解梦
-          </Button>
+          <StyledButtonContainer>
+            <StyledButton
+              block
+              size="large"
+              onClick={handleSubmit}
+              disabled={loading}
+            >
+              {loading ? randomMessage : "解梦"}
+            </StyledButton>
+          </StyledButtonContainer>
         </form>
         {response && (
           <StyledResponse>
