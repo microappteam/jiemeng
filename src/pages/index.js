@@ -46,8 +46,10 @@ export default function Home() {
           />
           <br />
           <br />
+
           <Button
             block
+            size="large"
             style={{
               backgroundColor: "#CEAB93",
               borderColor: "#CEAB93",
