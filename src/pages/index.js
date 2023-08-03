@@ -2,7 +2,8 @@ import { useState } from "react";
 import axios from "axios";
 import ReactMarkdown from "react-markdown";
 import Head from "next/head";
-
+import { Button, Input } from "antd";
+const { TextArea } = Input;
 export default function Home() {
   const [dream, setDream] = useState("");
   const [response, setResponse] = useState("");
@@ -30,18 +31,32 @@ export default function Home() {
       <div className="content">
         <h1 className="title">周公解梦</h1>
         <form onSubmit={handleSubmit}>
-          <label>
-            梦境内容：
-            <textarea
-              value={dream}
-              onChange={(e) => setDream(e.target.value)}
-              className="input"
-              placeholder="请输入梦境"
-            />
-          </label>
-          <button type="submit" className="button">
+          <TextArea
+            style={{
+              borderColor: "#CEAB93",
+              borderWidth: "1px",
+              width: 300,
+            }}
+            value={dream}
+            showCount
+            rows={5}
+            maxLength={400}
+            placeholder="请输入梦境"
+            onChange={(e) => setDream(e.target.value)}
+          />
+          <br />
+          <br />
+          <Button
+            block
+            style={{
+              backgroundColor: "#CEAB93",
+              borderColor: "#CEAB93",
+              borderWidth: "1px",
+              color: "#000",
+            }}
+          >
             解梦
-          </button>
+          </Button>
         </form>
         {response && (
           <div className="response">
@@ -56,7 +71,7 @@ export default function Home() {
           display: flex;
           justify-content: center;
           align-items: flex-start;
-          background-color: #f9f0e1;
+          background-color: #fffbe9;
           height: 100vh;
           padding-top: 20px;
         }
@@ -72,26 +87,6 @@ export default function Home() {
           max-width: 400px;
         }
 
-        .title {
-          background-color: #f9f0e1;
-        }
-
-        .input {
-          background-color: #f9f0e1;
-          width: 90%;
-          height: 150px;
-          resize: vertical;
-          padding: 8px;
-          font-size: 16px;
-        }
-
-        .button {
-          background-color: #f9f0e1;
-          width: 100%;
-          padding: 12px;
-          font-size: 18px;
-        }
-
         .response {
           margin-top: 20px;
           text-align: left;
@@ -99,7 +94,7 @@ export default function Home() {
 
         .response-text {
           font-size: 16px;
-          background-color: #f9f0e1;
+          background-color: #e3caa5;
           white-space: pre-line;
           overflow-wrap: break-word;
         }
