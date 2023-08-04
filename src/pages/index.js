@@ -69,6 +69,7 @@ export default function Home() {
           background-color: #fffbe9;
           height: 100vh;
           padding-top: 20px;
+          overflow-y: auto;
         }
       `}</style>
     </App>
