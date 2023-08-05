@@ -1,5 +1,5 @@
-import { Configuration, OpenAIApi } from "openai";
-import { v4 as uuidv4 } from "uuid";
+import { Configuration, OpenAIApi } from 'openai';
+import { v4 as uuidv4 } from 'uuid';
 
 const configuration = new Configuration({
   apiKey: process.env.API_KEY,
@@ -9,17 +9,17 @@ const configuration = new Configuration({
 const openai = new OpenAIApi(configuration);
 
 export default async function handler(req, res) {
-  if (req.method === "POST") {
+  if (req.method === 'POST') {
     try {
       const { dream } = req.body;
       const userId = uuidv4();
       const summaryText = `你需要将我给你的梦境进行总结，去掉一些修饰词，保留句子的谓语和宾语。`;
       const summaryCompletionPromise = openai.createChatCompletion({
-        model: "gpt-3.5-turbo",
+        model: 'gpt-3.5-turbo',
         messages: [
-          { role: "system", content: summaryText },
-          { role: "user", content: `UserId: ${userId}` },
-          { role: "user", content: dream },
+          { role: 'system', content: summaryText },
+          { role: 'user', content: `UserId: ${userId}` },
+          { role: 'user', content: dream },
         ],
         max_tokens: 35,
         temperature: 0.9,
@@ -33,9 +33,9 @@ export default async function handler(req, res) {
       const summary =
         summaryChoice && summaryChoice.message && summaryChoice.message.content
           ? summaryChoice.message.content.trim()
-          : "";
+          : '';
 
-      console.log("summary=" + summary);
+      console.log('summary=' + summary);
       // 使用 ChatGPT 进行解梦
       const rolePlayText = `我希望你扮演周公解梦的解梦人的角色。我将给你提供梦境，请你结合梦境并做出一些合理的对现实生活的推测来解读我的梦境。
 
@@ -100,18 +100,14 @@ export default async function handler(req, res) {
       \n\n病人梦见买彩票中大奖，病情恶化的凶兆，要想恢复健康的身体，还需要治疗一段时间，耐心等待吧。
       
       \n\n老人梦见买彩票中大奖，此梦预兆近期梦者身体健康运势不佳，会有突发疾病缠身，平时要多注意保养和休息。
-
-
-      
-      
   `;
 
       const chatCompletionPromise = openai.createChatCompletion({
-        model: "gpt-3.5-turbo",
+        model: 'gpt-3.5-turbo',
         messages: [
-          { role: "system", content: rolePlayText },
-          { role: "user", content: `UserId: ${userId}` },
-          { role: "user", content: summary },
+          { role: 'system', content: rolePlayText },
+          { role: 'user', content: `UserId: ${userId}` },
+          { role: 'user', content: summary },
         ],
         temperature: 1,
         max_tokens: 888,
@@ -124,9 +120,9 @@ export default async function handler(req, res) {
       res.status(200).json(answer);
     } catch (error) {
       console.error(error);
-      res.status(500).json({ error: "Something went wrong" });
+      res.status(500).json({ error: 'Something went wrong' });
     }
   } else {
-    res.status(405).json({ error: "Method not allowed" });
+    res.status(405).json({ error: 'Method not allowed' });
   }
 }
