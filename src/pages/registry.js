@@ -1,16 +1,11 @@
-<<<<<<< HEAD
-import React, { useState } from "react";
-import { Button, Input } from "antd";
-import ReactMarkdown from "react-markdown";
-
-=======
-// registry.js
-import React from 'react';
+import React, { useState } from 'react';
 import { Button, Input } from 'antd';
 import ReactMarkdown from 'react-markdown';
-import './index.css';
->>>>>>> 0108479e86f5fb7f1fc41f465d819ed68af22ee0
+import Image from 'next/image';
+
 const { TextArea } = Input;
+
+import styles from './registry.module.css';
 
 export default function StyledComponentsRegistry({
   dream,
@@ -20,18 +15,24 @@ export default function StyledComponentsRegistry({
   isLoading,
   loadingTexts,
 }) {
-  const [title, setTitle] = useState("周公解梦");
+  const [title, setTitle] = useState('周公解梦');
 
   return (
-    <div className="content">
-      <h1 className="title">
-        <img src="/zgjm.png" alt="周公解梦" className="logo" />
+    <div className={styles.content}>
+      <h1 className={styles.title}>
+        <Image
+          src="/zgjm.png"
+          width={256}
+          height={70}
+          alt="周公解梦"
+          className={styles.logo}
+        />
       </h1>
       <form onSubmit={handleSubmit}>
         <TextArea
           style={{
-            borderColor: "#CEAB93",
-            borderWidth: "1px",
+            borderColor: '#CEAB93',
+            borderWidth: '1px',
             width: 300,
           }}
           value={dream}
@@ -48,17 +49,17 @@ export default function StyledComponentsRegistry({
           block
           size="large"
           style={{
-            backgroundColor: "#CEAB93",
-            borderColor: "#CEAB93",
-            borderWidth: "1px",
-            color: "#000",
+            backgroundColor: '#CEAB93',
+            borderColor: '#CEAB93',
+            borderWidth: '1px',
+            color: '#000',
           }}
           onClick={handleSubmit}
           loading={isLoading}
         >
           {isLoading
             ? loadingTexts[Math.floor(Math.random() * loadingTexts.length)]
-            : "解梦"}
+            : '解梦'}
         </Button>
       </form>
       {response && (
@@ -67,42 +68,6 @@ export default function StyledComponentsRegistry({
           <ReactMarkdown className="response-text">{response}</ReactMarkdown>
         </div>
       )}
-<<<<<<< HEAD
-
-      <style jsx>{`
-        .content {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          flex-direction: column;
-          padding: 12px;
-          text-align: center;
-          width: 90%;
-          max-width: 400px;
-        }
-
-        .title {
-          max-width: 200px;
-        }
-
-        .logo {
-          max-width: 100%;
-        }
-
-        .response {
-          margin-top: 20px;
-          text-align: left;
-        }
-
-        .response-text {
-          font-size: 16px;
-          background-color: #e3caa5;
-          white-space: pre-line;
-          overflow-wrap: break-word;
-        }
-      `}</style>
-=======
->>>>>>> 0108479e86f5fb7f1fc41f465d819ed68af22ee0
     </div>
   );
 }

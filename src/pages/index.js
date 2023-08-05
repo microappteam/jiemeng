@@ -5,7 +5,6 @@ import Head from 'next/head';
 import { App, ConfigProvider } from 'antd';
 import zhCN from 'antd/lib/locale/zh_CN';
 import StyledComponentsRegistry from './registry';
-import './index.css';
 
 export default function Home() {
   const [dream, setDream] = useState('');
