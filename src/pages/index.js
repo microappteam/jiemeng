@@ -48,7 +48,14 @@ export default function Home() {
         <div className="container">
           <Head>
             <title>周公解梦</title>
-            <link rel="icon" href="/dream.png" />
+            <link rel="icon" href="/logo.png" />
+            <meta property="og:title" content="周公解梦"></meta>
+            <meta property="twitter:image" content="/logo.png"></meta>
+            <meta property="og:image" content="/logo.png"></meta>
+            <meta
+              property="og:description"
+              content="周公解梦是一种将梦境解读为暗示和预兆的传统文化实践。在中国古代，人们相信梦境可以透露出隐藏的信息或未来事件。因此，他们会寻求有经验的解梦师（如周公）来帮助理解和分析自己的梦境。"
+            />
           </Head>
           <StyledComponentsRegistry
             dream={dream}
