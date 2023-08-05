@@ -43,7 +43,7 @@ export default function StyledComponentsRegistry({
             color: "#000",
           }}
           onClick={handleSubmit}
-          disabled={isLoading}
+          loading={isLoading}
         >
           {isLoading
             ? loadingTexts[Math.floor(Math.random() * loadingTexts.length)]
