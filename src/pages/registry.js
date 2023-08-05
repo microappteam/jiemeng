@@ -1,7 +1,15 @@
+<<<<<<< HEAD
 import React, { useState } from "react";
 import { Button, Input } from "antd";
 import ReactMarkdown from "react-markdown";
 
+=======
+// registry.js
+import React from 'react';
+import { Button, Input } from 'antd';
+import ReactMarkdown from 'react-markdown';
+import './index.css';
+>>>>>>> 0108479e86f5fb7f1fc41f465d819ed68af22ee0
 const { TextArea } = Input;
 
 export default function StyledComponentsRegistry({
@@ -59,6 +67,7 @@ export default function StyledComponentsRegistry({
           <ReactMarkdown className="response-text">{response}</ReactMarkdown>
         </div>
       )}
+<<<<<<< HEAD
 
       <style jsx>{`
         .content {
@@ -92,6 +101,8 @@ export default function StyledComponentsRegistry({
           overflow-wrap: break-word;
         }
       `}</style>
+=======
+>>>>>>> 0108479e86f5fb7f1fc41f465d819ed68af22ee0
     </div>
   );
 }
