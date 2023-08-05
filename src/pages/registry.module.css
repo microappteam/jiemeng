@@ -1,0 +1,23 @@
+﻿.content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 12px;
+  text-align: center;
+  width: 90%;
+  box-sizing: border-box;
+  max-width: 400px;
+}
+
+.response {
+  margin-top: 20px;
+  text-align: left;
+}
+
+.response-text {
+  font-size: 16px;
+  background-color: #e3caa5;
+  white-space: pre-line;
+  overflow-wrap: break-word;
+}
