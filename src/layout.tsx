@@ -1,4 +1,4 @@
-import StyledJsxRegistry from './registry';
+import StyledJsxRegistry from './styles/registry';
 
 export default function RootLayout({
   children,
