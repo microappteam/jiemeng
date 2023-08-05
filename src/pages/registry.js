@@ -1,15 +1,7 @@
-<<<<<<< HEAD
-import React, { useState } from "react";
+import React from "react";
 import { Button, Input } from "antd";
 import ReactMarkdown from "react-markdown";
-
-=======
-// registry.js
-import React from 'react';
-import { Button, Input } from 'antd';
-import ReactMarkdown from 'react-markdown';
-import './index.css';
->>>>>>> 0108479e86f5fb7f1fc41f465d819ed68af22ee0
+import "./index.css";
 const { TextArea } = Input;
 
 export default function StyledComponentsRegistry({
@@ -67,42 +59,6 @@ export default function StyledComponentsRegistry({
           <ReactMarkdown className="response-text">{response}</ReactMarkdown>
         </div>
       )}
-<<<<<<< HEAD
-
-      <style jsx>{`
-        .content {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          flex-direction: column;
-          padding: 12px;
-          text-align: center;
-          width: 90%;
-          max-width: 400px;
-        }
-
-        .title {
-          max-width: 200px;
-        }
-
-        .logo {
-          max-width: 100%;
-        }
-
-        .response {
-          margin-top: 20px;
-          text-align: left;
-        }
-
-        .response-text {
-          font-size: 16px;
-          background-color: #e3caa5;
-          white-space: pre-line;
-          overflow-wrap: break-word;
-        }
-      `}</style>
-=======
->>>>>>> 0108479e86f5fb7f1fc41f465d819ed68af22ee0
     </div>
   );
 }
