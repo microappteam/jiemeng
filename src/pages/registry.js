@@ -2,7 +2,7 @@
 import React from 'react';
 import { Button, Input } from 'antd';
 import ReactMarkdown from 'react-markdown';
-
+import './index.css';
 const { TextArea } = Input;
 
 export default function StyledComponentsRegistry({
@@ -56,31 +56,6 @@ export default function StyledComponentsRegistry({
           <ReactMarkdown className="response-text">{response}</ReactMarkdown>
         </div>
       )}
-
-      <style jsx>{`
-        .content {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          flex-direction: column;
-          padding: 12px;
-          text-align: center;
-          width: 90%;
-          max-width: 400px;
-        }
-
-        .response {
-          margin-top: 20px;
-          text-align: left;
-        }
-
-        .response-text {
-          font-size: 16px;
-          background-color: #e3caa5;
-          white-space: pre-line;
-          overflow-wrap: break-word;
-        }
-      `}</style>
     </div>
   );
 }
