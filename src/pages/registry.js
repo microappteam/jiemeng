@@ -1,7 +1,6 @@
-// registry.js
-import React from 'react';
-import { Button, Input } from 'antd';
-import ReactMarkdown from 'react-markdown';
+import React, { useState } from "react";
+import { Button, Input } from "antd";
+import ReactMarkdown from "react-markdown";
 
 const { TextArea } = Input;
 
@@ -13,14 +12,18 @@ export default function StyledComponentsRegistry({
   isLoading,
   loadingTexts,
 }) {
+  const [title, setTitle] = useState("周公解梦");
+
   return (
     <div className="content">
-      <h1 className="title">周公解梦</h1>
+      <h1 className="title">
+        <img src="/zgjm.png" alt="周公解梦" className="logo" />
+      </h1>
       <form onSubmit={handleSubmit}>
         <TextArea
           style={{
-            borderColor: '#CEAB93',
-            borderWidth: '1px',
+            borderColor: "#CEAB93",
+            borderWidth: "1px",
             width: 300,
           }}
           value={dream}
@@ -37,17 +40,17 @@ export default function StyledComponentsRegistry({
           block
           size="large"
           style={{
-            backgroundColor: '#CEAB93',
-            borderColor: '#CEAB93',
-            borderWidth: '1px',
-            color: '#000',
+            backgroundColor: "#CEAB93",
+            borderColor: "#CEAB93",
+            borderWidth: "1px",
+            color: "#000",
           }}
           onClick={handleSubmit}
           loading={isLoading}
         >
           {isLoading
             ? loadingTexts[Math.floor(Math.random() * loadingTexts.length)]
-            : '解梦'}
+            : "解梦"}
         </Button>
       </form>
       {response && (
@@ -67,6 +70,14 @@ export default function StyledComponentsRegistry({
           text-align: center;
           width: 90%;
           max-width: 400px;
+        }
+
+        .title {
+          max-width: 200px;
+        }
+
+        .logo {
+          max-width: 100%;
         }
 
         .response {
