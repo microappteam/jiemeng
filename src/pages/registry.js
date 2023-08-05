@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button, Input } from "antd";
 import ReactMarkdown from "react-markdown";
-import "./index.css";
+import Image from "next/image";
+
 const { TextArea } = Input;
+
+import styles from "./registry.module.css";
 
 export default function StyledComponentsRegistry({
   dream,
@@ -15,9 +18,15 @@ export default function StyledComponentsRegistry({
   const [title, setTitle] = useState("周公解梦");
 
   return (
-    <div className="content">
-      <h1 className="title">
-        <img src="/zgjm.png" alt="周公解梦" className="logo" />
+    <div className={styles.content}>
+      <h1 className={styles.title}>
+        <Image
+          src="/zgjm.png"
+          width={256}
+          height={70}
+          alt="周公解梦"
+          className={styles.logo}
+        />
       </h1>
       <form onSubmit={handleSubmit}>
         <TextArea
