@@ -1,11 +1,10 @@
-// YourPage.tsx
 import React, { useState } from 'react';
 import { Button, Input } from 'antd';
 import ReactMarkdown from 'react-markdown';
 import Image from 'next/image';
 import styles from './component.module.css';
 import StyledComponentsRegistry from '../styles/registry';
-import RootLayout from './layout';
+import RootLayout from '../layout';
 
 const { TextArea } = Input;
 
