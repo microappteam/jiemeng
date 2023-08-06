@@ -1,28 +1,26 @@
-// index.js
-import { useState } from "react";
-import axios from "axios";
-import Head from "next/head";
-import { App, ConfigProvider } from "antd";
-import zhCN from "antd/lib/locale/zh_CN";
-import StyledComponentsRegistry from "./registry";
-//1
+import { useState } from 'react';
+import axios from 'axios';
+import Head from 'next/head';
+import { App, ConfigProvider } from 'antd';
+import zhCN from 'antd/lib/locale/zh_CN';
+import StyledComponentsRegistry from './component';
 export default function Home() {
-  const [dream, setDream] = useState("");
-  const [response, setResponse] = useState("");
+  const [dream, setDream] = useState('');
+  const [response, setResponse] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   const loadingTexts = [
-    "Loading...",
-    "正在询问周公...",
-    "正在翻阅梦书...",
-    "好运正在路上...",
-    "Loading 101% ...",
-    "慢工出细活，久久方为功...",
-    "周公正在解读梦境，请稍候...",
-    "加载中，请稍候...",
-    "卖力加载中...",
-    "O.o ...",
-    "马上就要写完咯...",
+    'Loading...',
+    '正在询问周公...',
+    '正在翻阅梦书...',
+    '好运正在路上...',
+    'Loading 101% ...',
+    '慢工出细活，久久方为功...',
+    '周公正在解读梦境，请稍候...',
+    '加载中，请稍候...',
+    '卖力加载中...',
+    'O.o ...',
+    '马上就要写完咯...',
   ];
 
   const handleSubmit = async (e) => {
@@ -30,9 +28,9 @@ export default function Home() {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        "/api/dream",
+        '/api/dream',
         { dream },
-        { timeout: 60000 }
+        { timeout: 60000 },
       );
       setResponse(response.data);
     } catch (error) {
