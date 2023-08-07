@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useSession, signIn } from 'next-auth/client';
+import { useSession, signIn } from 'next-auth';
 import axios from 'axios';
 import Head from 'next/head';
 import { Layout, ConfigProvider, Button } from 'antd';
@@ -7,7 +7,7 @@ import zhCN from 'antd/lib/locale/zh_CN';
 import StyledComponentsRegistry from './component';
 
 export default function Home() {
-  const [session, loading] = useSession();
+  const [session, loading] = getSession();
   const [dream, setDream] = useState('');
   const [response, setResponse] = useState('');
   const [isLoading, setIsLoading] = useState(false);
