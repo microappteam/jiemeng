@@ -4,7 +4,7 @@ import Head from 'next/head';
 import { App, ConfigProvider } from 'antd';
 import zhCN from 'antd/lib/locale/zh_CN';
 import StyledComponentsRegistry from './component';
-import { signIn, signOut, useSession } from 'next-auth/client';
+import { signIn, signOut, useSession } from 'next-auth';
 export default function Home() {
   const [dream, setDream] = useState('');
   const [response, setResponse] = useState('');
