@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useSession, signIn } from 'next-auth/client';
 import axios from 'axios';
 import Head from 'next/head';
-import { App, ConfigProvider, Button } from 'antd';
+import { Layout, ConfigProvider, Button } from 'antd';
 import zhCN from 'antd/lib/locale/zh_CN';
 import StyledComponentsRegistry from './component';
 
@@ -57,18 +57,18 @@ export default function Home() {
 
   if (!session) {
     return (
-      <App>
+      <Layout>
         <ConfigProvider locale={zhCN}>
           <div className="container">
             <button onClick={handleGitHubSignIn}>Login with GitHub</button>
           </div>
         </ConfigProvider>
-      </App>
+      </Layout>
     );
   }
 
   return (
-    <App>
+    <Layout>
       <ConfigProvider locale={zhCN}>
         <div className="container">
           <Head>
@@ -115,6 +115,6 @@ export default function Home() {
           overflow-y: auto;
         }
       `}</style>
-    </App>
+    </Layout>
   );
 }
