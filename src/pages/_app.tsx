@@ -1,6 +1,20 @@
 ﻿import type { AppProps } from 'next/app';
-import './styles.css';
+import { SessionProvider, useSession, signIn } from 'next-auth/react';
+import { useEffect } from 'react';
+import '../styles.css';
 
 export default function MyApp({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />;
+  const { data: session, status } = useSession();
+
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      signIn();
+    }
+  }, [status]);
+
+  return (
+    <SessionProvider session={pageProps.session}>
+      <Component {...pageProps} />
+    </SessionProvider>
+  );
 }
