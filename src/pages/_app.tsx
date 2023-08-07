@@ -1,7 +1,6 @@
 ﻿import type { AppProps } from 'next/app';
 import { SessionProvider, useSession, signIn } from 'next-auth/react';
 import { useEffect } from 'react';
-import '../styles.css';
 
 export default function MyApp({ Component, pageProps }: AppProps) {
   const { data: session, status } = useSession();
