@@ -4,14 +4,12 @@ import Head from 'next/head';
 import { App, ConfigProvider } from 'antd';
 import zhCN from 'antd/lib/locale/zh_CN';
 import StyledComponentsRegistry from './component';
-import { useSession, signIn } from 'next-auth/react';
-
+import { signIn, signOut, useSession } from 'next-auth/client';
 export default function Home() {
   const [dream, setDream] = useState('');
   const [response, setResponse] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [session, loading] = useSession(); // 使用 useSession 钩子获取会话信息
-
+  const [session, loading] = useSession();
   const loadingTexts = [
     'Loading...',
     '正在询问周公...',
@@ -43,31 +41,53 @@ export default function Home() {
     }
   };
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
   return (
     <App>
       <ConfigProvider locale={zhCN}>
         <div className="container">
-          <Head>{/* 省略 Head 部分 */}</Head>
-          {session ? (
-            <StyledComponentsRegistry
-              dream={dream}
-              setDream={setDream}
-              handleSubmit={handleSubmit}
-              response={response}
-              isLoading={isLoading}
-              loadingTexts={loadingTexts}
+          <Head>
+            <title>周公解梦</title>
+            <link rel="icon" href="/logo.png" />
+            <meta property="og:title" content="周公解梦"></meta>
+            <meta property="twitter:image" content="/logo.png"></meta>
+            <meta property="og:image" content="/logo.png"></meta>
+            <meta property="twitter:title" content="周公解梦"></meta>
+            <meta property="twitter:card" content="summary"></meta>
+            <meta
+              property="twitter:description"
+              content="周公解梦是一种将梦境解读为暗示和预兆的传统文化实践。在中国古代，人们相信梦境可以透露出隐藏的信息或未来事件。因此，他们会寻求有经验的解梦师（如周公）来帮助理解和分析自己的梦境。"
+            ></meta>
+            <meta
+              property="og:url"
+              content="https://jiemeng.chenshuai.dev"
+            ></meta>
+            <meta
+              property="og:description"
+              content="周公解梦是一种将梦境解读为暗示和预兆的传统文化实践。在中国古代，人们相信梦境可以透露出隐藏的信息或未来事件。因此，他们会寻求有经验的解梦师（如周公）来帮助理解和分析自己的梦境。"
             />
-          ) : (
-            <div>
-              <button onClick={() => signIn('github')}>
-                Sign in with GitHub
-              </button>
-            </div>
-          )}
+          </Head>
+          <div>
+            {!session && (
+              <>
+                <button onClick={() => signIn('github')}>使用GitHub登录</button>
+                <p>您当前未登录</p>
+              </>
+            )}
+            {session && (
+              <>
+                <p>欢迎，{session.user.name}！</p>
+                <button onClick={() => signOut()}>注销</button>
+              </>
+            )}
+          </div>
+          <StyledComponentsRegistry
+            dream={dream}
+            setDream={setDream}
+            handleSubmit={handleSubmit}
+            response={response}
+            isLoading={isLoading}
+            loadingTexts={loadingTexts}
+          />
         </div>
       </ConfigProvider>
 
