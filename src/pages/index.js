@@ -1,13 +1,12 @@
 import { useState } from 'react';
-import { useSession, signIn } from 'next-auth/client';
 import axios from 'axios';
 import Head from 'next/head';
 import { Layout, ConfigProvider } from 'antd';
 import zhCN from 'antd/lib/locale/zh_CN';
 import StyledComponentsRegistry from './component';
+import { useSession, signIn, signOut } from 'next-auth/react';
 
 export default function Home() {
-  const [session, loading] = useSession();
   const [dream, setDream] = useState('');
   const [response, setResponse] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -26,14 +25,6 @@ export default function Home() {
     '马上就要写完咯...',
   ];
 
-  const handleGitHubSignIn = async () => {
-    try {
-      await signIn('github');
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -51,21 +42,25 @@ export default function Home() {
     }
   };
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  const Component = () => {
+    const { data: session } = useSession();
 
-  if (!session) {
+    if (session) {
+      return (
+        <>
+          Signed in as {session.user.email} <br />
+          <button onClick={() => signOut()}>Sign out</button>
+        </>
+      );
+    }
+
     return (
-      <Layout>
-        <ConfigProvider locale={zhCN}>
-          <div className="container">
-            <button onClick={handleGitHubSignIn}>Login with GitHub</button>
-          </div>
-        </ConfigProvider>
-      </Layout>
+      <>
+        Not signed in <br />
+        <button onClick={() => signIn()}>Sign in</button>
+      </>
     );
-  }
+  };
 
   return (
     <Layout>
@@ -74,24 +69,23 @@ export default function Home() {
           <Head>
             <title>周公解梦</title>
             <link rel="icon" href="/logo.png" />
-            <meta property="og:title" content="周公解梦"></meta>
-            <meta property="twitter:image" content="/logo.png"></meta>
-            <meta property="og:image" content="/logo.png"></meta>
-            <meta property="twitter:title" content="周公解梦"></meta>
-            <meta property="twitter:card" content="summary"></meta>
+            <meta property="og:title" content="周公解梦" />
+            <meta property="twitter:image" content="/logo.png" />
+            <meta property="og:image" content="/logo.png" />
+            <meta property="twitter:title" content="周公解梦" />
+            <meta property="twitter:card" content="summary" />
             <meta
               property="twitter:description"
               content="周公解梦是一种将梦境解读为暗示和预兆的传统文化实践。在中国古代，人们相信梦境可以透露出隐藏的信息或未来事件。因此，他们会寻求有经验的解梦师（如周公）来帮助理解和分析自己的梦境。"
-            ></meta>
-            <meta
-              property="og:url"
-              content="https://jiemeng.chenshuai.dev"
-            ></meta>
+            />
+            <meta property="og:url" content="https://jiemeng.chenshuai.dev" />
             <meta
               property="og:description"
               content="周公解梦是一种将梦境解读为暗示和预兆的传统文化实践。在中国古代，人们相信梦境可以透露出隐藏的信息或未来事件。因此，他们会寻求有经验的解梦师（如周公）来帮助理解和分析自己的梦境。"
             />
           </Head>
+
+          <Component />
 
           <StyledComponentsRegistry
             dream={dream}
