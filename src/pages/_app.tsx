@@ -3,7 +3,8 @@ import { SessionProvider, useSession, signIn } from 'next-auth/react';
 import { useEffect } from 'react';
 
 export default function MyApp({ Component, pageProps }: AppProps) {
-  const { data: session, status } = useSession();
+  // 在服务器端渲染时，session 对象可能为 undefined
+  const { data: session, status } = useSession() || {};
 
   useEffect(() => {
     if (status === 'unauthenticated') {
