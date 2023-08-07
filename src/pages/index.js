@@ -1,15 +1,17 @@
 import { useState } from 'react';
+import { useSession, signIn } from 'next-auth/client';
 import axios from 'axios';
 import Head from 'next/head';
-import { App, ConfigProvider } from 'antd';
+import { App, ConfigProvider, Button } from 'antd';
 import zhCN from 'antd/lib/locale/zh_CN';
 import StyledComponentsRegistry from './component';
-import { signIn, signOut, useSession } from 'next-auth';
+
 export default function Home() {
+  const [session, loading] = useSession();
   const [dream, setDream] = useState('');
   const [response, setResponse] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [session, loading] = useSession();
+
   const loadingTexts = [
     'Loading...',
     '正在询问周公...',
@@ -23,6 +25,14 @@ export default function Home() {
     'O.o ...',
     '马上就要写完咯...',
   ];
+
+  const handleGitHubSignIn = async () => {
+    try {
+      await signIn('github');
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -40,6 +50,22 @@ export default function Home() {
       setIsLoading(false);
     }
   };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!session) {
+    return (
+      <App>
+        <ConfigProvider locale={zhCN}>
+          <div className="container">
+            <button onClick={handleGitHubSignIn}>Login with GitHub</button>
+          </div>
+        </ConfigProvider>
+      </App>
+    );
+  }
 
   return (
     <App>
@@ -66,20 +92,7 @@ export default function Home() {
               content="周公解梦是一种将梦境解读为暗示和预兆的传统文化实践。在中国古代，人们相信梦境可以透露出隐藏的信息或未来事件。因此，他们会寻求有经验的解梦师（如周公）来帮助理解和分析自己的梦境。"
             />
           </Head>
-          <div>
-            {!session && (
-              <>
-                <button onClick={() => signIn('github')}>使用GitHub登录</button>
-                <p>您当前未登录</p>
-              </>
-            )}
-            {session && (
-              <>
-                <p>欢迎，{session.user.name}！</p>
-                <button onClick={() => signOut()}>注销</button>
-              </>
-            )}
-          </div>
+
           <StyledComponentsRegistry
             dream={dream}
             setDream={setDream}
