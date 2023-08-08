@@ -8,10 +8,10 @@ export default function Home() {
   const [dream, setDream] = useState('');
   const [response, setResponse] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [isHydrated, setIsHydrated] = useState(false); // Track if the client has finished rendering
+  const [isHydrated, setIsHydrated] = useState(false);
 
   useEffect(() => {
-    setIsHydrated(true); // Set isHydrated to true when the client has finished rendering
+    setIsHydrated(true);
   }, []);
 
   const loadingTexts = [

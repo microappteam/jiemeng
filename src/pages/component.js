@@ -27,20 +27,18 @@ export default function YourPage({
   const isSignedIn = session !== null;
 
   const handleLogin = async () => {
-    const result = await signIn('github'); // 使用 GitHub 提供程序进行登录
+    const result = await signIn('github');
     if (result?.error) {
-      // 登录失败
       console.log(result.error);
     } else {
-      // 登录成功
       setUsername(session.user.name);
     }
   };
 
   const handleLogout = async () => {
-    await signOut(); // 登出
+    await signOut();
     setUsername('');
-    router.push('/'); // 重定向到首页
+    router.push('/');
   };
 
   return (
@@ -74,7 +72,7 @@ export default function YourPage({
               maxLength={400}
               placeholder="请输入梦境"
               onChange={(e) => setDream(e.target.value)}
-              disabled={!isSignedIn} // 如果用户未登录，则禁用文本框
+              disabled={!isSignedIn}
             />
             <br />
             <br />
