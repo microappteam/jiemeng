@@ -64,7 +64,8 @@ export default function YourPage({
               style={{
                 borderColor: '#CEAB93',
                 borderWidth: '1px',
-                width: 300,
+                width: 308,
+                marginBottom: '28px',
               }}
               value={dream}
               showCount
@@ -74,18 +75,17 @@ export default function YourPage({
               onChange={(e) => setDream(e.target.value)}
               disabled={!isSignedIn}
             />
-            <br />
-            <br />
-
             {isSignedIn ? (
               <Button
                 block
                 size="large"
                 style={{
+                  width: 308,
                   backgroundColor: '#CEAB93',
                   borderColor: '#CEAB93',
                   borderWidth: '1px',
                   color: '#000',
+                  marginBottom: '28px',
                 }}
                 onClick={handleSubmit}
                 loading={isLoading}
@@ -97,7 +97,19 @@ export default function YourPage({
                   : '解梦'}
               </Button>
             ) : (
-              <Button block size="large" onClick={handleLogin}>
+              <Button
+                block
+                size="large"
+                style={{
+                  width: 308,
+                  backgroundColor: '#CEAB93',
+                  borderColor: '#CEAB93',
+                  borderWidth: '1px',
+                  color: '#000',
+                  marginBottom: '10px', // Add margin-bottom here
+                }}
+                onClick={handleLogin}
+              >
                 登录到GitHub
               </Button>
             )}
