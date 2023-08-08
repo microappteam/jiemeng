@@ -1,11 +1,14 @@
+import { Button } from 'antd';
+import { signIn, signOut, useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
 import React, { useState } from 'react';
-import { Button, Input } from 'antd';
+import { Input } from 'antd';
 import ReactMarkdown from 'react-markdown';
 import Image from 'next/image';
 import styles from './component.module.css';
 import StyledComponentsRegistry from '../styles/registry';
 import RootLayout from '../layout';
-import { useSession } from 'next-auth/react';
+
 const { TextArea } = Input;
 
 export default function YourPage({
@@ -16,9 +19,29 @@ export default function YourPage({
   isLoading,
   loadingTexts,
 }) {
+  const router = useRouter();
   const { data: session } = useSession();
 
-  const isSignedIn = session !== null; // 判断用户是否登录
+  const [username, setUsername] = useState('');
+
+  const isSignedIn = session !== null;
+
+  const handleLogin = async () => {
+    const result = await signIn('github'); // 使用 GitHub 提供程序进行登录
+    if (result?.error) {
+      // 登录失败
+      console.log(result.error);
+    } else {
+      // 登录成功
+      setUsername(session.user.name);
+    }
+  };
+
+  const handleLogout = async () => {
+    await signOut(); // 登出
+    setUsername('');
+    router.push('/'); // 重定向到首页
+  };
 
   return (
     <RootLayout>
@@ -33,6 +56,11 @@ export default function YourPage({
               className={styles.logo}
             />
           </h1>
+          {username && (
+            <div className={styles.welcome}>
+              欢迎你，{username}！<Button onClick={handleLogout}>登出</Button>
+            </div>
+          )}
           <form onSubmit={handleSubmit}>
             <TextArea
               style={{
@@ -71,8 +99,8 @@ export default function YourPage({
                   : '解梦'}
               </Button>
             ) : (
-              <Button block size="large" disabled>
-                请先登录
+              <Button block size="large" onClick={handleLogin}>
+                登录到GitHub
               </Button>
             )}
           </form>

@@ -3,7 +3,6 @@ import axios from 'axios';
 import { Layout, ConfigProvider } from 'antd';
 import zhCN from 'antd/lib/locale/zh_CN';
 import StyledComponentsRegistry from './component';
-import { useSession, signIn, signOut } from 'next-auth/react';
 
 export default function Home() {
   const [dream, setDream] = useState('');
@@ -46,33 +45,10 @@ export default function Home() {
     }
   };
 
-  const SessionComponent = () => {
-    const { data: session } = useSession();
-    if (session) {
-      return (
-        <>
-          Signed in as {session.user.email} <br />
-          <button onClick={() => signOut()}>Sign out</button>
-        </>
-      );
-    }
-
-    return (
-      <>
-        Not signed in <br />
-        <button onClick={() => signIn()}>Sign in</button>
-      </>
-    );
-  };
-
   return (
     <Layout>
       <ConfigProvider locale={zhCN}>
         <div className="container">
-          {isHydrated && ( // Render the component only if the client has finished rendering
-            <SessionComponent />
-          )}
-
           {isHydrated && (
             <StyledComponentsRegistry
               dream={dream}
