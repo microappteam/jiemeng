@@ -25,7 +25,6 @@ export default async function handler(req, res) {
         temperature: 0.9,
       });
 
-      // 添加延迟等待时间
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
       const summaryCompletion = await summaryCompletionPromise;
@@ -36,7 +35,7 @@ export default async function handler(req, res) {
           : '';
 
       console.log('summary=' + summary);
-      // 使用 ChatGPT 进行解梦
+
       const rolePlayText = `我希望你扮演周公解梦的解梦人的角色。我将给你提供梦境，请你结合梦境并做出一些合理的对现实生活的推测来解读我的梦境。
 
       你的回答只需包含两部分内容，其一先重申一下梦境再做出总体的解梦，其二按分类再对梦境做出各自的简短的解读。
@@ -113,7 +112,6 @@ export default async function handler(req, res) {
         max_tokens: 888,
       });
 
-      // 等待异步任务完成
       const chatCompletion = await chatCompletionPromise;
 
       const answer = chatCompletion.data.choices[0].message.content;
