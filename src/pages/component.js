@@ -5,7 +5,7 @@ import Image from 'next/image';
 import styles from './component.module.css';
 import StyledComponentsRegistry from '../styles/registry';
 import RootLayout from '../layout';
-
+import { useSession } from 'next-auth/react';
 const { TextArea } = Input;
 
 export default function YourPage({
@@ -16,7 +16,9 @@ export default function YourPage({
   isLoading,
   loadingTexts,
 }) {
-  const [title, setTitle] = useState('周公解梦');
+  const { data: session } = useSession();
+
+  const isSignedIn = session !== null; // 判断用户是否登录
 
   return (
     <RootLayout>
@@ -44,26 +46,35 @@ export default function YourPage({
               maxLength={400}
               placeholder="请输入梦境"
               onChange={(e) => setDream(e.target.value)}
+              disabled={!isSignedIn} // 如果用户未登录，则禁用文本框
             />
             <br />
             <br />
 
-            <Button
-              block
-              size="large"
-              style={{
-                backgroundColor: '#CEAB93',
-                borderColor: '#CEAB93',
-                borderWidth: '1px',
-                color: '#000',
-              }}
-              onClick={handleSubmit}
-              loading={isLoading}
-            >
-              {isLoading
-                ? loadingTexts[Math.floor(Math.random() * loadingTexts.length)]
-                : '解梦'}
-            </Button>
+            {isSignedIn ? (
+              <Button
+                block
+                size="large"
+                style={{
+                  backgroundColor: '#CEAB93',
+                  borderColor: '#CEAB93',
+                  borderWidth: '1px',
+                  color: '#000',
+                }}
+                onClick={handleSubmit}
+                loading={isLoading}
+              >
+                {isLoading
+                  ? loadingTexts[
+                      Math.floor(Math.random() * loadingTexts.length)
+                    ]
+                  : '解梦'}
+              </Button>
+            ) : (
+              <Button block size="large" disabled>
+                请先登录
+              </Button>
+            )}
           </form>
           {response && (
             <div className="response">
