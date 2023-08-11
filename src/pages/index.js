@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Layout, ConfigProvider } from 'antd';
 import zhCN from 'antd/lib/locale/zh_CN';
 import StyledComponentsRegistry from './component';
+import { sql } from '@vercel/postgres';
 
 export default function Home() {
   const [dream, setDream] = useState('');
@@ -37,7 +38,11 @@ export default function Home() {
         { dream },
         { timeout: 60000 },
       );
-      setResponse(response.data);
+
+      const { rows } =
+        await sql`SELECT * from CARTS where user_id=${response.data.user}`;
+
+      setResponse(rows);
     } catch (error) {
       console.error(error);
     } finally {
