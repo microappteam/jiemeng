@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Layout, ConfigProvider } from 'antd';
 import zhCN from 'antd/lib/locale/zh_CN';
 import StyledComponentsRegistry from './component';
-import { sql } from '@vercel/postgres';
+import { Client } from 'pg';
 
 export default function Home() {
   const [dream, setDream] = useState('');
@@ -33,16 +33,30 @@ export default function Home() {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const response = await axios.post(
-        '/api/dream',
-        { dream },
-        { timeout: 60000 },
-      );
+      // 连接到Vercel的Postgres数据库
+      const client = new Client({
+        connectionString: process.env.DATABASE_URL,
+        ssl: {
+          rejectUnauthorized: false,
+        },
+      });
+      await client.connect();
 
-      const { rows } =
-        await sql`SELECT * from CARTS where user_id=${response.data.user}`;
+      // 创建新表
+      await client.query(`
+        CREATE TABLE IF NOT EXISTS dream (
+          id SERIAL PRIMARY KEY,
+          column1 TEXT,
+          column2 INTEGER
+        )
+      `);
 
-      setResponse(rows);
+      // 执行数据库操作
+      const result = await client.query('SELECT * dream');
+      setResponse(result.rows);
+
+      // 关闭数据库连接
+      await client.end();
     } catch (error) {
       console.error(error);
     } finally {
