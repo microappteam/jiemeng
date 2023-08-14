@@ -1,10 +1,22 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios';
-import { Layout, ConfigProvider } from 'antd';
-import zhCN from 'antd/lib/locale/zh_CN';
-import StyledComponentsRegistry from './component';
+const { useState, useEffect } = require('react');
+const axios = require('axios');
+const { Layout, ConfigProvider } = require('antd');
+const zhCN = require('antd/lib/locale/zh_CN');
+const StyledComponentsRegistry = require('./component');
+const { createKysely, Kysely } = require('@vercel/postgres-kysely');
 
-export default function Home() {
+const kysely = new Kysely({
+  client: 'pg',
+  connection: {
+    connectionString: process.env.POSTGRES_URL, // 根据您的 Vercel PostgreSQL 数据库配置进行更改
+    ssl: {
+      rejectUnauthorized: false,
+    },
+  },
+});
+const db = createKysely(kysely);
+
+function Home() {
   const [dream, setDream] = useState('');
   const [response, setResponse] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -37,6 +49,9 @@ export default function Home() {
         { dream },
         { timeout: 60000 },
       );
+
+      await db.dream.insert({ dream }); // 插入梦境记录到数据库
+
       setResponse(response.data);
     } catch (error) {
       console.error(error);
@@ -76,3 +91,5 @@ export default function Home() {
     </Layout>
   );
 }
+
+module.exports = Home;

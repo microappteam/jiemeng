@@ -1,5 +1,6 @@
 import { Configuration, OpenAIApi } from 'openai';
 import { v4 as uuidv4 } from 'uuid';
+import { createKysely, Kysely } from '@vercel/postgres-kysely';
 
 const configuration = new Configuration({
   apiKey: process.env.API_KEY,
@@ -8,19 +9,28 @@ const configuration = new Configuration({
 
 const openai = new OpenAIApi(configuration);
 
+const kysely = new Kysely({
+  client: 'pg',
+  connection: {
+    connectionString: process.env.POSTGRES_URL,
+    ssl: {
+      rejectUnauthorized: false,
+    },
+  },
+});
+const db = createKysely(kysely);
+
 export default async function handler(req, res) {
   if (req.method === 'POST') {
     try {
       const { dream } = req.body;
       const userId = uuidv4();
       const summaryText = `你需要将我给你的梦境进行总结，去掉一些修饰词，保留句子的谓语和宾语。`;
-      const summaryCompletionPromise = openai.createChatCompletion({
-        model: 'gpt-3.5-turbo',
-        messages: [
-          { role: 'system', content: summaryText },
-          { role: 'user', content: `UserId: ${userId}` },
-          { role: 'user', content: dream },
-        ],
+
+      await db.dream.insert({ dream });
+
+      const summaryCompletionPromise = openai.textCompletion.create({
+        prompt: `${summaryText}\n\nUserId: ${userId}\n${dream}`,
         max_tokens: 35,
         temperature: 0.9,
       });
@@ -28,13 +38,7 @@ export default async function handler(req, res) {
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
       const summaryCompletion = await summaryCompletionPromise;
-      const summaryChoice = summaryCompletion.data.choices[0];
-      const summary =
-        summaryChoice && summaryChoice.message && summaryChoice.message.content
-          ? summaryChoice.message.content.trim()
-          : '';
-
-      console.log('summary=' + summary);
+      const summary = summaryCompletion.choices[0].text.trim();
 
       const rolePlayText = `我希望你扮演周公解梦的解梦人的角色。我将给你提供梦境，请你结合梦境并做出一些合理的对现实生活的推测来解读我的梦境。
 
@@ -98,23 +102,20 @@ export default async function handler(req, res) {
       
       \n\n病人梦见买彩票中大奖，病情恶化的凶兆，要想恢复健康的身体，还需要治疗一段时间，耐心等待吧。
       
-      \n\n老人梦见买彩票中大奖，此梦预兆近期梦者身体健康运势不佳，会有突发疾病缠身，平时要多注意保养和休息。
-  `;
+      \n\n老人梦见买彩票中大奖，此梦预兆近期梦者身体健康运势不佳，会有突发疾病缠身，平时要多注意保养和休息。`;
 
-      const chatCompletionPromise = openai.createChatCompletion({
-        model: 'gpt-3.5-turbo',
-        messages: [
-          { role: 'system', content: rolePlayText },
-          { role: 'user', content: `UserId: ${userId}` },
-          { role: 'user', content: summary },
-        ],
+      const chatCompletionPromise = openai.textCompletion.create({
+        prompt: `${rolePlayText}\n\nUserId: ${userId}`,
         temperature: 1,
         max_tokens: 888,
       });
 
       const chatCompletion = await chatCompletionPromise;
 
-      const answer = chatCompletion.data.choices[0].message.content;
+      const answer = chatCompletion.choices[0].text;
+
+      await db.dream.update({ answer }).where({ dream });
+
       res.status(200).json(answer);
     } catch (error) {
       console.error(error);
