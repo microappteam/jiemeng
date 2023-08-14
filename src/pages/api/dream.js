@@ -9,7 +9,7 @@ const configuration = new Configuration({
 
 const openai = new OpenAIApi(configuration);
 
-const kysely = new Kysely({
+const kysely = createKysely({
   client: 'pg',
   connection: {
     connectionString: process.env.POSTGRES_URL,

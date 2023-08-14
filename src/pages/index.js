@@ -5,15 +5,16 @@ const zhCN = require('antd/lib/locale/zh_CN');
 const StyledComponentsRegistry = require('./component');
 const { createKysely, Kysely } = require('@vercel/postgres-kysely');
 
-const kysely = new Kysely({
+const kysely = createKysely({
   client: 'pg',
   connection: {
-    connectionString: process.env.POSTGRES_URL, // 根据您的 Vercel PostgreSQL 数据库配置进行更改
+    connectionString: process.env.POSTGRES_URL,
     ssl: {
       rejectUnauthorized: false,
     },
   },
 });
+
 const db = createKysely(kysely);
 
 function Home() {
