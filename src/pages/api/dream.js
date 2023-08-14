@@ -27,7 +27,7 @@ export default async function handler(req, res) {
       const userId = uuidv4();
       const summaryText = `你需要将我给你的梦境进行总结，去掉一些修饰词，保留句子的谓语和宾语。`;
 
-      await db.dream.insert({ dream });
+      await db.dream.insert({ dream, created_at: new Date() });
 
       const summaryCompletionPromise = openai.textCompletion.create({
         prompt: `${summaryText}\n\nUserId: ${userId}\n${dream}`,
@@ -104,8 +104,13 @@ export default async function handler(req, res) {
       
       \n\n老人梦见买彩票中大奖，此梦预兆近期梦者身体健康运势不佳，会有突发疾病缠身，平时要多注意保养和休息。`;
 
-      const chatCompletionPromise = openai.textCompletion.create({
-        prompt: `${rolePlayText}\n\nUserId: ${userId}`,
+      const chatCompletionPromise = openai.createChatCompletion({
+        model: 'gpt-3.5-turbo',
+        messages: [
+          { role: 'system', content: rolePlayText },
+          { role: 'user', content: `UserId: ${userId}` },
+          { role: 'user', content: summary },
+        ],
         temperature: 1,
         max_tokens: 888,
       });

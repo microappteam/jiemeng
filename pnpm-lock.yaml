@@ -8,6 +8,9 @@ dependencies:
   '@ant-design/cssinjs':
     specifier: ^1.16.1
     version: 1.16.1(react-dom@18.2.0)(react@18.2.0)
+  '@prisma/client':
+    specifier: ^5.1.1
+    version: 5.1.1
   '@types/node':
     specifier: 20.4.2
     version: 20.4.2
@@ -23,6 +26,9 @@ dependencies:
   '@vercel/postgres':
     specifier: ^0.4.1
     version: 0.4.1
+  '@vercel/postgres-kysely':
+    specifier: ^0.4.1
+    version: 0.4.1(kysely@0.26.1)
   antd:
     specifier: ^5.8.2
     version: 5.8.2(react-dom@18.2.0)(react@18.2.0)
@@ -1746,6 +1752,23 @@ packages:
       tslib: 2.6.1
     dev: false
 
+  /@prisma/client@5.1.1:
+    resolution: {integrity: sha512-fxcCeK5pMQGcgCqCrWsi+I2rpIbk0rAhdrN+ke7f34tIrgPwA68ensrpin+9+fZvuV2OtzHmuipwduSY6HswdA==}
+    engines: {node: '>=16.13'}
+    requiresBuild: true
+    peerDependencies:
+      prisma: '*'
+    peerDependenciesMeta:
+      prisma:
+        optional: true
+    dependencies:
+      '@prisma/engines-version': 5.1.1-1.6a3747c37ff169c90047725a05a6ef02e32ac97e
+    dev: false
+
+  /@prisma/engines-version@5.1.1-1.6a3747c37ff169c90047725a05a6ef02e32ac97e:
+    resolution: {integrity: sha512-owZqbY/wucbr65bXJ/ljrHPgQU5xXTSkmcE/JcbqE1kusuAXV/TLN3/exmz21SZ5rJ7WDkyk70J2G/n68iogbQ==}
+    dev: false
+
   /@rc-component/color-picker@1.4.1(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-vh5EWqnsayZa/JwUznqDaPJz39jznx/YDbyBuVJntv735tKXKwEUZZb2jYEldOg+NKWZwtALjGMrNeGBmqFoEw==}
     peerDependencies:
@@ -1990,6 +2013,16 @@ packages:
     engines: {node: '>=14.6'}
     dependencies:
       '@vercel/edge-config-fs': 0.1.0
+    dev: false
+
+  /@vercel/postgres-kysely@0.4.1(kysely@0.26.1):
+    resolution: {integrity: sha512-XFmjgCTnXDj/5KajeLzc8Qwfl783e9mu6vgqqvSzhqRout2Ib1cMi5s/ZlLj1ohqtcyMLBPuM4OUs9cef91b5w==}
+    engines: {node: '>=14.6'}
+    peerDependencies:
+      kysely: ^0.24.2 || ^0.25.0 || ^0.26.0
+    dependencies:
+      '@vercel/postgres': 0.4.1
+      kysely: 0.26.1
     dev: false
 
   /@vercel/postgres@0.4.1:
@@ -3692,6 +3725,11 @@ packages:
   /kleur@4.1.5:
     resolution: {integrity: sha512-o+NO+8WrRiQEE4/7nwRJhN1HWpVmJm511pBHUxPLtp0BUISzlBplORYSmTclCnJvQq2tKu/sgl3xVpkc7ZWuQQ==}
     engines: {node: '>=6'}
+    dev: false
+
+  /kysely@0.26.1:
+    resolution: {integrity: sha512-FVRomkdZofBu3O8SiwAOXrwbhPZZr8mBN5ZeUWyprH29jzvy6Inzqbd0IMmGxpd4rcOCL9HyyBNWBa8FBqDAdg==}
+    engines: {node: '>=14.0.0'}
     dev: false
 
   /language-subtag-registry@0.3.22:
