@@ -1,18 +1,49 @@
+require('dotenv').config({ path: '.env.local' });
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 import { Layout, ConfigProvider } from 'antd';
 import zhCN from 'antd/lib/locale/zh_CN';
 import StyledComponentsRegistry from './component';
 import { Client } from 'pg';
+import axios from 'axios';
 
 export default function Home() {
   const [dream, setDream] = useState('');
   const [response, setResponse] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
+  const [dbClient, setDbClient] = useState(null);
 
   useEffect(() => {
     setIsHydrated(true);
+    const client = new Client({
+      user: process.env.POSTGRES_USER,
+      host: process.env.POSTGRES_HOST,
+      database: process.env.POSTGRES_DATABASE,
+      password: process.env.POSTGRES_PASSWORD,
+      port: process.env.POSTGRES_PORT,
+    });
+    client
+      .connect()
+      .then(() => {
+        console.log('Connected to PostgreSQL');
+        setDbClient(client);
+      })
+      .catch((error) => {
+        console.error('Error connecting to PostgreSQL:', error);
+      });
+
+    return () => {
+      if (dbClient) {
+        dbClient
+          .end()
+          .then(() => {
+            console.log('Disconnected from PostgreSQL');
+          })
+          .catch((error) => {
+            console.error('Error disconnecting from PostgreSQL:', error);
+          });
+      }
+    };
   }, []);
 
   const loadingTexts = [
@@ -33,30 +64,12 @@ export default function Home() {
     e.preventDefault();
     setIsLoading(true);
     try {
-      // 连接到Vercel的Postgres数据库
-      const client = new Client({
-        connectionString: process.env.DATABASE_URL,
-        ssl: {
-          rejectUnauthorized: false,
-        },
-      });
-      await client.connect();
-
-      // 创建新表
-      await client.query(`
-        CREATE TABLE IF NOT EXISTS dream (
-          id SERIAL PRIMARY KEY,
-          column1 TEXT,
-          column2 INTEGER
-        )
-      `);
-
-      // 执行数据库操作
-      const result = await client.query('SELECT * dream');
-      setResponse(result.rows);
-
-      // 关闭数据库连接
-      await client.end();
+      const response = await axios.post(
+        '/api/dream',
+        { dream },
+        { timeout: 60000 },
+      );
+      setResponse(response.data);
     } catch (error) {
       console.error(error);
     } finally {
