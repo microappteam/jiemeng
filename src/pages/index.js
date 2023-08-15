@@ -1,21 +1,8 @@
-const { useState, useEffect } = require('react');
-const axios = require('axios');
-const { Layout, ConfigProvider } = require('antd');
-const zhCN = require('antd/lib/locale/zh_CN');
-const StyledComponentsRegistry = require('./component');
-const { createKysely, Kysely } = require('@vercel/postgres-kysely');
-
-const kysely = createKysely({
-  client: 'pg',
-  connection: {
-    connectionString: process.env.POSTGRES_URL,
-    ssl: {
-      rejectUnauthorized: false,
-    },
-  },
-});
-
-const db = createKysely(kysely);
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { Layout, ConfigProvider } from 'antd';
+import zhCN from 'antd/lib/locale/zh_CN';
+import StyledComponentsRegistry from './component';
 
 function Home() {
   const [dream, setDream] = useState('');
@@ -50,9 +37,6 @@ function Home() {
         { dream },
         { timeout: 60000 },
       );
-
-      await db.dream.insert({ dream }); // 插入梦境记录到数据库
-
       setResponse(response.data);
     } catch (error) {
       console.error(error);

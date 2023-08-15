@@ -25,9 +25,9 @@ export default async function handler(req, res) {
     try {
       const { dream } = req.body;
       const userId = uuidv4();
-      const summaryText = `你需要将我给你的梦境进行总结，去掉一些修饰词，保留句子的谓语和宾语。`;
 
       await db.dream.insert({ dream, created_at: new Date() });
+      const summaryText = `你需要将我给你的梦境进行总结，去掉一些修饰词，保留句子的谓语和宾语。`;
 
       const summaryCompletionPromise = openai.textCompletion.create({
         prompt: `${summaryText}\n\nUserId: ${userId}\n${dream}`,
