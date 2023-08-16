@@ -1,6 +1,8 @@
 import { getServerSession } from 'next-auth';
 import { authOptions } from './auth/[...nextauth].js';
-import { dataBase } from './db';
+import { createKysely } from '@vercel/postgres-kysely';
+
+const dataBase = createKysely();
 
 export default async function handler(request, response) {
   const session = await getServerSession(request, response, authOptions);
