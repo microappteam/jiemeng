@@ -32,12 +32,15 @@ function Home() {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const response = await axios.post(
-        '/api/dream',
+      const apiUrl = process.env.API_URL;
+      const response1 = await axios.post(
+        `${apiUrl}/api/dream`,
         { dream },
         { timeout: 60000 },
       );
-      setResponse(response.data);
+      setResponse(response1.data);
+      const response2 = await axios.get(`${apiUrl}/api/storage`);
+      console.log(response2.data);
     } catch (error) {
       console.error(error);
     } finally {

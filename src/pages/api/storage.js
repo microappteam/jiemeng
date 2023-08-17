@@ -6,6 +6,7 @@ const dataBase = createKysely();
 
 export default async function handler(request, response) {
   const session = await getServerSession(request, response, authOptions);
+  console.log('session:', session);
   if (!session?.user?.email) {
     return response.status(200).json({
       success: false,
@@ -13,6 +14,7 @@ export default async function handler(request, response) {
       error: 'Not logged in',
     });
   }
+
   if (request.method === 'GET') {
     try {
       const workflowList = await dataBase
