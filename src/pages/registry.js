@@ -5,8 +5,6 @@ import Image from 'next/image';
 
 const { TextArea } = Input;
 
-import styles from './registry.module.css';
-
 export default function StyledComponentsRegistry({
   dream,
   setDream,
