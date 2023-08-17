@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Layout, ConfigProvider } from 'antd';
 import zhCN from 'antd/lib/locale/zh_CN';
 import StyledComponentsRegistry from './component';
 
-function Home() {
+export default function Home() {
   const [dream, setDream] = useState('');
   const [response, setResponse] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -32,14 +32,13 @@ function Home() {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const apiUrl = process.env.API_URL;
-      const response1 = await axios.post(
-        `${apiUrl}/api/dream`,
+      const response = await axios.post(
+        '/api/dream',
         { dream },
         { timeout: 60000 },
       );
-      setResponse(response1.data);
-      const response2 = await axios.get(`${apiUrl}/api/storage`);
+      setResponse(response.data);
+      const response2 = await axios.get(`/api/storage`);
       console.log(response2.data);
     } catch (error) {
       console.error(error);
@@ -79,5 +78,3 @@ function Home() {
     </Layout>
   );
 }
-
-module.exports = Home;
