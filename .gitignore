@@ -34,3 +34,4 @@ next-env.d.ts
 #隐藏密钥
 .env
 .vercel
+.env.development.loacl
