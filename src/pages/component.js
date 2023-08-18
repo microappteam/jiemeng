@@ -94,7 +94,7 @@ export default function YourPage({
               style={{
                 borderColor: '#CEAB93',
                 borderWidth: '1px',
-                width: 308,
+                width: 340,
                 marginBottom: '28px',
               }}
               value={dream}
@@ -103,14 +103,14 @@ export default function YourPage({
               maxLength={400}
               placeholder="请输入梦境"
               onChange={(e) => setDream(e.target.value)}
-              disabled={!isSignedIn || isInputDisabled} // 更新 disabled 属性
+              disabled={!isSignedIn || isInputDisabled}
             />
             {isSignedIn ? (
               <Button
                 block
                 size="large"
                 style={{
-                  width: 308,
+                  width: 336,
                   backgroundColor: '#CEAB93',
                   borderColor: '#CEAB93',
                   borderWidth: '1px',
@@ -141,9 +141,9 @@ export default function YourPage({
             )}
           </form>
           {response && (
-            <div className="response">
+            <div className={styles.response}>
               <p>解梦结果：</p>
-              <ReactMarkdown className="response-text">
+              <ReactMarkdown className={styles['response-text']}>
                 {response}
               </ReactMarkdown>
             </div>
