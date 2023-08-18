@@ -70,9 +70,9 @@ export default function Home() {
           justify-content: center;
           align-items: flex-start;
           background-color: #fffbe9;
-          height: 100vh;
           padding-top: 20px;
           overflow-y: auto;
+          flex: 1;
         }
       `}</style>
     </Layout>
