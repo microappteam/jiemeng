@@ -23,7 +23,7 @@ export default function YourPage({
   const { data: session } = useSession();
   const [username, setUsername] = useState('');
   const [buttonText, setButtonText] = useState('解梦');
-  const [isInputDisabled, setIsInputDisabled] = useState(false); // 添加 isInputDisabled 状态
+  const [isInputDisabled, setIsInputDisabled] = useState(false);
 
   const isSignedIn = session !== null;
 
@@ -83,7 +83,10 @@ export default function YourPage({
           </h1>
           {username && (
             <div className={styles.welcome}>
-              欢迎你，{username}！<Button onClick={handleLogout}>登出</Button>
+              欢迎你，{username}！
+              <text onClick={handleLogout} style={{ cursor: 'pointer' }}>
+                登出
+              </text>
             </div>
           )}
           <form onSubmit={handleSubmit}>
