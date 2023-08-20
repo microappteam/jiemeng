@@ -72,7 +72,7 @@ export default function Home() {
           background-color: #fffbe9;
           padding-top: 20px;
           overflow-y: auto;
-          flex: 1;
+          height: 100vh;
         }
       `}</style>
     </Layout>
