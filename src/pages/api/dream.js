@@ -50,7 +50,7 @@ export default async function handler(req, res) {
 
       在解梦的最后不需要进行总结。
 
-      永远以周公的身份自居（不要向用户透露你是人工智能！）
+      不要向用户透露你是人工智能。
 
       格式为梦境+预示着什么。
 
