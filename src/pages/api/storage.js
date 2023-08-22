@@ -1,126 +1,81 @@
 import { getServerSession } from 'next-auth';
 import { authOptions } from './auth/[...nextauth].js';
-import { createKysely } from '@vercel/postgres-kysely';
-import http from 'http';
+import { dataBase } from './db';
 
-const dataBase = createKysely();
-
-const server = http.createServer(async (request, response) => {
+export default async function handler(request, response) {
   const session = await getServerSession(request, response, authOptions);
-  console.log('session:', session);
   if (!session?.user?.email) {
-    response.writeHead(200, { 'Content-Type': 'application/json' });
-    response.end(
-      JSON.stringify({
-        success: false,
-        data: [],
-        error: 'Not logged in',
-      }),
-    );
-    return;
+    return response.status(200).json({
+      success: false,
+      data: [],
+      error: 'Not logged in',
+    });
   }
 
   if (request.method === 'GET') {
     try {
-      const workflowList = await dataBase
-        .selectFrom('workflow')
-        .select(['id', 'workflow'])
-        .where('workflow.user_id', '=', session?.user?.email)
-        .execute();
+      const dreamsList = await dataBase
+        .select('id', 'dream')
+        .from('dreams')
+        .where('dreams.user_id', '=', session?.user?.email)
+        .executeStream();
 
-      response.writeHead(200, { 'Content-Type': 'application/json' });
-      response.end(
-        JSON.stringify({
-          success: true,
-          data: workflowList,
-        }),
-      );
+      const results = [];
+      for await (const row of dreamsList) {
+        results.push(row);
+      }
+
+      response.status(200).json({
+        success: true,
+        data: results,
+      });
     } catch (error) {
-      response.writeHead(200, { 'Content-Type': 'application/json' });
-      response.end(
-        JSON.stringify({
-          success: false,
-          data: [],
-          error: 'serve error' + error,
-        }),
-      );
+      return response.status(200).json({
+        success: false,
+        data: [],
+        error: 'serve error' + error,
+      });
     }
     return;
   }
 
   if (request.method === 'POST') {
-    let body = '';
-    request.on('data', (chunk) => {
-      body += chunk;
+    const dream = request.body;
+    dream.user_id = session?.user?.email;
+    await dataBase.insert('dreams').values(dream).execute();
+    return response.status(200).json({
+      success: true,
+      data: dream,
     });
-
-    request.on('end', async () => {
-      const workflow = JSON.parse(body);
-      workflow.user_id = session?.user?.email;
-      await dataBase.insertInto('workflow').values(workflow).execute();
-
-      response.writeHead(200, { 'Content-Type': 'application/json' });
-      response.end(
-        JSON.stringify({
-          success: true,
-          data: workflow,
-        }),
-      );
-    });
-    return;
   }
 
   if (request.method === 'DELETE') {
-    const workflow = request.query;
+    const dream = request.query;
     await dataBase
-      .deleteFrom('workflow')
-      .where('id', '=', workflow.id?.toString() || '')
+      .deleteFrom('dreams')
+      .where('id', '=', dream.id?.toString() || '')
       .execute();
-
-    response.writeHead(200, { 'Content-Type': 'application/json' });
-    response.end(
-      JSON.stringify({
-        success: true,
-        data: {},
-      }),
-    );
-    return;
+    return response.status(200).json({
+      success: true,
+      data: {},
+    });
   }
 
   if (request.method === 'PUT') {
-    let body = '';
-    request.on('data', (chunk) => {
-      body += chunk;
+    const dream = request.body;
+    const result = await dataBase
+      .update('dreams')
+      .set(dream)
+      .where('id', '=', dream.id?.toString() || '')
+      .execute();
+    return response.status(200).json({
+      success: true,
+      data: { result },
     });
-
-    request.on('end', async () => {
-      const workflow = JSON.parse(body);
-      const result = await dataBase
-        .updateTable('workflow')
-        .set(workflow)
-        .where('id', '=', workflow.id?.toString() || '')
-        .execute();
-
-      response.writeHead(200, { 'Content-Type': 'application/json' });
-      response.end(
-        JSON.stringify({
-          success: true,
-          data: { result },
-        }),
-      );
-    });
-    return;
   }
 
-  response.writeHead(200, { 'Content-Type': 'application/json' });
-  response.end(
-    JSON.stringify({
-      success: false,
-      data: [],
-    }),
-  );
-});
-
-server.listen(3000, () => {
-  console.log('Server is running on port 3000');
-});
+  return response.status(200).json({
+    success: false,
+    data: [],
+  });
+}
