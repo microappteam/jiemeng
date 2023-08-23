@@ -1,126 +1,76 @@
 import { getServerSession } from 'next-auth';
-import { authOptions } from './auth/[...nextauth].js';
-import { createKysely } from '@vercel/postgres-kysely';
-import http from 'http';
+import { authOptions } from './auth/[...nextauth].api';
+import { dataBase } from './db';
 
-const dataBase = createKysely();
-
-const server = http.createServer(async (request, response) => {
+export default async function handler(request, response) {
   const session = await getServerSession(request, response, authOptions);
-  console.log('session:', session);
   if (!session?.user?.email) {
-    response.writeHead(200, { 'Content-Type': 'application/json' });
-    response.end(
-      JSON.stringify({
-        success: false,
-        data: [],
-        error: 'Not logged in',
-      }),
-    );
-    return;
+    return response.status(200).json({
+      success: false,
+      data: [],
+      error: 'Not logged in',
+    });
   }
 
   if (request.method === 'GET') {
     try {
       const dreamsList = await dataBase
         .selectFrom('dreams')
-        .select(['id', 'dream'])
-        .where('dreams.user_id', '=', session?.user?.email)
+        .select(['id', 'dream', 'user_id', 'username', 'created_at'])
+        .where('user_id', '=', session?.user?.email)
         .execute();
 
-      response.writeHead(200, { 'Content-Type': 'application/json' });
-      response.end(
-        JSON.stringify({
-          success: true,
-          data: dreamsList,
-        }),
-      );
+      response.status(200).json({
+        success: true,
+        data: dreamsList,
+      });
     } catch (error) {
-      response.writeHead(200, { 'Content-Type': 'application/json' });
-      response.end(
-        JSON.stringify({
-          success: false,
-          data: [],
-          error: 'serve error' + error,
-        }),
-      );
+      return response.status(200).json({
+        success: false,
+        data: [],
+        error: 'server error: ' + error,
+      });
     }
     return;
   }
 
   if (request.method === 'POST') {
-    let body = '';
-    request.on('data', (chunk) => {
-      body += chunk;
+    const dream = request.body;
+    dream.user_id = session?.user?.email;
+    await dataBase.insertInto('dreams').values(dream).execute();
+    return response.status(200).json({
+      success: true,
+      data: dream,
     });
-
-    request.on('end', async () => {
-      const dream = JSON.parse(body);
-      dream.user_id = session?.user?.email;
-      await dataBase.insertInto('dreams').values(dream).execute();
-
-      response.writeHead(200, { 'Content-Type': 'application/json' });
-      response.end(
-        JSON.stringify({
-          success: true,
-          data: dream,
-        }),
-      );
-    });
-    return;
   }
 
   if (request.method === 'DELETE') {
-    const dream = request.query;
+    const { id } = request.query;
     await dataBase
       .deleteFrom('dreams')
-      .where('id', '=', dream.id?.toString() || '')
+      .where('id', '=', id?.toString() || '')
       .execute();
-
-    response.writeHead(200, { 'Content-Type': 'application/json' });
-    response.end(
-      JSON.stringify({
-        success: true,
-        data: {},
-      }),
-    );
-    return;
+    return response.status(200).json({
+      success: true,
+      data: {},
+    });
   }
 
   if (request.method === 'PUT') {
-    let body = '';
-    request.on('data', (chunk) => {
-      body += chunk;
+    const dream = request.body;
+    const result = await dataBase
+      .updateTable('dreams')
+      .set(dream)
+      .where('id', '=', dream.id?.toString() || '')
+      .execute();
+    return response.status(200).json({
+      success: true,
+      data: { result },
     });
-
-    request.on('end', async () => {
-      const dream = JSON.parse(body);
-      const result = await dataBase
-        .updateTable('dreams')
-        .set(dream)
-        .where('id', '=', dream.id?.toString() || '')
-        .execute();
-
-      response.writeHead(200, { 'Content-Type': 'application/json' });
-      response.end(
-        JSON.stringify({
-          success: true,
-          data: { result },
-        }),
-      );
-    });
-    return;
   }
 
-  response.writeHead(200, { 'Content-Type': 'application/json' });
-  response.end(
-    JSON.stringify({
-      success: false,
-      data: [],
-    }),
-  );
-});
-
-server.listen(3000, () => {
-  console.log('Server is running on port 3000');
-});
+  return response.status(200).json({
+    success: false,
+    data: [],
+  });
+}
