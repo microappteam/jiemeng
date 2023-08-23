@@ -1,76 +1,35 @@
-import { getServerSession } from 'next-auth';
-import { authOptions } from './auth/[...nextauth].api';
-import { dataBase } from './db';
+import { Client } from 'pg';
+import dotenv from 'dotenv';
 
-export default async function handler(request, response) {
-  const session = await getServerSession(request, response, authOptions);
-  if (!session?.user?.email) {
-    return response.status(200).json({
-      success: false,
-      data: [],
-      error: 'Not logged in',
-    });
+dotenv.config();
+
+const client = new Client({
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false,
+  },
+});
+
+export default async function handler(req, res) {
+  try {
+    await client.connect();
+
+    const { dream, username, response } = req.body;
+
+    const query = `
+      INSERT INTO dreams (dream, username, response)
+      VALUES ($1, $2, $3)
+      RETURNING *
+    `;
+    const values = [dream, username, response];
+
+    const result = await client.query(query, values);
+
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Failed to store data.' });
+  } finally {
+    await client.end();
   }
-
-  if (request.method === 'GET') {
-    try {
-      const dreamsList = await dataBase
-        .selectFrom('dreams')
-        .select(['id', 'dream', 'user_id', 'username', 'created_at'])
-        .where('user_id', '=', session?.user?.email)
-        .execute();
-
-      response.status(200).json({
-        success: true,
-        data: dreamsList,
-      });
-    } catch (error) {
-      return response.status(200).json({
-        success: false,
-        data: [],
-        error: 'server error: ' + error,
-      });
-    }
-    return;
-  }
-
-  if (request.method === 'POST') {
-    const dream = request.body;
-    dream.user_id = session?.user?.email;
-    await dataBase.insertInto('dreams').values(dream).execute();
-    return response.status(200).json({
-      success: true,
-      data: dream,
-    });
-  }
-
-  if (request.method === 'DELETE') {
-    const { id } = request.query;
-    await dataBase
-      .deleteFrom('dreams')
-      .where('id', '=', id?.toString() || '')
-      .execute();
-    return response.status(200).json({
-      success: true,
-      data: {},
-    });
-  }
-
-  if (request.method === 'PUT') {
-    const dream = request.body;
-    const result = await dataBase
-      .updateTable('dreams')
-      .set(dream)
-      .where('id', '=', dream.id?.toString() || '')
-      .execute();
-    return response.status(200).json({
-      success: true,
-      data: { result },
-    });
-  }
-
-  return response.status(200).json({
-    success: false,
-    data: [],
-  });
 }
