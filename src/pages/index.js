@@ -38,7 +38,13 @@ export default function Home() {
         { timeout: 60000 },
       );
       setResponse(response.data);
-      const response2 = await axios.get(`/api/storage`);
+      const response2 = await axios.get(`/api/storage`, {
+        params: {
+          dream,
+          response,
+          username: session?.user?.name,
+        },
+      });
       console.log(response2.data);
     } catch (error) {
       console.error(error);

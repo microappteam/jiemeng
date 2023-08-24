@@ -7,14 +7,13 @@ const pool = new Pool({
 
 export default async function handler(req, res) {
   if (req.method === 'POST') {
-    const { dream } = req.body;
-    const { username } = req.session.user;
+    const { dream, response, username } = req.body;
 
     try {
       const client = await pool.connect();
       const query =
-        'INSERT INTO dreams (dream, user_id, username) VALUES ($1, $2, $3) RETURNING *';
-      const values = [dream, req.session.userId, username];
+        'INSERT INTO dreams (dream, response, username) VALUES ($1, $2, $3) RETURNING *';
+      const values = [dream, response, username];
       const result = await client.query(query, values);
       client.release();
 
