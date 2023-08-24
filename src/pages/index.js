@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useSession } from 'next-auth/client';
 import { Layout, ConfigProvider } from 'antd';
 import zhCN from 'antd/lib/locale/zh_CN';
 import StyledComponentsRegistry from './component';
 
 export default function Home() {
+  const [session, loading] = useSession();
   const [dream, setDream] = useState('');
   const [response, setResponse] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -32,16 +34,16 @@ export default function Home() {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const response = await axios.post(
+      const response1 = await axios.post(
         '/api/dream',
         { dream },
         { timeout: 60000 },
       );
-      setResponse(response.data);
+      setResponse(response1.data);
       const response2 = await axios.get(`/api/storage`, {
         params: {
           dream,
-          response,
+          response: response1.data.response,
           username: session?.user?.name,
         },
       });
