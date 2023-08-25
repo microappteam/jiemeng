@@ -8,7 +8,7 @@ const pool = new Pool({
 export default async function handler(req, res) {
   if (req.method === 'POST') {
     const { dream, response, username } = req.body;
-
+    console.log('Received data:', dream, response, username);
     try {
       const client = await pool.connect();
       const query =
