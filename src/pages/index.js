@@ -41,16 +41,14 @@ export default function Home() {
       );
       setResponse(response1.data);
 
-      if (response1.data.someCondition) {
-        const response2 = await axios.get(`/api/storage`, {
-          params: {
-            dream,
-            response: response1.data.response,
-            //username: session?.user?.name,
-          },
-        });
-        console.log(response2.data);
-      }
+      const response2 = await axios.get(`/api/storage`, {
+        params: {
+          dream,
+          response: response1.data.response,
+          //username: session?.user?.name,
+        },
+      });
+      console.log('response2' + response2.data);
     } catch (error) {
       console.error(error);
     } finally {
