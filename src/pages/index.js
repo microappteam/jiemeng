@@ -1,16 +1,16 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-//import { useSession } from 'next-auth/client';
 import { Layout, ConfigProvider } from 'antd';
 import zhCN from 'antd/lib/locale/zh_CN';
 import StyledComponentsRegistry from './component';
+import { signIn, signOut, useSession } from 'next-auth/react';
 
 export default function Home() {
-  //const [session, loading] = useSession();
   const [dream, setDream] = useState('');
   const [response, setResponse] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
+  const { data: session } = useSession();
 
   useEffect(() => {
     setIsHydrated(true);
@@ -34,21 +34,19 @@ export default function Home() {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const response1 = await axios.post(
-        '/api/dream',
-        { dream },
-        { timeout: 60000 },
-      );
+      const response1 = await axios.post('/api/dream', { dream });
       setResponse(response1.data);
 
-      const response2 = await axios.get(`/api/storage`, {
-        params: {
+      const response2 = await axios.post(
+        `/api/storage`,
+        {
           dream,
           response: response1.data.response,
-          //username: session?.user?.name,
+          username: session?.user?.name,
         },
-      });
-      console.log('response2' + response2.data);
+        { timeout: 10000 },
+      );
+      console.log('response2', response2.data);
     } catch (error) {
       console.error(error);
     } finally {
