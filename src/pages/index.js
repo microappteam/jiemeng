@@ -35,13 +35,13 @@ export default function Home() {
     setIsLoading(true);
     try {
       const response1 = await axios.post('/api/dream', { dream });
-      setResponse(JSON.stringify(response1.data));
+      setResponse(response1.data);
 
       const response2 = await axios.post(
         `/api/storage`,
         {
           dream,
-          response: JSON.stringify(response1.data),
+          response1,
           username: session?.user?.name,
         },
         { timeout: 10000 },
