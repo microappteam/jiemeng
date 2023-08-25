@@ -41,7 +41,7 @@ export default function Home() {
         `/api/storage`,
         {
           dream,
-          response: response1.data.response,
+          response: response1.data,
           username: session?.user?.name,
         },
         { timeout: 10000 },
