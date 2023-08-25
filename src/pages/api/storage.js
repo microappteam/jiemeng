@@ -17,6 +17,8 @@ export default async function handler(req, res) {
       const result = await client.query(query, values);
       client.release();
 
+      console.log('Inserted row:', result.rows[0]); // 添加这行调试语句
+
       res.status(200).json(result.rows[0]);
     } catch (error) {
       console.error('Error executing query:', error);
