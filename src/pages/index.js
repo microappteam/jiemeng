@@ -35,7 +35,7 @@ export default function Home() {
     setIsLoading(true);
     try {
       const response1 = await axios.post('/api/dream', { dream });
-      setResponse(JSON.stringify(response1.data));
+      setResponse(response1.data);
       console.log(response);
       const response2 = await axios.post(
         `/api/storage`,
