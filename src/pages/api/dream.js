@@ -119,8 +119,10 @@ export default async function handler(req, res) {
 
       // 流式响应发送
       res.writeHead(200, { 'Content-Type': 'application/octet-stream' });
-      res.write(answer);
-      res.end();
+      if (!res.finished) {
+        res.write(answer);
+        res.end();
+      }
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: 'Something went wrong' });
