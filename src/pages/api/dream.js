@@ -117,6 +117,9 @@ export default async function handler(req, res) {
 
       const answer = chatCompletion.data.choices[0].message.content;
 
+      // 等待 chatCompletionPromise 解析完成后再发送结果
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
       // 流式响应发送
       res.writeHead(200, { 'Content-Type': 'application/octet-stream' });
       if (!res.finished) {
