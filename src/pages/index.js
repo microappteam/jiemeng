@@ -8,6 +8,7 @@ import { signIn, signOut, useSession } from 'next-auth/react';
 export default function Home() {
   const [dream, setDream] = useState('');
   const [response, setResponse] = useState('');
+
   const [isLoading, setIsLoading] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
   const { data: session } = useSession();
@@ -36,12 +37,12 @@ export default function Home() {
     try {
       const response1 = await axios.post('/api/dream', { dream });
       setResponse(response1.data);
-      console.log(response);
+      console.log(response1.data);
       const response2 = await axios.post(
         `/api/storage`,
         {
           dream,
-          response,
+          response: response1.data,
           username: session?.user?.name,
         },
         { timeout: 10000 },
