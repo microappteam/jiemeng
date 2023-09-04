@@ -37,7 +37,7 @@ export default function Home() {
     try {
       const response1 = await axios.post('/api/dream', { dream });
       setResponse(response1.data);
-      console.log(response1.data);
+
       const response2 = await axios.post(
         `/api/storage`,
         {
@@ -47,7 +47,6 @@ export default function Home() {
         },
         { timeout: 10000 },
       );
-      console.log('response2', response2.data);
     } catch (error) {
       console.error(error);
     } finally {
