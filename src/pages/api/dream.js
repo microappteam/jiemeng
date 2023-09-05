@@ -1,6 +1,6 @@
 import { Configuration, OpenAIApi } from 'openai';
 import { v4 as uuidv4 } from 'uuid';
-import { OpenAIStream, StreamingTextResponse, streamToResponse } from 'ai';
+import SSE from 'sse';
 
 const configuration = new Configuration({
   apiKey: process.env.API_KEY,
@@ -26,6 +26,8 @@ export default async function handler(req, res) {
         temperature: 0.9,
       });
 
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
       const summaryCompletion = await summaryCompletionPromise;
       const summaryChoice = summaryCompletion.data.choices[0];
       const summary =
@@ -35,7 +37,7 @@ export default async function handler(req, res) {
 
       console.log('summary=' + summary);
 
-      const rolePlayText = ``;
+      const rolePlayText = ` `;
 
       const chatCompletionPromise = openai.createChatCompletion({
         model: 'gpt-3.5-turbo',
@@ -46,13 +48,33 @@ export default async function handler(req, res) {
         ],
         temperature: 1,
         max_tokens: 888,
-        stream: true,
       });
 
-      const chatCompletion = await chatCompletionPromise;
-      const stream = OpenAIStream(chatCompletion);
+      // 设置 SSE 响应头部
+      res.setHeader('Content-Type', 'text/event-stream');
+      res.setHeader('Cache-Control', 'no-cache');
+      res.setHeader('Connection', 'keep-alive');
 
-      res.status(200).json(new StreamingTextResponse(stream));
+      const sse = new SSE(req, res);
+
+      const interval = setInterval(async () => {
+        try {
+          const chatCompletion = await chatCompletionPromise;
+          const answer = chatCompletion.data.choices[0].message.content;
+          sse.send(answer);
+
+          // 如果完成了聊天完成请求，则清除定时器并关闭 SSE 连接
+          if (chatCompletionPromise.isCompleted()) {
+            clearInterval(interval);
+            sse.close();
+          }
+        } catch (error) {
+          console.error(error);
+          sse.send('Something went wrong');
+          clearInterval(interval);
+          sse.close();
+        }
+      }, 1000);
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: 'Something went wrong' });
