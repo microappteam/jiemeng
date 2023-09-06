@@ -50,7 +50,7 @@ export default async function handler(req, res) {
         {
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `${process.env.API_KEY}`,
+            Authorization: `Bearer ${process.env.API_KEY}`,
           },
           method: 'POST',
           payload: JSON.stringify(chatPayload),
