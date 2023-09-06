@@ -37,44 +37,34 @@ export default async function handler(req, res) {
 
       console.log('summary=' + summary);
 
-      const rolePlayText = ` `;
-
-      const chatCompletionPromise = openai.createChatCompletion({
-        model: 'gpt-3.5-turbo',
-        messages: [
-          { role: 'system', content: rolePlayText },
-          { role: 'user', content: `UserId: ${userId}` },
-          { role: 'user', content: summary },
-        ],
+      const chatPayload = {
+        prompt: summary,
         temperature: 1,
         max_tokens: 888,
+        stream: true,
+        stop: ['\n\n'],
+      };
+
+      const source = new SSE(
+        'https://api.openai.com/v1/engines/curie/completions',
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `${process.env.API_KEY}`,
+          },
+          method: 'POST',
+          payload: JSON.stringify(chatPayload),
+        },
+      );
+
+      source.addEventListener('message', (event) => {
+        const payload = JSON.parse(event.data);
+        const answer = payload.choices[0].message.content;
+
+        res.status(200).json(answer);
       });
 
-      // 设置 SSE 响应头部
-      res.setHeader('Content-Type', 'text/event-stream');
-      res.setHeader('Cache-Control', 'no-cache');
-      res.setHeader('Connection', 'keep-alive');
-
-      const sse = new SSE(req, res);
-
-      const interval = setInterval(async () => {
-        try {
-          const chatCompletion = await chatCompletionPromise;
-          const answer = chatCompletion.data.choices[0].message.content;
-          sse.send(answer);
-
-          // 如果完成了聊天完成请求，则清除定时器并关闭 SSE 连接
-          if (chatCompletionPromise.isCompleted()) {
-            clearInterval(interval);
-            sse.close();
-          }
-        } catch (error) {
-          console.error(error);
-          sse.send('Something went wrong');
-          clearInterval(interval);
-          sse.close();
-        }
-      }, 1000);
+      source.stream(res);
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: 'Something went wrong' });
