@@ -40,23 +40,21 @@ export default async function handler(req, res) {
 
       const rolePlayText = '';
 
-      const sse = new SSE(
-        'https://api.openai.com/v1/engines/curie/completions',
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: process.env.API_KEY,
-          },
-          method: 'POST',
-          payload: JSON.stringify({
-            prompt: summary,
-            temperature: 1,
-            max_tokens: 888,
-            stream: true,
-            stop: ['\n\n'],
-          }),
+      const sse = new SSE('https://api.openai.com/v1/chat/completions', {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${process.env.API_KEY}`,
         },
-      );
+        method: 'POST',
+        payload: JSON.stringify({
+          model: 'gpt-3.5-turbo',
+          prompt: summary,
+          temperature: 1,
+          max_tokens: 888,
+          stream: true,
+          stop: ['\n\n'],
+        }),
+      });
 
       sse.addEventListener('message', function (e) {
         // Assuming we receive JSON-encoded data payloads:
