@@ -4,7 +4,6 @@ import { Layout, ConfigProvider } from 'antd';
 import zhCN from 'antd/lib/locale/zh_CN';
 import StyledComponentsRegistry from './component';
 import { signIn, signOut, useSession } from 'next-auth/react';
-import EventSource from 'eventsource';
 
 export default function Home() {
   const [dream, setDream] = useState('');
@@ -36,28 +35,19 @@ export default function Home() {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const eventSource = new EventSource('/api/dream');
-      eventSource.addEventListener('message', (event) => {
-        const data = JSON.parse(event.data);
-        const answer = data.answer;
-        setResponse(answer);
-      });
-      eventSource.addEventListener('error', (error) => {
-        console.error('Event Source Error:', error);
-      });
-      eventSource.addEventListener('end', () => {
-        eventSource.close();
-        setIsLoading(false);
-      });
-
-      const response = await fetch('/api/dream', {
-        method: 'POST',
-        body: JSON.stringify({ dream }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Something went wrong');
-      }
+      const response1 = await axios.post('/api/dream', { dream });
+      setResponse(response1.data);
+      console.log(response1.data);
+      const response2 = await axios.post(
+        `/api/storage`,
+        {
+          dream,
+          response: response1.data,
+          username: session?.user?.name,
+        },
+        { timeout: 10000 },
+      );
+      console.log('response2', response2.data);
     } catch (error) {
       console.error(error);
     } finally {
