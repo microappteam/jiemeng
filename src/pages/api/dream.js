@@ -28,7 +28,10 @@ export default async function handler(req, res) {
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
       const summaryCompletion = await summaryCompletionPromise;
-      const summaryChoice = summaryCompletion.data.choices[0];
+      const summaryChoice =
+        summaryCompletion.choices && summaryCompletion.choices.length > 0
+          ? summaryCompletion.choices[0]
+          : null;
       const summary =
         summaryChoice && summaryChoice.message && summaryChoice.message.content
           ? summaryChoice.message.content.trim()
@@ -36,23 +39,44 @@ export default async function handler(req, res) {
 
       console.log('summary=' + summary);
 
-      const rolePlayText = ``;
+      const rolePlayText = '';
 
-      const chatCompletionPromise = openai.createChatCompletion({
-        model: 'gpt-3.5-turbo',
-        messages: [
-          { role: 'system', content: rolePlayText },
-          { role: 'user', content: `UserId: ${userId}` },
-          { role: 'user', content: summary },
-        ],
-        temperature: 1,
-        max_tokens: 888,
-      });
+      const baseUrl = 'https://api.openai.com/v1';
+      const openaiPath = 'chat/completions';
+      const authValue = `Bearer ${process.env.API_KEY}`;
 
-      const chatCompletion = await chatCompletionPromise;
+      const controller = new AbortController();
+      const signal = controller.signal;
 
-      const answer = chatCompletion.data.choices[0].message.content;
-      res.status(200).json(answer);
+      const fetchUrl = `${baseUrl}/${openaiPath}`;
+      const fetchOptions = {
+        headers: {
+          'Content-Type': 'application/json',
+          'Cache-Control': 'no-store',
+          Authorization: authValue,
+          ...(process.env.OPENAI_ORG_ID && {
+            'OpenAI-Organization': process.env.OPENAI_ORG_ID,
+          }),
+        },
+        method: req.method,
+        body: JSON.stringify(req.body),
+        redirect: 'manual',
+        signal: signal,
+      };
+
+      const fetchResponse = await fetch(fetchUrl, fetchOptions);
+
+      // to prevent browser prompt for credentials
+      const newHeaders = new Headers(fetchResponse.headers);
+      newHeaders.delete('www-authenticate');
+      // to disable nginx buffering
+      newHeaders.set('X-Accel-Buffering', 'no');
+
+      const responseBody = await fetchResponse.text();
+
+      res.writeHead(fetchResponse.status, fetchResponse.statusText, newHeaders);
+      res.write(responseBody);
+      res.end();
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: 'Something went wrong' });
