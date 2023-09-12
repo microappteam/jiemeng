@@ -1,5 +1,6 @@
 import { Configuration, OpenAIApi } from 'openai';
 import { v4 as uuidv4 } from 'uuid';
+const { requestOpenai } = require('./openai-proxy');
 
 const configuration = new Configuration({
   apiKey: process.env.API_KEY,
@@ -28,10 +29,7 @@ export default async function handler(req, res) {
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
       const summaryCompletion = await summaryCompletionPromise;
-      const summaryChoice =
-        summaryCompletion.choices && summaryCompletion.choices.length > 0
-          ? summaryCompletion.choices[0]
-          : null;
+      const summaryChoice = summaryCompletion.data.choices[0];
       const summary =
         summaryChoice && summaryChoice.message && summaryChoice.message.content
           ? summaryChoice.message.content.trim()
@@ -39,41 +37,31 @@ export default async function handler(req, res) {
 
       console.log('summary=' + summary);
 
-      const rolePlayText = '';
+      const rolePlayText = ``;
 
-      const baseUrl = 'https://api.openai.com/v1';
-      const openaiPath = 'chat/completions';
-      const authValue = `Bearer ${process.env.API_KEY}`;
-
-      const controller = new AbortController();
-      const signal = controller.signal;
-
-      const fetchUrl = `${baseUrl}/${openaiPath}`;
-      const fetchOptions = {
+      const chatCompletionPromise = requestOpenai({
         headers: {
           'Content-Type': 'application/json',
           'Cache-Control': 'no-store',
-          Authorization: authValue,
+          Authorization: `Bearer ${process.env.API_KEY}`,
         },
-        method: req.method,
-        body: JSON.stringify('hello'),
-        redirect: 'manual',
-        signal: signal,
-      };
+        method: 'POST',
+        body: JSON.stringify({
+          model: 'gpt-3.5-turbo',
+          messages: [
+            { role: 'system', content: rolePlayText },
+            { role: 'user', content: `UserId: ${userId}` },
+            { role: 'user', content: summary },
+          ],
+          temperature: 1,
+          max_tokens: 888,
+        }),
+      });
 
-      const fetchResponse = await fetch(fetchUrl, fetchOptions);
-      console.log('fetchResponse=' + fetchResponse);
-      // to prevent browser prompt for credentials
-      const newHeaders = new Headers(fetchResponse.headers);
-      newHeaders.delete('www-authenticate');
-      // to disable nginx buffering
-      newHeaders.set('X-Accel-Buffering', 'no');
+      const chatCompletion = await chatCompletionPromise.json();
 
-      const responseBody = await fetchResponse.text();
-
-      res.writeHead(fetchResponse.status, fetchResponse.statusText, newHeaders);
-      res.write(responseBody);
-      res.end();
+      const answer = chatCompletion.choices[0].message.content;
+      res.status(200).json(answer);
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: 'Something went wrong' });
