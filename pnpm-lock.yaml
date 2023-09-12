@@ -65,6 +65,9 @@ dependencies:
   openai:
     specifier: ^3.3.0
     version: 3.3.0
+  openai-proxy:
+    specifier: ^0.0.1
+    version: 0.0.1
   pg:
     specifier: ^8.11.2
     version: 8.11.2
@@ -4652,6 +4655,10 @@ packages:
       define-lazy-prop: 3.0.0
       is-inside-container: 1.0.0
       is-wsl: 2.2.0
+    dev: false
+
+  /openai-proxy@0.0.1:
+    resolution: {integrity: sha512-IjFq30LYLV1JgjfF2w4mnH6cp3T9oqMsTZMJkc8fVE2eSDIfg/tBs+EyJSfaiqxjat0ISUiV6/9rtu8Mb3Wtbw==}
     dev: false
 
   /openai@3.3.0:

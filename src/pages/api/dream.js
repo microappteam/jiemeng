@@ -1,6 +1,7 @@
 import { Configuration, OpenAIApi } from 'openai';
 import { v4 as uuidv4 } from 'uuid';
-const { requestOpenai } = require('./openai-proxy');
+import { NextRequest, NextResponse } from 'next/server';
+import fetch from 'node-fetch';
 
 const configuration = new Configuration({
   apiKey: process.env.API_KEY,
@@ -9,12 +10,22 @@ const configuration = new Configuration({
 
 const openai = new OpenAIApi(configuration);
 
+async function requestOpenai(options) {
+  const response = await fetch(
+    'https://api.openai.com/v1/engines/davinci-codex/completions',
+    options,
+  );
+  const data = await response.json();
+  return data;
+}
+
 export default async function handler(req, res) {
   if (req.method === 'POST') {
     try {
       const { dream } = req.body;
       const userId = uuidv4();
-      const summaryText = `你需要将我给你的梦境进行总结，去掉一些修饰词，保留句子的谓语和宾语。`;
+      const summaryText =
+        '你需要将我给你的梦境进行总结，去掉一些修饰词，保留句子的谓语和宾语。';
       const summaryCompletionPromise = openai.createChatCompletion({
         model: 'gpt-3.5-turbo',
         messages: [
@@ -37,7 +48,7 @@ export default async function handler(req, res) {
 
       console.log('summary=' + summary);
 
-      const rolePlayText = ``;
+      const rolePlayText = '';
 
       const chatCompletionPromise = requestOpenai({
         headers: {
@@ -56,9 +67,14 @@ export default async function handler(req, res) {
           temperature: 1,
           max_tokens: 888,
         }),
-      });
+      })
+        .then((response) => response.json())
+        .catch((error) => {
+          console.error(error);
+          throw new Error('Failed to parse JSON response from OpenAI API');
+        });
 
-      const chatCompletion = await chatCompletionPromise.json();
+      const chatCompletion = await chatCompletionPromise;
 
       const answer = chatCompletion.choices[0].message.content;
       res.status(200).json(answer);
