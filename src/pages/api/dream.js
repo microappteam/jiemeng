@@ -54,18 +54,15 @@ export default async function handler(req, res) {
           'Content-Type': 'application/json',
           'Cache-Control': 'no-store',
           Authorization: authValue,
-          ...(process.env.OPENAI_ORG_ID && {
-            'OpenAI-Organization': process.env.OPENAI_ORG_ID,
-          }),
         },
         method: req.method,
-        body: JSON.stringify(req.body),
+        body: JSON.stringify('hello'),
         redirect: 'manual',
         signal: signal,
       };
 
       const fetchResponse = await fetch(fetchUrl, fetchOptions);
-
+      console.log('fetchResponse=' + fetchResponse);
       // to prevent browser prompt for credentials
       const newHeaders = new Headers(fetchResponse.headers);
       newHeaders.delete('www-authenticate');
