@@ -36,7 +36,7 @@ export default async function handler(
         }),
       });
 
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 2000));
 
       const summaryCompletion = await summaryCompletionPromise;
       const summaryChoice = summaryCompletion.choices[0];
