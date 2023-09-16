@@ -35,14 +35,29 @@ export default function Home() {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const response1 = await axios.post('/api/dream', { dream });
-      setResponse(response1.data);
-      console.log(response1.data);
+      const eventSource = new EventSource('/api/dream'); // 创建EventSource对象，指向服务器端的事件流
+
+      eventSource.onmessage = (event) => {
+        const formattedContent = event.data.replace(/\\n/g, '\n'); // 替换转义字符为实际换行符
+        setResponse((prevResponse) => prevResponse + formattedContent); // 逐步追加响应内容
+      };
+
+      eventSource.onerror = (error) => {
+        console.error(error);
+        eventSource.close(); // 出现错误时关闭事件流
+        setIsLoading(false);
+      };
+
+      const response = await axios.post('/api/dream', { dream }); // 触发后端的事件流
+
+      eventSource.close(); // 请求完成后关闭事件流
+      setIsLoading(false);
+      console.log(response.data);
       const response2 = await axios.post(
         `/api/storage`,
         {
           dream,
-          response: response1.data,
+          response: response.data,
           username: session?.user?.name,
         },
         { timeout: 10000 },
@@ -50,7 +65,6 @@ export default function Home() {
       console.log('response2', response2.data);
     } catch (error) {
       console.error(error);
-    } finally {
       setIsLoading(false);
     }
   };
