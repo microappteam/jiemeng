@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Layout, ConfigProvider } from 'antd';
 import zhCN from 'antd/lib/locale/zh_CN';
 import StyledComponentsRegistry from './component';
-import { signIn, signOut, useSession } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 
 export default function Home() {
   const [dream, setDream] = useState('');
