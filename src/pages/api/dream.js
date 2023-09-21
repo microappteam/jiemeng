@@ -1,9 +1,4 @@
-import {
-  ChatOpenAI,
-  HumanMessage,
-  SystemMessage,
-  AIMessage,
-} from '@openai/api';
+import { ChatOpenAI } from '@openai/api';
 import { v4 as uuidv4 } from 'uuid';
 
 export default async function handler(req, res) {
