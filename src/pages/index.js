@@ -35,30 +35,14 @@ export default function Home() {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const eventSource = new EventSource('/api/dream');
-      eventSource.onmessage = (event) => {
-        const responseData = event.data;
-        // 处理接收到的数据，例如将数据添加到一个数组中
-        // 或者更新显示在页面上的内容
-        console.log(responseData);
-      };
-
-      eventSource.onerror = (error) => {
-        console.error(error);
-        setIsLoading(false);
-        eventSource.close();
-      };
-
-      setTimeout(() => {
-        eventSource.close();
-        setIsLoading(false);
-      }, 10000);
-      console.log(response.data);
+      const response1 = await axios.post('/api/dream', { dream });
+      setResponse(response1.data);
+      console.log(response1.data);
       const response2 = await axios.post(
         `/api/storage`,
         {
           dream,
-          response: response.data,
+          response: response1.data,
           username: session?.user?.name,
         },
         { timeout: 10000 },
