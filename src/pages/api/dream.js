@@ -1,12 +1,9 @@
-import { Configuration, OpenAIApi } from 'openai';
+import { OpenAI } from 'openai';
 import { v4 as uuidv4 } from 'uuid';
 
-const configuration = new Configuration({
-  apiKey: process.env.API_KEY,
-  timeout: 60000,
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
 });
-
-const openai = new OpenAIApi(configuration);
 
 export default async function handler(req, res) {
   if (req.method === 'POST') {
