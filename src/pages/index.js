@@ -36,13 +36,20 @@ export default function Home() {
     setIsLoading(true);
     try {
       const response1 = await axios.post('/api/dream', { dream });
-      setResponse(response1.data);
-      console.log(response1.data);
+      const reader = response1.data.body.getReader();
+      let result = '';
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        result += new TextDecoder().decode(value);
+        setResponse(result);
+      }
+      console.log(result);
       const response2 = await axios.post(
         `/api/storage`,
         {
           dream,
-          response: response1.data,
+          response: result,
           username: session?.user?.name,
         },
         { timeout: 10000 },

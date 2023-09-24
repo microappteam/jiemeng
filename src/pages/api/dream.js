@@ -1,8 +1,8 @@
-import { OpenAI } from 'openai';
+import OpenAI from 'openai';
 import { v4 as uuidv4 } from 'uuid';
 
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+  apiKey: process.env.API_KEY,
 });
 
 export default async function handler(req, res) {
@@ -11,7 +11,8 @@ export default async function handler(req, res) {
       const { dream } = req.body;
       const userId = uuidv4();
       const summaryText = `你需要将我给你的梦境进行总结，去掉一些修饰词，保留句子的谓语和宾语。`;
-      const summaryCompletionPromise = openai.createChatCompletion({
+
+      const summaryData = {
         model: 'gpt-3.5-turbo',
         messages: [
           { role: 'system', content: summaryText },
@@ -20,12 +21,15 @@ export default async function handler(req, res) {
         ],
         max_tokens: 35,
         temperature: 0.9,
-      });
+      };
+
+      const summaryCompletionPromise =
+        openai.chat.completions.create(summaryData);
 
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
       const summaryCompletion = await summaryCompletionPromise;
-      const summaryChoice = summaryCompletion.data.choices[0];
+      const summaryChoice = summaryCompletion.choices[0];
       const summary =
         summaryChoice && summaryChoice.message && summaryChoice.message.content
           ? summaryChoice.message.content.trim()
@@ -35,7 +39,7 @@ export default async function handler(req, res) {
 
       const rolePlayText = ` `;
 
-      const chatCompletionPromise = openai.createChatCompletion({
+      const chatData = await openai.chat.completions.create({
         model: 'gpt-3.5-turbo',
         messages: [
           { role: 'system', content: rolePlayText },
@@ -44,11 +48,16 @@ export default async function handler(req, res) {
         ],
         temperature: 1,
         max_tokens: 888,
+        stream: true,
       });
 
-      const chatCompletion = await chatCompletionPromise;
+      let answer;
 
-      const answer = chatCompletion.data.choices[0].message.content;
+      for await (const part of chatData) {
+        answer = part.choices[0].delta;
+        console.log(answer);
+      }
+
       res.status(200).json(answer);
     } catch (error) {
       console.error(error);
