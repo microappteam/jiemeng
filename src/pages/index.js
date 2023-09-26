@@ -35,9 +35,36 @@ export default function Home() {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const response1 = await axios.post('/api/dream', { dream });
-      setResponse(response1.data);
-      console.log(response1.data);
+      const response1 = await axios.post(
+        '/api/dream',
+        { dream },
+        { responseType: 'stream' },
+      );
+
+      // 创建一个新的可读流读取器
+      const reader = response1.data.getReader();
+      let result = '';
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        // 将字节数组转换为字符串
+        const chunk = new TextDecoder().decode(value);
+        result += chunk;
+
+        // 处理流数据的逻辑
+        // ...
+
+        // 更新组件的状态以便逐步显示返回的结果
+        setResponse(result);
+
+        // 例如，将流数据显示在控制台上
+        console.log(chunk);
+      }
+
+      console.log('Result:', result);
+
       const response2 = await axios.post(
         `/api/storage`,
         {

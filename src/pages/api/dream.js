@@ -51,49 +51,35 @@ export default async function handler(req, res) {
         max_tokens: 888,
         stream: true,
       });
-      // 使用 TextEncoder 将字符串转换为字节数组，以便在 ReadableStream 中发送
+
+      // 将流数据作为响应的一部分发送回客户端
+      res.setHeader('Content-Type', 'application/octet-stream');
+      res.setHeader('Content-Disposition', 'attachment; filename=result.txt');
+
       const encoder = new TextEncoder();
-
-      // 初始化换行符计数器
-
-      return new ReadableStream({
-        async start(controller) {
-          let newlineCounter = 0;
-
-          const chat = new ChatOpenAI({
-            streaming: true,
-            ...params,
-            // 暂时设定不重试 ，后续看是否需要支持重试
-            maxRetries: 0,
-            callbacks: [
-              {
-                handleLLMNewToken(token) {
-                  // 如果 message 是换行符，且 newlineCounter 小于 2，那么跳过该换行符
-                  if (newlineCounter < 2 && token === '\n') {
-                    return;
-                  }
-
-                  // 将 message 编码为字节并添加到流中
-                  const queue = encoder.encode(token);
-                  controller.enqueue(queue);
-                  newlineCounter++;
-                },
-              },
-            ],
-          });
-
-          try {
-            // 使用转换后的聊天消息作为输入开始聊天
-            await chat.call(chatData);
-            // 完成后，关闭流
-            controller.close();
-            res.json({ success: true });
-          } catch (e) {
-            // 如果在执行过程中发生错误，向流发送错误
-            controller.error(e);
-          }
+      const chat = new ChatOpenAI({
+        headers: {
+          Authorization: `Bearer ${process.env.API_KEY}`,
         },
+        streaming: true,
+
+        maxRetries: 0,
+        callbacks: [
+          {
+            handleLLMNewToken(token) {
+              const queue = encoder.encode(token);
+              res.write(queue);
+            },
+          },
+        ],
       });
+
+      try {
+        await chat.call(chatData);
+        res.end();
+      } catch (e) {
+        res.status(500).json({ error: 'Something went wrong' });
+      }
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: 'Something went wrong' });
