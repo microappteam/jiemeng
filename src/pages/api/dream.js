@@ -1,6 +1,6 @@
+import { Readable } from 'stream';
 import OpenAI from 'openai';
 import { v4 as uuidv4 } from 'uuid';
-import { ChatOpenAI } from 'langchain/chat_models/openai';
 
 const openai = new OpenAI({
   apiKey: process.env.API_KEY,
@@ -11,7 +11,8 @@ export default async function handler(req, res) {
     try {
       const { dream } = req.body;
       const userId = uuidv4();
-      const summaryText = `你需要将我给你的梦境进行总结，去掉一些修饰词，保留句子的谓语和宾语。`;
+      const summaryText =
+        '你需要将我给你的梦境进行总结，去掉一些修饰词，保留句子的谓语和宾语。';
 
       const summaryData = {
         model: 'gpt-3.5-turbo',
@@ -31,10 +32,7 @@ export default async function handler(req, res) {
 
       const summaryCompletion = await summaryCompletionPromise;
       const summaryChoice = summaryCompletion.choices[0];
-      const summary =
-        summaryChoice && summaryChoice.message && summaryChoice.message.content
-          ? summaryChoice.message.content.trim()
-          : '';
+      const summary = summaryChoice?.message?.content?.trim() ?? '';
 
       console.log('summary=' + summary);
 
@@ -52,34 +50,21 @@ export default async function handler(req, res) {
         stream: true,
       });
 
-      // 将流数据作为响应的一部分发送回客户端
       res.setHeader('Content-Type', 'application/octet-stream');
       res.setHeader('Content-Disposition', 'attachment; filename=result.txt');
 
-      const encoder = new TextEncoder();
-      const chat = new ChatOpenAI({
-        headers: {
-          Authorization: `Bearer ${process.env.API_KEY}`,
-        },
-        streaming: true,
-
-        maxRetries: 0,
-        callbacks: [
-          {
-            handleLLMNewToken(token) {
-              const queue = encoder.encode(token);
-              res.write(queue);
-            },
-          },
-        ],
+      const readableStream = new Readable({
+        read() {},
       });
 
-      try {
-        await chat.call(chatData);
-        res.end();
-      } catch (e) {
-        res.status(500).json({ error: 'Something went wrong' });
+      for await (const part of chatData) {
+        const answer = part.choices[0].delta;
+        readableStream.push(answer);
       }
+
+      readableStream.push(null); // Signal the end of the stream
+
+      readableStream.pipe(res); // Pipe the stream to the response
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: 'Something went wrong' });
