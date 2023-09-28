@@ -59,7 +59,7 @@ export default async function handler(req, res) {
 
       for await (const part of chatData) {
         const answer = part.choices[0].delta;
-        readableStream.push(answer);
+        readableStream.push(JSON.stringify(answer));
       }
 
       readableStream.push(null); // Signal the end of the stream
