@@ -62,9 +62,9 @@ export default async function handler(req, res) {
         readableStream.push(JSON.stringify(answer));
       }
 
-      readableStream.push(null); // Signal the end of the stream
+      readableStream.push(null);
 
-      readableStream.pipe(res); // Pipe the stream to the response
+      readableStream.pipe(res);
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: 'Something went wrong' });

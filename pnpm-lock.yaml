@@ -92,6 +92,9 @@ dependencies:
   stream:
     specifier: ^0.0.2
     version: 0.0.2
+  stream-to-blob:
+    specifier: ^2.0.1
+    version: 2.0.1
   styled-components:
     specifier: ^6.0.7
     version: 6.0.7(react-dom@18.2.0)(react@18.2.0)
@@ -6334,6 +6337,11 @@ packages:
     dependencies:
       svelte: 4.2.0
       swrev: 4.0.0
+    dev: false
+
+  /stream-to-blob@2.0.1:
+    resolution: {integrity: sha512-GXlqXt3svqwIVWoICenix5Poxi4KbCF0BdXXUbpU1X4vq1V8wmjiEIU3aFJzCGNFpKxfbnG0uoowS3nKUgSPYg==}
+    engines: {node: '>=8'}
     dev: false
 
   /stream@0.0.2:

@@ -8,7 +8,6 @@ import { useSession } from 'next-auth/react';
 export default function Home() {
   const [dream, setDream] = useState('');
   const [response, setResponse] = useState('');
-
   const [isLoading, setIsLoading] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
   const { data: session } = useSession();
@@ -41,43 +40,22 @@ export default function Home() {
         { responseType: 'stream' },
       );
 
-      // 创建一个新的可读流读取器
       const reader = response1.data.getReader();
       let result = '';
 
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
+      const processStream = async () => {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          result += new TextDecoder().decode(value);
+          setResponse(result);
+        }
+        setIsLoading(false);
+      };
 
-        // 将字节数组转换为字符串
-        const chunk = new TextDecoder().decode(value);
-        result += chunk;
-
-        // 处理流数据的逻辑
-        // ...
-
-        // 更新组件的状态以便逐步显示返回的结果
-        setResponse(result);
-
-        // 例如，将流数据显示在控制台上
-        console.log(chunk);
-      }
-
-      console.log('Result:', result);
-
-      const response2 = await axios.post(
-        `/api/storage`,
-        {
-          dream,
-          response: response1.data,
-          username: session?.user?.name,
-        },
-        { timeout: 10000 },
-      );
-      console.log('response2', response2.data);
+      processStream();
     } catch (error) {
       console.error(error);
-    } finally {
       setIsLoading(false);
     }
   };
