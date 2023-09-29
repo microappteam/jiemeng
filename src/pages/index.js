@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 import { Layout, ConfigProvider } from 'antd';
 import zhCN from 'antd/lib/locale/zh_CN';
 import StyledComponentsRegistry from './component';
@@ -34,13 +33,12 @@ export default function Home() {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const response1 = await axios.post(
-        '/api/dream',
-        { dream },
-        { responseType: 'stream' },
-      );
+      const response1 = await fetch('/api/dream', {
+        method: 'POST',
+        body: JSON.stringify({ dream }),
+      });
 
-      const reader = response1.data.getReader();
+      const reader = response1.body.getReader();
       let result = '';
 
       const processStream = async () => {
