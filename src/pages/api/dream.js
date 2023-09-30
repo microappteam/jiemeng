@@ -6,7 +6,11 @@ const openai = new OpenAI({
   apiKey: process.env.API_KEY,
 });
 
-export default async function handler(req, res) {
+export const config = {
+  runtime: 'edge',
+};
+
+export default async function handler(req) {
   if (req.method === 'POST') {
     try {
       const { dream } = req.body;
@@ -21,22 +25,23 @@ export default async function handler(req, res) {
           { role: 'user', content: dream },
         ],
         max_tokens: 35,
+        stop: ['\n', '。'],
         temperature: 0.9,
       };
 
-      const summaryCompletionPromise =
-        openai.chat.completions.create(summaryData);
+      const summaryCompletion = await openai.chat.completions.create(
+        summaryData,
+        {
+          stream: false,
+        },
+      );
 
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      const summaryCompletion = await summaryCompletionPromise;
       const summaryChoice = summaryCompletion.choices[0];
+
       const summary =
         summaryChoice && summaryChoice.message && summaryChoice.message.content
           ? summaryChoice.message.content.trim()
           : '';
-
-      console.log('summary=' + summary);
 
       const rolePlayText = ` `;
 
@@ -68,14 +73,16 @@ export default async function handler(req, res) {
         },
       });
 
-      res.setHeader('Content-Type', 'application/octet-stream');
-      res.setHeader('Content-Disposition', 'attachment; filename=answer.txt');
-      readableStream.pipe(res);
+      return new Response(readableStream);
     } catch (error) {
       console.error(error);
-      res.status(500).json({ error: 'Something went wrong' });
+      const res = new Response();
+      res.status = 500;
+      res.body = 'Internal server error' + error.message;
+      return res;
     }
   } else {
+    const res = new Response();
     res.status(405).json({ error: 'Method not allowed' });
   }
 }
