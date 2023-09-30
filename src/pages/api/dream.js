@@ -11,8 +11,7 @@ export default async function handler(req, res) {
     try {
       const { dream } = req.body;
       const userId = uuidv4();
-      const summaryText =
-        '你需要将我给你的梦境进行总结，去掉一些修饰词，保留句子的谓语和宾语。';
+      const summaryText = `你需要将我给你的梦境进行总结，去掉一些修饰词，保留句子的谓语和宾语。`;
 
       const summaryData = {
         model: 'gpt-3.5-turbo',
@@ -32,7 +31,10 @@ export default async function handler(req, res) {
 
       const summaryCompletion = await summaryCompletionPromise;
       const summaryChoice = summaryCompletion.choices[0];
-      const summary = summaryChoice?.message?.content?.trim() ?? '';
+      const summary =
+        summaryChoice && summaryChoice.message && summaryChoice.message.content
+          ? summaryChoice.message.content.trim()
+          : '';
 
       console.log('summary=' + summary);
 
@@ -50,20 +52,24 @@ export default async function handler(req, res) {
         stream: true,
       });
 
-      res.setHeader('Content-Type', 'application/octet-stream');
-      res.setHeader('Content-Disposition', 'attachment; filename=result.txt');
-
       const readableStream = new Readable({
-        read() {},
+        async read() {
+          try {
+            for await (const part of chatData) {
+              const answer = JSON.stringify(part.choices[0].delta);
+              console.log(answer);
+              this.push(answer);
+            }
+            this.push(null);
+          } catch (error) {
+            console.error(error);
+            this.emit('error', error);
+          }
+        },
       });
 
-      for await (const part of chatData) {
-        const answer = part.choices[0].delta;
-        readableStream.push(JSON.stringify(answer));
-      }
-
-      readableStream.push(null);
-
+      res.setHeader('Content-Type', 'application/octet-stream');
+      res.setHeader('Content-Disposition', 'attachment; filename=answer.txt');
       readableStream.pipe(res);
     } catch (error) {
       console.error(error);

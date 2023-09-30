@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import axios from 'axios';
 import { Layout, ConfigProvider } from 'antd';
 import zhCN from 'antd/lib/locale/zh_CN';
 import StyledComponentsRegistry from './component';
@@ -7,6 +8,7 @@ import { useSession } from 'next-auth/react';
 export default function Home() {
   const [dream, setDream] = useState('');
   const [response, setResponse] = useState('');
+
   const [isLoading, setIsLoading] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
   const { data: session } = useSession();
@@ -33,27 +35,22 @@ export default function Home() {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const response1 = await fetch('/api/dream', {
-        method: 'POST',
-        body: JSON.stringify({ dream }),
-      });
-
-      const reader = response1.body.getReader();
-      let result = '';
-
-      const processStream = async () => {
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-          result += new TextDecoder().decode(value);
-          setResponse(result);
-        }
-        setIsLoading(false);
-      };
-
-      processStream();
+      const response1 = await axios.post('/api/dream', { dream });
+      setResponse(response1.data);
+      console.log(response1.data);
+      const response2 = await axios.post(
+        `/api/storage`,
+        {
+          dream,
+          response: response1.data,
+          username: session?.user?.name,
+        },
+        { timeout: 10000 },
+      );
+      console.log('response2', response2.data);
     } catch (error) {
       console.error(error);
+    } finally {
       setIsLoading(false);
     }
   };
