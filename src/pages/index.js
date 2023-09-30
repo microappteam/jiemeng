@@ -36,15 +36,14 @@ export default function Home() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    fetch('/api/dream', {
-      method: 'POST',
-      body: JSON.stringify({ dream }),
-    });
+    setResponseText('');
     try {
-      const response1 = await axios.post('/api/dream', { dream });
       await fetch('/api/dream', {
         method: 'POST',
         body: JSON.stringify({ dream }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
       })
         .then((response) => {
           // 如果不等于200，说明网络请求错了，不再继续
@@ -58,7 +57,9 @@ export default function Home() {
               console.log('Stream finished');
               return;
             }
-
+            setResponseText((responseText) => {
+              return responseText + utf8Decoder.decode(chunk, { stream: true });
+            });
             console.log(
               'Received data chunk',
               utf8Decoder.decode(chunk, { stream: true }),

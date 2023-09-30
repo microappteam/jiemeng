@@ -35,3 +35,6 @@ next-env.d.ts
 .env
 .vercel
 .env.development.loacl
+
+.vercel
+.env.development.local
