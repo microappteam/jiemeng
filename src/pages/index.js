@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+
 import { Layout, ConfigProvider } from 'antd';
 import zhCN from 'antd/lib/locale/zh_CN';
 import StyledComponentsRegistry from './component';
@@ -38,6 +38,7 @@ export default function Home() {
     e.preventDefault();
     setIsLoading(true);
     setResponseText('');
+    setWeatherText('');
     try {
       await fetch('/api/weather', {
         method: 'GET',
@@ -60,7 +61,7 @@ export default function Home() {
         })
         .catch(console.error);
 
-      console.log(weatherText);
+      console.log('weather=' + weatherText);
       /* await fetch('/api/dream', {
         method: 'POST',
         body: JSON.stringify({ dream }),

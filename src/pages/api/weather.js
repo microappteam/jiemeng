@@ -12,14 +12,21 @@ export default async function handler(req, res) {
             const response = await fetch(
               'https://restapi.amap.com/v3/weather/weatherInfo?key=6c1146b9f46f7b3ca27878e074ffa4f2&city=310000&extensions=all',
             );
+
             const data = await response.json();
 
-            for (const part of data) {
-              console.log(part.choices[0]?.delta?.content + '///');
-              controller.enqueue(
-                encoder.encode(part.choices[0]?.delta?.content || ''),
+            const forecasts = data.forecasts;
+            if (forecasts && forecasts.length > 0) {
+              const firstForecast = forecasts[0].casts.find(
+                (forecast) => forecast.week === '1',
               );
+              if (firstForecast) {
+                controller.enqueue(
+                  encoder.encode(JSON.stringify(firstForecast)),
+                );
+              }
             }
+            console.log('data=  ', data);
 
             // 完成后，关闭流
             controller.close();
@@ -29,7 +36,16 @@ export default async function handler(req, res) {
           }
         },
       });
+      console.log(stream);
 
+      if (stream instanceof ReadableStream) {
+        console.log('API 返回的数据是流');
+        // 进行流处理操作
+      } else {
+        console.log('API 返回的数据不是流');
+        // 处理非流数据
+      }
+      console.log('stream=', stream);
       return new Response(stream);
     } catch (error) {
       const res = new Response(
