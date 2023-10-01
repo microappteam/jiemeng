@@ -10,6 +10,7 @@ const utf8Decoder = new TextDecoder('utf-8');
 export default function Home() {
   const [dream, setDream] = useState('');
   const [responseText, setResponseText] = useState('');
+  const [weatherText, setWeatherText] = useState('');
 
   const [isLoading, setIsLoading] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
@@ -38,7 +39,29 @@ export default function Home() {
     setIsLoading(true);
     setResponseText('');
     try {
-      await fetch('/api/dream', {
+      await fetch('/api/weather', {
+        method: 'GET',
+      })
+        .then((response) => {
+          if (response.status !== 200) return;
+          const reader = response.body.getReader();
+
+          return reader.read().then(function process({ done, value: chunk }) {
+            if (done) {
+              console.log('Stream finished');
+              return;
+            }
+            const decodedChunk = new TextDecoder().decode(chunk);
+            setWeatherText((prevWeatherText) => prevWeatherText + decodedChunk);
+            console.log('Received data chunk', decodedChunk);
+
+            return reader.read().then(process);
+          });
+        })
+        .catch(console.error);
+
+      console.log(weatherText);
+      /* await fetch('/api/dream', {
         method: 'POST',
         body: JSON.stringify({ dream }),
         headers: {
@@ -70,7 +93,7 @@ export default function Home() {
           });
         })
         .catch(console.error);
-      const response2 = await axios.post(
+         const response2 = await axios.post(
         `/api/storage`,
         {
           dream,
@@ -80,6 +103,7 @@ export default function Home() {
         { timeout: 10000 },
       );
       console.log('response2', response2.data);
+*/
     } catch (error) {
       console.error(error);
     } finally {
