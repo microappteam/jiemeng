@@ -16,32 +16,14 @@ export default async function handler(req, res) {
       const { dream } = await req.json();
 
       const userId = uuidv4();
-      // const summaryText = `你需要将我给你的梦境进行总结，去掉一些修饰词，保留句子的谓语和宾语。`;
-      // const summaryData = {
-      //   model: 'gpt-3.5-turbo',
-      //   messages: [
-      //     { role: 'system', content: summaryText },
-      //     { role: 'user', content: `UserId: ${userId}` },
-      //     { role: 'user', content: dream },
-      //   ],
-      //   max_tokens: 35,
-      //   stop: ['\n', '。'],
-      //   stream: false,
-      //   temperature: 0.9,
-      // };
+      const rolePlayText = ` 你需要将我给你的梦境进行总结，去掉一些修饰词，保留句子的谓语和宾语，并解析它，例如：
+      梦见飞机，意味着将要去旅行，会和很久没见的亲人见面。
 
-      // const summaryCompletion = await openai.chat.completions.create(
-      //   summaryData,
-      // );
+      梦见飞机，预示将要去旅行或是开始新的计划，很快会见到久别的亲友。
 
-      // const summaryChoice = summaryCompletion.choices[0];
+      梦见自己出国，暗示你可能会遇到困难，或是会生病，心中渴望摆脱现实。
 
-      // const summary =
-      //   summaryChoice && summaryChoice.message && summaryChoice.message.content
-      //     ? summaryChoice.message.content.trim()
-      //     : '';
-
-      const rolePlayText = ` 你需要将我给你的梦境进行总结，去掉一些修饰词，保留句子的谓语和宾语，并解析他`;
+      梦见乘飞机出国，预示着运势很不佳，之前的困难没解决掉，没有想到又出现新问题。`;
       const encoder = new TextEncoder();
       const stream = new ReadableStream({
         async start(controller) {
