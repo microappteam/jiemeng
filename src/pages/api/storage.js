@@ -9,7 +9,10 @@ const pool = new Pool({
 export default async function handler(req, res) {
   if (req.method === 'POST') {
     const { dream, response, username } = req.body;
-    console.log('Received data:', dream, response, username);
+    if (!dream || !response)
+      return res.status(200).json({
+        message: 'Dream or response is empty',
+      });
     try {
       const client = await pool.connect();
       const query =

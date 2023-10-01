@@ -5,9 +5,11 @@ import zhCN from 'antd/lib/locale/zh_CN';
 import StyledComponentsRegistry from './component';
 import { useSession } from 'next-auth/react';
 
+const utf8Decoder = new TextDecoder('utf-8');
+
 export default function Home() {
   const [dream, setDream] = useState('');
-  const [response, setResponse] = useState('');
+  const [responseText, setResponseText] = useState('');
 
   const [isLoading, setIsLoading] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
@@ -34,15 +36,45 @@ export default function Home() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
+    setResponseText('');
     try {
-      const response1 = await axios.post('/api/dream', { dream });
-      setResponse(response1.data);
-      console.log(response1.data);
+      await fetch('/api/dream', {
+        method: 'POST',
+        body: JSON.stringify({ dream }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+        .then((response) => {
+          // 如果不等于200，说明网络请求错了，不再继续
+          if (response.status !== 200) return;
+          // 获取 reader
+          const reader = response.body.getReader();
+
+          // 读取数据
+          return reader.read().then(function process({ done, value: chunk }) {
+            if (done) {
+              console.log('Stream finished');
+              return;
+            }
+            setResponseText((responseText) => {
+              return responseText + utf8Decoder.decode(chunk, { stream: true });
+            });
+            console.log(
+              'Received data chunk',
+              utf8Decoder.decode(chunk, { stream: true }),
+            );
+
+            // 读取下一段数据
+            return reader.read().then(process);
+          });
+        })
+        .catch(console.error);
       const response2 = await axios.post(
         `/api/storage`,
         {
           dream,
-          response: response1.data,
+          response: responseText,
           username: session?.user?.name,
         },
         { timeout: 10000 },
@@ -64,7 +96,7 @@ export default function Home() {
               dream={dream}
               setDream={setDream}
               handleSubmit={handleSubmit}
-              response={response}
+              response={responseText}
               isLoading={isLoading}
               loadingTexts={loadingTexts}
             />
