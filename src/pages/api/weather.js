@@ -9,24 +9,25 @@ export default async function handler(req, res) {
       const stream = new ReadableStream({
         async start(controller) {
           try {
-            const response = await fetch(
+            const response1 = await fetch(
+              'https://restapi.amap.com/v3/weather/weatherInfo?key=6c1146b9f46f7b3ca27878e074ffa4f2&city=310000',
+            );
+
+            const currentWeather = await response1.json();
+
+            controller.enqueue(encoder.encode(JSON.stringify(currentWeather)));
+
+            console.log('当前天气  ', currentWeather);
+
+            const response2 = await fetch(
               'https://restapi.amap.com/v3/weather/weatherInfo?key=6c1146b9f46f7b3ca27878e074ffa4f2&city=310000&extensions=all',
             );
 
-            const data = await response.json();
+            const futureWeather = await response2.json();
 
-            const forecasts = data.forecasts;
-            if (forecasts && forecasts.length > 0) {
-              const firstForecast = forecasts[0].casts.find(
-                (forecast) => forecast.week === '1',
-              );
-              if (firstForecast) {
-                controller.enqueue(
-                  encoder.encode(JSON.stringify(firstForecast)),
-                );
-              }
-            }
-            console.log('data=  ', data);
+            console.log('未来天气  ', futureWeather);
+
+            controller.enqueue(encoder.encode(JSON.stringify(futureWeather)));
 
             // 完成后，关闭流
             controller.close();
@@ -36,16 +37,6 @@ export default async function handler(req, res) {
           }
         },
       });
-      console.log(stream);
-
-      if (stream instanceof ReadableStream) {
-        console.log('API 返回的数据是流');
-        // 进行流处理操作
-      } else {
-        console.log('API 返回的数据不是流');
-        // 处理非流数据
-      }
-      console.log('stream=', stream);
       return new Response(stream);
     } catch (error) {
       const res = new Response(
