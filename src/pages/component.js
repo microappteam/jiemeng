@@ -8,6 +8,7 @@ import Image from 'next/image';
 import styles from './component.module.css';
 import StyledComponentsRegistry from '../styles/registry';
 import RootLayout from '../layout';
+import WeatherDisplay from './WeatherDisplay';
 
 const { TextArea } = Input;
 
@@ -18,6 +19,8 @@ export default function YourPage({
   response,
   isLoading,
   loadingTexts,
+  weatherText,
+  futureWeatherText,
 }) {
   const router = useRouter();
   const { data: session } = useSession();
@@ -148,6 +151,10 @@ export default function YourPage({
               </ReactMarkdown>
             </div>
           )}
+          <WeatherDisplay
+            weatherText={weatherText}
+            futureWeatherText={futureWeatherText}
+          />{' '}
         </div>
       </StyledComponentsRegistry>
     </RootLayout>

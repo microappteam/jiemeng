@@ -1,17 +1,17 @@
 import { useState, useEffect } from 'react';
-
 import { Layout, ConfigProvider } from 'antd';
 import zhCN from 'antd/lib/locale/zh_CN';
 import StyledComponentsRegistry from './component';
 import { useSession } from 'next-auth/react';
+import { preProcessFile } from 'typescript';
 
 const utf8Decoder = new TextDecoder('utf-8');
 
 export default function Home() {
   const [dream, setDream] = useState('');
   const [responseText, setResponseText] = useState('');
-  const [weatherText, setWeatherText] = useState('');
-
+  const [weatherText, setWeatherText] = useState({});
+  const [futureWeatherText, setFutureWeatherText] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
   const { data: session } = useSession();
@@ -38,7 +38,8 @@ export default function Home() {
     e.preventDefault();
     setIsLoading(true);
     setResponseText('');
-    setWeatherText('');
+    setWeatherText({});
+    setFutureWeatherText({});
     try {
       await fetch('/api/weather', {
         method: 'GET',
@@ -53,7 +54,16 @@ export default function Home() {
               return;
             }
             const decodedChunk = new TextDecoder().decode(chunk);
-            setWeatherText((prevWeatherText) => prevWeatherText + decodedChunk);
+            console.log('decodedChunk=====', decodedChunk);
+            //setWeatherText((prevWeatherText) => prevWeatherText + decodedChunk);
+            setFutureWeatherText(decodedChunk);
+            if (
+              decodedChunk.startsWith(
+                '{"status":"1","count":"1","info":"OK","infocode":"10000","lives":[{"province"',
+              )
+            ) {
+              setWeatherText(decodedChunk);
+            }
             console.log('Received data chunk', decodedChunk);
 
             return reader.read().then(process);
@@ -61,7 +71,6 @@ export default function Home() {
         })
         .catch(console.error);
 
-      console.log('weather=' + weatherText);
       /* await fetch('/api/dream', {
         method: 'POST',
         body: JSON.stringify({ dream }),
@@ -124,6 +133,8 @@ export default function Home() {
               response={responseText}
               isLoading={isLoading}
               loadingTexts={loadingTexts}
+              weatherText={weatherText}
+              futureWeatherText={futureWeatherText}
             />
           )}
         </div>
