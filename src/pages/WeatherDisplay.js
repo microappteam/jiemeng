@@ -48,13 +48,11 @@ const WeatherDisplay = ({ weatherText, futureWeatherText }) => {
 
       const formattedText = (
         <>
-          {province} {city}
-          <br />
-          {weatherIcon}
-          <br />
+          {city}
+          <> </>
           {temperature}°C
-          <br />
-          {winddirection}风
+          <> </>
+          {weatherIcon}
         </>
       );
 
@@ -71,9 +69,33 @@ const WeatherDisplay = ({ weatherText, futureWeatherText }) => {
       const { city, casts } = forecasts[0];
 
       const formattedText = casts
-        .map((cast) => {
-          const { date, dayweather, nightweather, daytemp, nighttemp } = cast;
-          return `日期：${date}\n白天天气：${dayweather}\n ${nighttemp} - ${daytemp}°`;
+        .slice(1)
+        .map((cast, index) => {
+          const { dayweather, nightweather, daytemp, nighttemp } = cast;
+
+          const today = new Date();
+          const futureDate = new Date(today);
+          futureDate.setDate(today.getDate() + index + 1);
+
+          let dateDescription;
+          switch (index + 1) {
+            case 1:
+              dateDescription = '明天';
+              break;
+            case 2:
+              dateDescription = '后天';
+              break;
+            case 3:
+              dateDescription = '大后天';
+              break;
+            default:
+              dateDescription = `${
+                futureDate.getMonth() + 1
+              }/${futureDate.getDate()}`;
+              break;
+          }
+
+          return `${dateDescription}\n天气：${dayweather}\n ${nighttemp} - ${daytemp}°`;
         })
         .join('\n');
 
@@ -105,9 +127,14 @@ const WeatherDisplay = ({ weatherText, futureWeatherText }) => {
           position: 'fixed',
           top: '10px',
           right: '10px',
-          width: '320px',
-          height: '160px',
+          width: '200px',
+          height: '40px',
           overflow: 'auto',
+          border: '1px solid black',
+          borderRadius: '4px',
+          padding: '10px',
+          backgroundColor: '#f0f0f0',
+          boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
         }}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
