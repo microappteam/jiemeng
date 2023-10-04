@@ -10,14 +10,49 @@ const utf8Decoder = new TextDecoder('utf-8');
 export default function Home() {
   const [dream, setDream] = useState('');
   const [responseText, setResponseText] = useState('');
-  const [weatherText, setWeatherText] = useState({});
-  const [futureWeatherText, setFutureWeatherText] = useState({});
+  const [weatherText, setWeatherText] = useState();
+  const [futureWeatherText, setFutureWeatherText] = useState();
   const [isLoading, setIsLoading] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
   const { data: session } = useSession();
 
   useEffect(() => {
     setIsHydrated(true);
+    const fetchData = async () => {
+      try {
+        const response = await fetch('/api/weather', {
+          method: 'GET',
+        });
+        if (response.status !== 200) return;
+        const reader = response.body.getReader();
+
+        const process = ({ done, value: chunk }) => {
+          if (done) {
+            console.log('Stream finished');
+            return;
+          }
+          const decodedChunk = new TextDecoder().decode(chunk);
+          console.log('decodedChunk=====', decodedChunk);
+          setFutureWeatherText(decodedChunk);
+          if (
+            decodedChunk.startsWith(
+              '{"status":"1","count":"1","info":"OK","infocode":"10000","lives":[{"province"',
+            )
+          ) {
+            setWeatherText(decodedChunk);
+          }
+          console.log('Received data chunk', decodedChunk);
+
+          return reader.read().then(process);
+        };
+
+        await process(await reader.read());
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchData();
   }, []);
 
   const loadingTexts = [
@@ -38,39 +73,8 @@ export default function Home() {
     e.preventDefault();
     setIsLoading(true);
     setResponseText('');
-    setWeatherText({});
-    setFutureWeatherText({});
+
     try {
-      await fetch('/api/weather', {
-        method: 'GET',
-      })
-        .then((response) => {
-          if (response.status !== 200) return;
-          const reader = response.body.getReader();
-
-          return reader.read().then(function process({ done, value: chunk }) {
-            if (done) {
-              console.log('Stream finished');
-              return;
-            }
-            const decodedChunk = new TextDecoder().decode(chunk);
-            console.log('decodedChunk=====', decodedChunk);
-            //setWeatherText((prevWeatherText) => prevWeatherText + decodedChunk);
-            setFutureWeatherText(decodedChunk);
-            if (
-              decodedChunk.startsWith(
-                '{"status":"1","count":"1","info":"OK","infocode":"10000","lives":[{"province"',
-              )
-            ) {
-              setWeatherText(decodedChunk);
-            }
-            console.log('Received data chunk', decodedChunk);
-
-            return reader.read().then(process);
-          });
-        })
-        .catch(console.error);
-
       /* await fetch('/api/dream', {
         method: 'POST',
         body: JSON.stringify({ dream }),
