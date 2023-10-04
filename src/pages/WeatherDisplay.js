@@ -146,11 +146,9 @@ const WeatherDisplay = ({ weatherText, futureWeatherText }) => {
       </label>
       <div
         style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(3, 1fr)',
-          gridGap: '1px',
+          display: 'flex',
           position: 'fixed',
-          top: showFutureWeather ? '60px' : '160px', // 根据 showFutureWeather 控制垂直位置
+          top: showFutureWeather ? '60px' : '160px',
           right: '10px',
           width: '200px',
           height: '100px',
@@ -160,11 +158,13 @@ const WeatherDisplay = ({ weatherText, futureWeatherText }) => {
           padding: '10px',
           backgroundColor: '#f0f0f0',
           boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-          opacity: showFutureWeather ? 1 : 0, // 根据 showFutureWeather 控制透明度
-          transition: 'top 0.3s, opacity 0.3s', // 添加过渡效果
+          opacity: showFutureWeather ? 1 : 0,
+          transition: 'top 0.3s, opacity 0.3s',
         }}
       >
-        {formattedFutureWeatherText}
+        <div style={{ flex: 1 }}>{formattedFutureWeatherText[0]}</div>
+        <div style={{ flex: 1 }}>{formattedFutureWeatherText[1]}</div>
+        <div style={{ flex: 1 }}>{formattedFutureWeatherText[2]}</div>
       </div>
     </>
   );
