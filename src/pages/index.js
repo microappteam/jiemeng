@@ -75,7 +75,7 @@ export default function Home() {
     setResponseText('');
 
     try {
-      /* await fetch('/api/dream', {
+      await fetch('/api/dream', {
         method: 'POST',
         body: JSON.stringify({ dream }),
         headers: {
@@ -107,7 +107,7 @@ export default function Home() {
           });
         })
         .catch(console.error);
-         const response2 = await axios.post(
+      const response2 = await axios.post(
         `/api/storage`,
         {
           dream,
@@ -117,7 +117,6 @@ export default function Home() {
         { timeout: 10000 },
       );
       console.log('response2', response2.data);
-*/
     } catch (error) {
       console.error(error);
     } finally {
@@ -126,7 +125,7 @@ export default function Home() {
   };
 
   return (
-    <Layout>
+    <Layout style={{ backgroundColor: '#fffbe9' }}>
       <ConfigProvider locale={zhCN}>
         <div className="container">
           {isHydrated && (
@@ -150,7 +149,6 @@ export default function Home() {
           justify-content: center;
           align-items: flex-start;
           background-color: #fffbe9;
-          padding-top: 20px;
           overflow-y: auto;
           height: 100vh;
         }
