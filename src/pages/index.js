@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Layout, ConfigProvider } from 'antd';
+import { Layout, ConfigProvider, Drawer } from 'antd';
 import zhCN from 'antd/lib/locale/zh_CN';
 import StyledComponentsRegistry from './component';
 import { useSession } from 'next-auth/react';
@@ -15,7 +15,10 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
   const { data: session } = useSession();
-
+  const [isDrawerVisible, setIsDrawerVisible] = useState(false);
+  const [dreamHistory, setDreamHistory] = useState([]);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isArrowRight, setIsArrowRight] = useState(false);
   useEffect(() => {
     setIsHydrated(true);
     const fetchData = async () => {
@@ -32,7 +35,6 @@ export default function Home() {
             return;
           }
           const decodedChunk = new TextDecoder().decode(chunk);
-          console.log('decodedChunk=====', decodedChunk);
           setFutureWeatherText(decodedChunk);
           if (
             decodedChunk.startsWith(
@@ -73,6 +75,7 @@ export default function Home() {
     e.preventDefault();
     setIsLoading(true);
     setResponseText('');
+    let tempText = '';
 
     try {
       await fetch('/api/dream', {
@@ -97,6 +100,8 @@ export default function Home() {
             setResponseText((responseText) => {
               return responseText + utf8Decoder.decode(chunk, { stream: true });
             });
+
+            tempText += utf8Decoder.decode(chunk, { stream: true });
             console.log(
               'Received data chunk',
               utf8Decoder.decode(chunk, { stream: true }),
@@ -107,6 +112,11 @@ export default function Home() {
           });
         })
         .catch(console.error);
+
+      setDreamHistory((dreamHistory) => [
+        ...dreamHistory,
+        { dream, response: tempText },
+      ]);
       const response2 = await axios.post(
         `/api/storage`,
         {
@@ -124,21 +134,53 @@ export default function Home() {
     }
   };
 
+  const showDrawer = () => {
+    setIsDrawerVisible(true);
+  };
+
+  const closeDrawer = () => {
+    setIsDrawerVisible(false);
+  };
+
   return (
     <Layout style={{ backgroundColor: '#fffbe9' }}>
       <ConfigProvider locale={zhCN}>
         <div className="container">
           {isHydrated && (
-            <StyledComponentsRegistry
-              dream={dream}
-              setDream={setDream}
-              handleSubmit={handleSubmit}
-              response={responseText}
-              isLoading={isLoading}
-              loadingTexts={loadingTexts}
-              weatherText={weatherText}
-              futureWeatherText={futureWeatherText}
-            />
+            <>
+              <Drawer
+                title="解梦记录"
+                placement="right"
+                closable={false}
+                onClose={closeDrawer}
+                visible={isDrawerVisible}
+              >
+                <ul>
+                  {dreamHistory.map((item, index) => (
+                    <li key={index}>
+                      <strong>梦境：</strong> {item.dream}
+                      <br />
+                      <strong>解梦结果：</strong> {item.response}
+                    </li>
+                  ))}
+                </ul>
+              </Drawer>
+
+              <StyledComponentsRegistry
+                dream={dream}
+                setDream={setDream}
+                handleSubmit={handleSubmit}
+                response={responseText}
+                isLoading={isLoading}
+                loadingTexts={loadingTexts}
+                weatherText={weatherText}
+                futureWeatherText={futureWeatherText}
+              />
+
+              <button className="history-button" onClick={showDrawer}>
+                历史
+              </button>
+            </>
           )}
         </div>
       </ConfigProvider>
@@ -151,6 +193,25 @@ export default function Home() {
           background-color: #fffbe9;
           overflow-y: auto;
           height: 100vh;
+        }
+        .history-button {
+          position: absolute;
+          top: 10px;
+          right: 240px;
+          height: 40px;
+          padding: 10px 20px;
+          background-color: rgba(255, 255, 255, 0.6);
+          color: rgba(0, 0, 0, 0.75);
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+
+          transition: background-color 0.3s ease;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .history-button:hover {
+          background-color: #e0e0e0;
         }
       `}</style>
     </Layout>
