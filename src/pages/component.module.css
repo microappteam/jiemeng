@@ -1,7 +1,6 @@
 ﻿.content {
   display: flex;
   flex-direction: column;
-  background-color: #fffbe9;
   padding: 12px;
   text-align: center;
   width: 90%;
@@ -22,7 +21,6 @@
 }
 
 .welcome {
-  
   font-size: 16px;
   align-self: flex-end;
   text-align: right;

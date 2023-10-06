@@ -161,14 +161,14 @@ const WeatherDisplay = ({ weatherText, futureWeatherText }) => {
           width: '200px',
           height: '100px',
           overflow: 'auto',
-          border: 'none', // 移除边框
+          border: 'none',
           borderRadius: '4px',
           padding: '10px',
           backgroundColor: 'rgba(255,255,255,0.6)',
-          boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', // 添加阴影效果
+          boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
           opacity: showFutureWeather ? 1 : 0,
           transition: 'top 0.3s, opacity 0.3s',
-          color: 'rgba(0,0,0,0.65)', // 修改字体颜色
+          color: 'rgba(0,0,0,0.65)',
           backdropFilter: 'blur(4px)',
         }}
       >
