@@ -51,7 +51,7 @@ export default function YourPage({
       const interval = setInterval(() => {
         const randomIndex = Math.floor(Math.random() * loadingTexts.length);
         setButtonText(loadingTexts[randomIndex]);
-      }, 10000);
+      });
 
       return () => {
         clearInterval(interval);

@@ -48,9 +48,9 @@ const WeatherDisplay = ({ weatherText, futureWeatherText }) => {
       const formattedText = (
         <>
           {city}
-          <> </>
+          <span style={{ margin: '0 5px' }}></span>
           {temperature}°C
-          <> </>
+          <span style={{ margin: '0 5px' }}></span>
           {weatherIcon}
         </>
       );
@@ -95,7 +95,9 @@ const WeatherDisplay = ({ weatherText, futureWeatherText }) => {
         return (
           <div key={index}>
             <div>{dateDescription}</div>
+
             <div>{dayWeatherIcon}</div>
+
             <div>{dayweather}</div>
             <div>{`${nighttemp} - ${daytemp}°`}</div>
           </div>
@@ -133,17 +135,23 @@ const WeatherDisplay = ({ weatherText, futureWeatherText }) => {
           width: '200px',
           height: '40px',
           overflow: 'auto',
-          border: '1px solid black',
+          border: 'none',
           borderRadius: '4px',
           padding: '10px',
-          backgroundColor: '#f0f0f0',
+          backgroundColor: 'rgba(255,255,255,0.6)',
           boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+          color: 'rgba(0,0,0,0.65)',
+          backdropFilter: 'blur(4px)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
         }}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
         {formattedWeatherText}
       </label>
+
       <div
         style={{
           display: 'flex',
@@ -153,13 +161,15 @@ const WeatherDisplay = ({ weatherText, futureWeatherText }) => {
           width: '200px',
           height: '100px',
           overflow: 'auto',
-          border: '1px solid black',
+          border: 'none', // 移除边框
           borderRadius: '4px',
           padding: '10px',
-          backgroundColor: '#f0f0f0',
-          boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+          backgroundColor: 'rgba(255,255,255,0.6)',
+          boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', // 添加阴影效果
           opacity: showFutureWeather ? 1 : 0,
           transition: 'top 0.3s, opacity 0.3s',
+          color: 'rgba(0,0,0,0.65)', // 修改字体颜色
+          backdropFilter: 'blur(4px)',
         }}
       >
         <div style={{ flex: 1 }}>{formattedFutureWeatherText[0]}</div>
