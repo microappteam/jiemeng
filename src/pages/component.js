@@ -48,14 +48,8 @@ export default function YourPage({
   useEffect(() => {
     setIsInputDisabled(isLoading);
     if (isLoading) {
-      const interval = setInterval(() => {
-        const randomIndex = Math.floor(Math.random() * loadingTexts.length);
-        setButtonText(loadingTexts[randomIndex]);
-      });
-
-      return () => {
-        clearInterval(interval);
-      };
+      const randomIndex = Math.floor(Math.random() * loadingTexts.length);
+      setButtonText(loadingTexts[randomIndex]);
     } else {
       setButtonText('解梦');
     }
