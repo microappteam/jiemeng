@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@ant-design/cssinjs": "^1.16.1",
+    "@ant-design/pro-components": "^2.6.28",
     "@prisma/client": "^5.1.1",
     "@types/node": "20.4.2",
     "@types/react": "18.2.15",

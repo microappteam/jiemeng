@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Layout, ConfigProvider } from 'antd';
+import { Layout, ConfigProvider, Drawer, Table, Button } from 'antd';
+import { ProTable } from '@ant-design/pro-components';
 import zhCN from 'antd/lib/locale/zh_CN';
 import StyledComponentsRegistry from './component';
 import { useSession } from 'next-auth/react';
@@ -15,6 +16,8 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
   const { data: session } = useSession();
+  const [isDrawerVisible, setIsDrawerVisible] = useState(false);
+  const [dreamHistory, setDreamHistory] = useState([]);
 
   useEffect(() => {
     setIsHydrated(true);
@@ -32,7 +35,6 @@ export default function Home() {
             return;
           }
           const decodedChunk = new TextDecoder().decode(chunk);
-          console.log('decodedChunk=====', decodedChunk);
           setFutureWeatherText(decodedChunk);
           if (
             decodedChunk.startsWith(
@@ -55,6 +57,28 @@ export default function Home() {
     fetchData();
   }, []);
 
+  const params = {
+    // 定义需要自带的参数
+    pageSize: 10, // 例如 pageSize 和 current
+    current: 1,
+    // 其他参数根据需要添加
+  };
+
+  // 定义异步请求函数 request
+  const fetchData = async (params, sort, filter) => {
+    // 在这里进行数据转化或修改参数
+    const msg = await myQuery({
+      page: params.current,
+      pageSize: params.pageSize,
+    });
+
+    return {
+      data: msg.result,
+      success: true, // 成功时请返回 true
+      total: msg.total, // 如果是分页，请传递 total
+    };
+  };
+
   const loadingTexts = [
     'Loading...',
     '正在询问周公...',
@@ -73,9 +97,10 @@ export default function Home() {
     e.preventDefault();
     setIsLoading(true);
     setResponseText('');
+    let tempText = '';
 
     try {
-      /* await fetch('/api/dream', {
+      await fetch('/api/dream', {
         method: 'POST',
         body: JSON.stringify({ dream }),
         headers: {
@@ -83,12 +108,9 @@ export default function Home() {
         },
       })
         .then((response) => {
-          // 如果不等于200，说明网络请求错了，不再继续
           if (response.status !== 200) return;
-          // 获取 reader
           const reader = response.body.getReader();
 
-          // 读取数据
           return reader.read().then(function process({ done, value: chunk }) {
             if (done) {
               console.log('Stream finished');
@@ -97,17 +119,23 @@ export default function Home() {
             setResponseText((responseText) => {
               return responseText + utf8Decoder.decode(chunk, { stream: true });
             });
+
+            tempText += utf8Decoder.decode(chunk, { stream: true });
             console.log(
               'Received data chunk',
               utf8Decoder.decode(chunk, { stream: true }),
             );
 
-            // 读取下一段数据
             return reader.read().then(process);
           });
         })
         .catch(console.error);
-         const response2 = await axios.post(
+
+      setDreamHistory((dreamHistory) => [
+        ...dreamHistory,
+        { dream, response: tempText },
+      ]);
+      const response2 = await axios.post(
         `/api/storage`,
         {
           dream,
@@ -117,7 +145,6 @@ export default function Home() {
         { timeout: 10000 },
       );
       console.log('response2', response2.data);
-*/
     } catch (error) {
       console.error(error);
     } finally {
@@ -125,21 +152,97 @@ export default function Home() {
     }
   };
 
+  const handleDelete = (index) => {
+    const newDreamHistory = [...dreamHistory];
+    newDreamHistory.splice(index, 1);
+    setDreamHistory(newDreamHistory);
+  };
+
+  const showDrawer = () => {
+    setIsDrawerVisible(true);
+  };
+
+  const closeDrawer = () => {
+    setIsDrawerVisible(false);
+  };
+
   return (
-    <Layout>
+    <Layout style={{ backgroundColor: '#fffbe9' }}>
       <ConfigProvider locale={zhCN}>
         <div className="container">
           {isHydrated && (
-            <StyledComponentsRegistry
-              dream={dream}
-              setDream={setDream}
-              handleSubmit={handleSubmit}
-              response={responseText}
-              isLoading={isLoading}
-              loadingTexts={loadingTexts}
-              weatherText={weatherText}
-              futureWeatherText={futureWeatherText}
-            />
+            <>
+              <Drawer
+                title="解梦记录"
+                placement="right"
+                closable={false}
+                onClose={closeDrawer}
+                visible={isDrawerVisible}
+                width={1200}
+              >
+                <ProTable
+                  params={params}
+                  request={async (
+                    // 第一个参数 params 查询表单和 params 参数的结合
+                    // 第一个参数中一定会有 pageSize 和  current ，这两个参数是 antd 的规范
+                    params,
+                  ) => {
+                    // 这里需要返回一个 Promise,在返回之前你可以进行数据转化
+                    // 如果需要转化参数可以在这里进行修改
+                    const msg = await myQuery({
+                      page: params.current,
+                      pageSize: params.pageSize,
+                    });
+                    return {
+                      data: msg.result,
+                      // success 请返回 true，
+                      // 不然 table 会停止解析数据，即使有数据
+                      success: boolean,
+                      // 不传会使用 data 的长度，如果是分页一定要传
+                      total: number,
+                    };
+                  }}
+                  columns={[
+                    {
+                      title: '梦境',
+                      dataIndex: 'dream',
+                      key: 'dream',
+                    },
+                    {
+                      title: '解梦结果',
+                      dataIndex: 'response',
+                      key: 'response',
+                    },
+                    {
+                      title: '操作',
+                      valueType: 'option',
+                      render: (_, record, index, action) => [
+                        <a key="delete" onClick={() => handleDelete(index)}>
+                          删除
+                        </a>,
+                      ],
+                    },
+                  ]}
+                  dataSource={dreamHistory}
+                  rowKey="dream"
+                />
+              </Drawer>
+
+              <StyledComponentsRegistry
+                dream={dream}
+                setDream={setDream}
+                handleSubmit={handleSubmit}
+                response={responseText}
+                isLoading={isLoading}
+                loadingTexts={loadingTexts}
+                weatherText={weatherText}
+                futureWeatherText={futureWeatherText}
+              />
+
+              <button className="history-button" onClick={showDrawer}>
+                历史
+              </button>
+            </>
           )}
         </div>
       </ConfigProvider>
@@ -150,9 +253,27 @@ export default function Home() {
           justify-content: center;
           align-items: flex-start;
           background-color: #fffbe9;
-          padding-top: 20px;
           overflow-y: auto;
           height: 100vh;
+        }
+        .history-button {
+          position: absolute;
+          top: 10px;
+          right: 240px;
+          height: 40px;
+          padding: 10px 20px;
+          background-color: rgba(255, 255, 255, 0.6);
+          color: rgba(0, 0, 0, 0.75);
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+
+          transition: background-color 0.3s ease;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .history-button:hover {
+          background-color: #e0e0e0;
         }
       `}</style>
     </Layout>
