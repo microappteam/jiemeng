@@ -8,6 +8,10 @@ import { preProcessFile } from 'typescript';
 
 const utf8Decoder = new TextDecoder('utf-8');
 
+const params = {
+  pageSize: 10,
+  current: 1,
+};
 export default function Home() {
   const [dream, setDream] = useState('');
   const [responseText, setResponseText] = useState('');
@@ -56,28 +60,6 @@ export default function Home() {
 
     fetchData();
   }, []);
-
-  const params = {
-    // 定义需要自带的参数
-    pageSize: 10, // 例如 pageSize 和 current
-    current: 1,
-    // 其他参数根据需要添加
-  };
-
-  // 定义异步请求函数 request
-  const fetchData = async (params, sort, filter) => {
-    // 在这里进行数据转化或修改参数
-    const msg = await myQuery({
-      page: params.current,
-      pageSize: params.pageSize,
-    });
-
-    return {
-      data: msg.result,
-      success: true, // 成功时请返回 true
-      total: msg.total, // 如果是分页，请传递 total
-    };
-  };
 
   const loadingTexts = [
     'Loading...',
@@ -189,7 +171,7 @@ export default function Home() {
                   ) => {
                     // 这里需要返回一个 Promise,在返回之前你可以进行数据转化
                     // 如果需要转化参数可以在这里进行修改
-                    const msg = await myQuery({
+                    const msg = await insertedRow({
                       page: params.current,
                       pageSize: params.pageSize,
                     });

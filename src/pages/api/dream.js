@@ -1,6 +1,6 @@
 import OpenAI from 'openai';
 import { v4 as uuidv4 } from 'uuid';
-
+import { insertedRow } from './storage';
 const openai = new OpenAI({
   apiKey: process.env.API_KEY,
 });
@@ -8,6 +8,8 @@ const openai = new OpenAI({
 export const config = {
   runtime: 'edge',
 };
+
+export const insertedRow = async (body) => {};
 
 export default async function handler(req, res) {
   if (req.method === 'POST') {
@@ -108,7 +110,11 @@ export default async function handler(req, res) {
           }
         },
       });
-
+      insertedRow({
+        dream,
+        response: '',
+        username: userId,
+      });
       return new Response(stream);
     } catch (error) {
       const res = new Response(
