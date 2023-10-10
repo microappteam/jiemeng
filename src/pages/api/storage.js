@@ -55,6 +55,19 @@ export default async function handler(req, res) {
       console.error('Error executing query:', error);
       res.status(500).json({ error: 'Internal server error' });
     }
+  } else if (req.method === 'GET') {
+    try {
+      const client = await pool.connect();
+      const query = 'SELECT * FROM dreams';
+      const result = await client.query(query);
+
+      client.release();
+
+      res.status(200).json(result.rows);
+    } catch (error) {
+      console.error('Error executing query:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
   } else {
     res.status(405).json({ error: 'Method Not Allowed' });
   }

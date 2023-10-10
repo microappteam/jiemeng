@@ -171,17 +171,14 @@ export default function Home() {
                   ) => {
                     // 这里需要返回一个 Promise,在返回之前你可以进行数据转化
                     // 如果需要转化参数可以在这里进行修改
-                    const msg = await insertedRow({
-                      page: params.current,
-                      pageSize: params.pageSize,
-                    });
+                    const msg = await fetch('/api/storage');
                     return {
-                      data: msg.result,
+                      data: msg,
                       // success 请返回 true，
                       // 不然 table 会停止解析数据，即使有数据
-                      success: boolean,
+                      success: true,
                       // 不传会使用 data 的长度，如果是分页一定要传
-                      total: number,
+                      //total: number,
                     };
                   }}
                   columns={[

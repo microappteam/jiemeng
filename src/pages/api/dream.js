@@ -1,6 +1,6 @@
 import OpenAI from 'openai';
 import { v4 as uuidv4 } from 'uuid';
-import { insertedRow } from './storage';
+
 const openai = new OpenAI({
   apiKey: process.env.API_KEY,
 });
