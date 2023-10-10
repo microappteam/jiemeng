@@ -26,10 +26,6 @@ const insertedRow = async (body) => {
 };
 
 export { insertedRow };
-<<<<<<< HEAD
-=======
-
->>>>>>> main
 export default async function handler(req, res) {
   if (req.method === 'POST') {
     const { dream, response, username } = req.body;
@@ -71,10 +67,7 @@ export default async function handler(req, res) {
       console.error('Error executing query:', error);
       res.status(500).json({ error: 'Internal server error' });
     }
-<<<<<<< HEAD
-=======
   } else {
     res.status(405).json({ error: 'Method Not Allowed' });
->>>>>>> main
   }
 }
