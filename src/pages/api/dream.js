@@ -9,6 +9,7 @@ export const config = {
   runtime: 'edge',
 };
 
+export const insertedRow = async (body) => {};
 export default async function handler(req, res) {
   if (req.method === 'POST') {
     try {
@@ -108,7 +109,11 @@ export default async function handler(req, res) {
           }
         },
       });
-
+      insertedRow({
+        dream,
+        response: '',
+        username: userId,
+      });
       return new Response(stream);
     } catch (error) {
       const res = new Response(
