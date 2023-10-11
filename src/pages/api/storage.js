@@ -6,7 +6,7 @@ const pool = new Pool({
   connectionString: process.env.POSTGRES_URL + '?sslmode=require',
 });
 
-const insertedRow = async (body) => {
+export const insertedRow = async (body) => {
   const { dream, response, username } = body;
 
   const client = await pool.connect();
@@ -20,12 +20,10 @@ const insertedRow = async (body) => {
     moment().tz('Asia/shanghai').format(),
   ];
   const result = await client.query(query, values);
-  client.release();
-  console.log('Inserted row:', result.rows[o]);
+  //client.release();
   return result;
 };
 
-export { insertedRow };
 export default async function handler(req, res) {
   if (req.method === 'POST') {
     const { dream, response, username } = req.body;

@@ -171,7 +171,7 @@ export default function Home() {
                   ) => {
                     // 这里需要返回一个 Promise,在返回之前你可以进行数据转化
                     // 如果需要转化参数可以在这里进行修改
-                    const msg = await fetch('/api/storage');
+                    const msg = await fetch('/api/storage', { method: 'GET' });
                     return {
                       data: msg,
                       // success 请返回 true，
