@@ -19,9 +19,6 @@ export const insertedRow = async (body) => {
     username,
     moment().tz('Asia/shanghai').format(),
   ];
-  const result = await client.query(query, values);
-  //client.release();
-  return result;
 };
 
 export default async function handler(req, res) {
