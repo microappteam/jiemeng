@@ -42,8 +42,6 @@ export default async function handler(req, res) {
 
       client.release();
 
-      console.log('Inserted row:', result.rows[0]);
-
       res.status(200).json(result.rows[0]);
     } catch (error) {
       console.error('Error executing query:', error);
