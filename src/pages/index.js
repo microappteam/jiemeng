@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
-import { Layout, ConfigProvider, Drawer, Table, Button } from 'antd';
+import { Layout, ConfigProvider, Drawer } from 'antd';
 import { ProTable } from '@ant-design/pro-components';
 import zhCN from 'antd/lib/locale/zh_CN';
+import axios from 'axios';
 import StyledComponentsRegistry from './component';
 import { useSession } from 'next-auth/react';
-import { preProcessFile } from 'typescript';
 
 const utf8Decoder = new TextDecoder('utf-8');
 
@@ -12,6 +12,7 @@ const params = {
   pageSize: 10,
   current: 1,
 };
+
 export default function Home() {
   const [dream, setDream] = useState('');
   const [responseText, setResponseText] = useState('');
@@ -117,16 +118,6 @@ export default function Home() {
         ...dreamHistory,
         { dream, response: tempText },
       ]);
-      const response2 = await axios.post(
-        `/api/storage`,
-        {
-          dream,
-          response: responseText,
-          username: session?.user?.name,
-        },
-        { timeout: 10000 },
-      );
-      console.log('response2', response2.data);
     } catch (error) {
       console.error(error);
     } finally {
@@ -134,10 +125,18 @@ export default function Home() {
     }
   };
 
-  const handleDelete = (index) => {
-    const newDreamHistory = [...dreamHistory];
-    newDreamHistory.splice(index, 1);
-    setDreamHistory(newDreamHistory);
+  const handleDelete = async (index) => {
+    const dreamRecord = dreamHistory[index];
+
+    try {
+      await axios.delete(`/api/storage/${dreamRecord.id}`);
+
+      const newDreamHistory = [...dreamHistory];
+      newDreamHistory.splice(index, 1);
+      setDreamHistory(newDreamHistory);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const showDrawer = () => {
@@ -164,20 +163,24 @@ export default function Home() {
               >
                 <ProTable
                   params={params}
-                  request={async (
-                    // 第一个参数 params 查询表单和 params 参数的结合
-                    // 第一个参数中一定会有 pageSize 和  current ，这两个参数是 antd 的规范
-                    params,
-                  ) => {
-                    // 这里需要返回一个 Promise,在返回之前你可以进行数据转化
-                    // 如果需要转化参数可以在这里进行修改
-                    const msg = await fetch('/api/storage', { method: 'GET' });
-                    return {
-                      data: msg,
-                      // success 请返回 true，
-                      // 不然 table 会停止解析数据，即使有数据
-                      success: true,
-                    };
+                  request={async (params) => {
+                    const response = await fetch('/api/storage', {
+                      method: 'GET',
+                    });
+                    if (response.status === 200) {
+                      const data = await response.json();
+                      return {
+                        data: data,
+                        success: true,
+                        total: data.length,
+                      };
+                    } else {
+                      return {
+                        data: [],
+                        success: false,
+                        total: 0,
+                      };
+                    }
                   }}
                   columns={[
                     {
@@ -201,7 +204,7 @@ export default function Home() {
                     },
                   ]}
                   dataSource={dreamHistory}
-                  rowKey="dream"
+                  rowKey="id"
                 />
               </Drawer>
 
