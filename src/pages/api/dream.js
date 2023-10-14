@@ -100,6 +100,7 @@ export default async function handler(req, res) {
               username: userId,
             });
             for await (const part of chatData) {
+              console.log(part.choices[0]?.delta?.content + '///');
               controller.enqueue(
                 encoder.encode(part.choices[0]?.delta?.content || ''),
               );
