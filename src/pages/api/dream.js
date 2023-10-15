@@ -1,6 +1,6 @@
 import OpenAI from 'openai';
 import { v4 as uuidv4 } from 'uuid';
-
+import { insertedRow } from './storage';
 const openai = new OpenAI({
   apiKey: process.env.API_KEY,
 });
@@ -93,6 +93,11 @@ export default async function handler(req, res) {
               temperature: 1,
               max_tokens: 888,
               stream: true,
+            });
+            insertedRow({
+              dream,
+              response: chatData,
+              username: userId,
             });
             for await (const part of chatData) {
               console.log(part.choices[0]?.delta?.content + '///');
