@@ -1,3 +1,4 @@
+import require from 'crypto-browserify';
 import { Pool } from 'pg';
 import moment from 'moment-timezone';
 require('dotenv').config();
