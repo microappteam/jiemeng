@@ -1,4 +1,8 @@
-import require from 'crypto-browserify';
+import { Polyfill } from 'crypto-browserify';
+
+// 设置 'crypto' 模块为 'crypto-browserify' 的 Polyfill
+globalThis.crypto = Polyfill;
+
 import { Pool } from 'pg';
 import moment from 'moment-timezone';
 require('dotenv').config();
