@@ -18,13 +18,12 @@ export default function Home() {
   const [weatherText, setWeatherText] = useState();
   const [futureWeatherText, setFutureWeatherText] = useState();
   const [isLoading, setIsLoading] = useState(false);
-  const [isHydrated, setIsHydrated] = useState(false);
+
   const { data: session } = useSession();
-  const [isDrawerVisible, setIsDrawerVisible] = useState(false);
+  const [open, setOpen] = useState(false);
   const [dreamHistory, setDreamHistory] = useState([]);
 
   useEffect(() => {
-    setIsHydrated(true);
     const fetchData = async () => {
       try {
         const response = await fetch('/api/weather', {
@@ -141,88 +140,31 @@ export default function Home() {
   };
 
   const showDrawer = () => {
-    setIsDrawerVisible(true);
+    setOpen(true);
   };
-
-  const closeDrawer = () => {
-    setIsDrawerVisible(false);
+  const onClose = () => {
+    setOpen(false);
   };
 
   return (
     <Layout style={{ backgroundColor: '#fffbe9' }}>
       <ConfigProvider locale={zhCN}>
         <div className="container">
-          {isHydrated && (
-            <>
-              <Drawer
-                title="解梦记录"
-                placement="right"
-                closable={false}
-                onClose={closeDrawer}
-                visible={isDrawerVisible}
-                width={1200}
-              >
-                <ProTable
-                  params={params}
-                  request={async (
-                    // 第一个参数 params 查询表单和 params 参数的结合
-                    // 第一个参数中一定会有 pageSize 和  current ，这两个参数是 antd 的规范
-                    params,
-                  ) => {
-                    // 这里需要返回一个 Promise,在返回之前你可以进行数据转化
-                    // 如果需要转化参数可以在这里进行修改
-                    const msg = await fetch('/api/storage', { method: 'GET' });
-                    return {
-                      data: msg,
-                      // success 请返回 true，
-                      // 不然 table 会停止解析数据，即使有数据
-                      success: true,
-                      // 不传会使用 data 的长度，如果是分页一定要传
-                      //total: number,
-                    };
-                  }}
-                  columns={[
-                    {
-                      title: '梦境',
-                      dataIndex: 'dream',
-                      key: 'dream',
-                    },
-                    {
-                      title: '解梦结果',
-                      dataIndex: 'response',
-                      key: 'response',
-                    },
-                    {
-                      title: '操作',
-                      valueType: 'option',
-                      render: (_, record, index, action) => [
-                        <a key="delete" onClick={() => handleDelete(index)}>
-                          删除
-                        </a>,
-                      ],
-                    },
-                  ]}
-                  dataSource={dreamHistory}
-                  rowKey="dream"
-                />
-              </Drawer>
-
-              <StyledComponentsRegistry
-                dream={dream}
-                setDream={setDream}
-                handleSubmit={handleSubmit}
-                response={responseText}
-                isLoading={isLoading}
-                loadingTexts={loadingTexts}
-                weatherText={weatherText}
-                futureWeatherText={futureWeatherText}
-              />
-
-              <button className="history-button" onClick={showDrawer}>
-                历史
-              </button>
-            </>
-          )}
+          <StyledComponentsRegistry
+            open={open}
+            dream={dream}
+            setDream={setDream}
+            handleSubmit={handleSubmit}
+            response={responseText}
+            isLoading={isLoading}
+            loadingTexts={loadingTexts}
+            weatherText={weatherText}
+            futureWeatherText={futureWeatherText}
+            showDrawer={showDrawer}
+            onClose={onClose}
+            dreamHistory={dreamHistory}
+            handleDelete={handleDelete}
+          />
         </div>
       </ConfigProvider>
 
@@ -234,25 +176,6 @@ export default function Home() {
           background-color: #fffbe9;
           overflow-y: auto;
           height: 100vh;
-        }
-        .history-button {
-          position: absolute;
-          top: 10px;
-          right: 240px;
-          height: 40px;
-          padding: 10px 20px;
-          background-color: rgba(255, 255, 255, 0.6);
-          color: rgba(0, 0, 0, 0.75);
-          border: none;
-          border-radius: 4px;
-          cursor: pointer;
-
-          transition: background-color 0.3s ease;
-          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .history-button:hover {
-          background-color: #e0e0e0;
         }
       `}</style>
     </Layout>

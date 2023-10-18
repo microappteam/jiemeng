@@ -9,10 +9,11 @@ import styles from './component.module.css';
 import StyledComponentsRegistry from '../styles/registry';
 import RootLayout from '../layout';
 import WeatherDisplay from './WeatherDisplay';
-
+import DreamHistoryDrawer from './DreamHistoryDrawer'; // 引入新组件
 const { TextArea } = Input;
 
 export default function YourPage({
+  open,
   dream,
   setDream,
   handleSubmit,
@@ -21,6 +22,10 @@ export default function YourPage({
   loadingTexts,
   weatherText,
   futureWeatherText,
+  showDrawer,
+  onClose,
+  dreamHistory,
+  handleDelete,
 }) {
   const router = useRouter();
   const { data: session } = useSession();
@@ -137,6 +142,21 @@ export default function YourPage({
               </Button>
             )}
           </form>
+          {isSignedIn && (
+            <div>
+              <DreamHistoryDrawer
+                open={open}
+                showDrawer={showDrawer}
+                onClose={onClose}
+                dreamHistory={dreamHistory}
+                handleDelete={handleDelete}
+              />
+              <WeatherDisplay
+                weatherText={weatherText}
+                futureWeatherText={futureWeatherText}
+              />
+            </div>
+          )}
           {response && (
             <div className={styles.response}>
               <p>解梦结果：</p>
@@ -145,10 +165,6 @@ export default function YourPage({
               </ReactMarkdown>
             </div>
           )}
-          <WeatherDisplay
-            weatherText={weatherText}
-            futureWeatherText={futureWeatherText}
-          />{' '}
         </div>
       </StyledComponentsRegistry>
     </RootLayout>
