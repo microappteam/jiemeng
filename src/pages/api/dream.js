@@ -1,6 +1,6 @@
 import OpenAI from 'openai';
 import { v4 as uuidv4 } from 'uuid';
-import { insertedRow } from './storage';
+
 const openai = new OpenAI({
   apiKey: process.env.API_KEY,
 });
@@ -15,7 +15,7 @@ export default async function handler(req, res) {
       const { dream } = await req.json();
 
       const userId = uuidv4();
-      const rolePlayText = ``;
+      const rolePlayText = ` `;
       const encoder = new TextEncoder();
       const stream = new ReadableStream({
         async start(controller) {
@@ -31,13 +31,7 @@ export default async function handler(req, res) {
               max_tokens: 888,
               stream: true,
             });
-            insertedRow({
-              dream,
-              response: chatData,
-              username: userId,
-            });
             for await (const part of chatData) {
-              console.log(part.choices[0]?.delta?.content + '///');
               controller.enqueue(
                 encoder.encode(part.choices[0]?.delta?.content || ''),
               );
