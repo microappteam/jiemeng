@@ -21,7 +21,7 @@ export default async function handler(req, res) {
         async start(controller) {
           try {
             const response1 = await fetch(
-              'https://restapi.amap.com/v3/weather/weatherInfo?key=6c1146b9f46f7b3ca27878e074ffa4f2&city=${longitude},${latitude}',
+              'https://restapi.amap.com/v3/weather/weatherInfo?key=6c1146b9f46f7b3ca27878e074ffa4f2&city=320102',
             );
 
             const currentWeather = await response1.json();
@@ -29,7 +29,7 @@ export default async function handler(req, res) {
             controller.enqueue(encoder.encode(JSON.stringify(currentWeather)));
 
             const response2 = await fetch(
-              'https://restapi.amap.com/v3/weather/weatherInfo?key=6c1146b9f46f7b3ca27878e074ffa4f2&city=${longitude},${latitude}&extensions=all',
+              'https://restapi.amap.com/v3/weather/weatherInfo?key=6c1146b9f46f7b3ca27878e074ffa4f2&city=320102&extensions=all',
             );
 
             const futureWeather = await response2.json();

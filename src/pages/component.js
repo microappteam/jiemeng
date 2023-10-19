@@ -9,7 +9,7 @@ import styles from './component.module.css';
 import StyledComponentsRegistry from '../styles/registry';
 import RootLayout from '../layout';
 import WeatherDisplay from './WeatherDisplay';
-import DreamHistoryDrawer from './DreamHistoryDrawer'; // 引入新组件
+import DreamHistoryDrawer from './DreamHistoryDrawer';
 const { TextArea } = Input;
 
 export default function YourPage({

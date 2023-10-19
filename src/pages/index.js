@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Layout, ConfigProvider, Drawer, Table, Button } from 'antd';
-import { ProTable } from '@ant-design/pro-components';
+
 import zhCN from 'antd/lib/locale/zh_CN';
 import StyledComponentsRegistry from './component';
 import { useSession } from 'next-auth/react';
@@ -8,22 +8,19 @@ import { preProcessFile } from 'typescript';
 
 const utf8Decoder = new TextDecoder('utf-8');
 
-const params = {
-  pageSize: 10,
-  current: 1,
-};
 export default function Home() {
   const [dream, setDream] = useState('');
   const [responseText, setResponseText] = useState('');
   const [weatherText, setWeatherText] = useState();
   const [futureWeatherText, setFutureWeatherText] = useState();
   const [isLoading, setIsLoading] = useState(false);
-
+  const [isHydrated, setIsHydrated] = useState(false);
   const { data: session } = useSession();
   const [open, setOpen] = useState(false);
   const [dreamHistory, setDreamHistory] = useState([]);
 
   useEffect(() => {
+    setIsHydrated(true);
     const fetchData = async () => {
       try {
         const response = await fetch('/api/weather', {
@@ -150,21 +147,23 @@ export default function Home() {
     <Layout style={{ backgroundColor: '#fffbe9' }}>
       <ConfigProvider locale={zhCN}>
         <div className="container">
-          <StyledComponentsRegistry
-            open={open}
-            dream={dream}
-            setDream={setDream}
-            handleSubmit={handleSubmit}
-            response={responseText}
-            isLoading={isLoading}
-            loadingTexts={loadingTexts}
-            weatherText={weatherText}
-            futureWeatherText={futureWeatherText}
-            showDrawer={showDrawer}
-            onClose={onClose}
-            dreamHistory={dreamHistory}
-            handleDelete={handleDelete}
-          />
+          {isHydrated && (
+            <StyledComponentsRegistry
+              dream={dream}
+              setDream={setDream}
+              handleSubmit={handleSubmit}
+              response={responseText}
+              isLoading={isLoading}
+              loadingTexts={loadingTexts}
+              weatherText={weatherText}
+              futureWeatherText={futureWeatherText}
+              open={open}
+              showDrawer={showDrawer}
+              onClose={onClose}
+              dreamHistory={dreamHistory}
+              handleDelete={handleDelete}
+            />
+          )}
         </div>
       </ConfigProvider>
 
