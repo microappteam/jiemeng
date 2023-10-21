@@ -20,6 +20,17 @@ export default function Home() {
   const [dreamHistory, setDreamHistory] = useState([]);
 
   useEffect(() => {
+    if ('geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition(function (position) {
+        var latitude = position.coords.latitude;
+        var longitude = position.coords.longitude;
+
+        console.log('您的纬度是: ' + latitude);
+        console.log('您的经度是: ' + longitude);
+      });
+    } else {
+      console.log('浏览器不支持地理位置信息获取');
+    }
     setIsHydrated(true);
     const fetchData = async () => {
       try {
