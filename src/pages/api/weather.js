@@ -2,40 +2,19 @@ export const config = {
   runtime: 'edge',
 };
 
-async function getUserLocation() {
-  return new Promise((resolve, reject) => {
-    if ('geolocation' in navigator) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          resolve(position.coords);
-        },
-        (error) => {
-          console.error('Error getting user location:', error);
-          reject(error);
-        },
-      );
-    } else {
-      console.error('Geolocation is not available in this browser.');
-      reject('Geolocation not available');
-    }
-  });
-}
-
 export default async function handler(req, res) {
-  if (req.method === 'GET') {
+  if (req.method === 'POST') {
     try {
-      const userLocation = await getUserLocation();
-
-      const location = `${userLocation.longitude},${userLocation.latitude}`;
-      console.log('User Location:', location);
-
+      const requestBody = await req.json();
+      const location = requestBody.location;
       const regeoQueryUrl = `https://restapi.amap.com/v3/geocode/regeo?key=6c1146b9f46f7b3ca27878e074ffa4f2&location=${location}&extensions=base`;
-
       const regeoResponse = await fetch(regeoQueryUrl);
       const regeoData = await regeoResponse.json();
+      console.log(regeoData);
 
       if (regeoData.status === '1') {
         const adcode = regeoData.regeocode.addressComponent.adcode;
+        console.log('adcode', adcode);
 
         const currentWeatherUrl = `https://restapi.amap.com/v3/weather/weatherInfo?key=6c1146b9f46f7b3ca27878e074ffa4f2&city=${adcode}`;
         const futureWeatherUrl = `https://restapi.amap.com/v3/weather/weatherInfo?key=6c1146b9f46f7b3ca27878e074ffa4f2&city=${adcode}&extensions=all`;

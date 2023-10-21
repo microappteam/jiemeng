@@ -20,24 +20,23 @@ export default function Home() {
   const [dreamHistory, setDreamHistory] = useState([]);
 
   useEffect(() => {
-    if ('geolocation' in navigator) {
-      navigator.geolocation.getCurrentPosition(function (position) {
-        var latitude = position.coords.latitude;
-        var longitude = position.coords.longitude;
-
-        console.log('您的纬度是: ' + latitude);
-        console.log('您的经度是: ' + longitude);
-      });
-    } else {
-      console.log('浏览器不支持地理位置信息获取');
-    }
     setIsHydrated(true);
-    const fetchData = async () => {
+
+    // 获取地理位置信息
+    navigator.geolocation.getCurrentPosition(async (position) => {
+      const { latitude, longitude } = position.coords;
+      const location = `${longitude},${latitude}`;
+
       try {
         const response = await fetch('/api/weather', {
-          method: 'GET',
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+
+          body: JSON.stringify({ location }),
         });
-        if (response.status !== 200) return;
+
         const reader = response.body.getReader();
 
         const process = ({ done, value: chunk }) => {
@@ -63,9 +62,7 @@ export default function Home() {
       } catch (error) {
         console.error(error);
       }
-    };
-
-    fetchData();
+    });
   }, []);
 
   const loadingTexts = [
