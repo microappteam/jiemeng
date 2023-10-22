@@ -10,11 +10,9 @@ export default async function handler(req, res) {
       const regeoQueryUrl = `https://restapi.amap.com/v3/geocode/regeo?key=6c1146b9f46f7b3ca27878e074ffa4f2&location=${location}&extensions=base`;
       const regeoResponse = await fetch(regeoQueryUrl);
       const regeoData = await regeoResponse.json();
-      console.log(regeoData);
 
       if (regeoData.status === '1') {
         const adcode = regeoData.regeocode.addressComponent.adcode;
-        console.log('adcode', adcode);
 
         const currentWeatherUrl = `https://restapi.amap.com/v3/weather/weatherInfo?key=6c1146b9f46f7b3ca27878e074ffa4f2&city=${adcode}`;
         const futureWeatherUrl = `https://restapi.amap.com/v3/weather/weatherInfo?key=6c1146b9f46f7b3ca27878e074ffa4f2&city=${adcode}&extensions=all`;
@@ -28,11 +26,9 @@ export default async function handler(req, res) {
               controller.enqueue(
                 encoder.encode(JSON.stringify(currentWeather)),
               );
-              console.log('当前天气  ', currentWeather);
 
               const response2 = await fetch(futureWeatherUrl);
               const futureWeather = await response2.json();
-              console.log('未来天气  ', futureWeather);
 
               controller.enqueue(encoder.encode(JSON.stringify(futureWeather)));
               controller.close();

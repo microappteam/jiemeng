@@ -22,7 +22,6 @@ export default function Home() {
   useEffect(() => {
     setIsHydrated(true);
 
-    // 获取地理位置信息
     navigator.geolocation.getCurrentPosition(async (position) => {
       const { latitude, longitude } = position.coords;
       const location = `${longitude},${latitude}`;
@@ -53,7 +52,6 @@ export default function Home() {
           ) {
             setWeatherText(decodedChunk);
           }
-          console.log('Received data chunk', decodedChunk);
 
           return reader.read().then(process);
         };
