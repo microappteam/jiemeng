@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Layout, ConfigProvider, Drawer, Table, Button } from 'antd';
-
+import axios from 'axios';
 import zhCN from 'antd/lib/locale/zh_CN';
 import StyledComponentsRegistry from './component';
 import { useSession } from 'next-auth/react';
@@ -119,6 +119,7 @@ export default function Home() {
         ...dreamHistory,
         { dream, response: tempText },
       ]);
+      console.log('111');
       const response2 = await axios.post(
         `/api/storage`,
         {
@@ -128,6 +129,7 @@ export default function Home() {
         },
         { timeout: 10000 },
       );
+      console.log('123123');
       console.log('response2', response2.data);
     } catch (error) {
       console.error(error);
