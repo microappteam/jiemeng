@@ -28,13 +28,19 @@ const DreamHistoryDrawer = ({
           <ProTable
             params={params}
             request={async (params) => {
-              const msg = await fetch('/api/storage', { method: 'GET' });
+              const response = await fetch('/api/storage', { method: 'GET' });
+              const data = await response.json();
               return {
-                data: msg,
+                data: data,
                 success: true,
               };
             }}
             columns={[
+              {
+                title: 'ID',
+                dataIndex: 'id',
+                key: 'id',
+              },
               {
                 title: '梦境',
                 dataIndex: 'dream',
@@ -55,8 +61,7 @@ const DreamHistoryDrawer = ({
                 ],
               },
             ]}
-            dataSource={dreamHistory}
-            rowKey="dream"
+            rowKey="id"
           />
         </Drawer>
         <button className="history-button" onClick={showDrawer}>

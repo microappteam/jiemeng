@@ -8,6 +8,7 @@ const pool = new Pool({
 
 export default async function handler(req, res) {
   if (req.method === 'POST') {
+    // 处理POST请求
     const { dream, response, username } = req.body;
     console.log('Received data:', dream, response, username);
     try {
@@ -27,6 +28,23 @@ export default async function handler(req, res) {
       console.log('Inserted row:', result.rows[0]);
 
       res.status(200).json(result.rows[0]);
+    } catch (error) {
+      console.error('Error executing query:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  } else if (req.method === 'GET') {
+    // 处理GET请求
+    try {
+      const client = await pool.connect();
+      const query = 'SELECT * FROM dreams';
+      const result = await client.query(query);
+
+      client.release();
+
+      res.status(200).json(result.rows);
+      console.log('////////////////////////////////////////////');
+      console.log(result.rows);
+      console.log('GET compelete');
     } catch (error) {
       console.error('Error executing query:', error);
       res.status(500).json({ error: 'Internal server error' });
