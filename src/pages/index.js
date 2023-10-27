@@ -139,9 +139,10 @@ export default function Home() {
   };
 
   const handleDelete = (index) => {
-    const newDreamHistory = [...dreamHistory];
-    newDreamHistory.splice(index, 1);
-    setDreamHistory(newDreamHistory);
+    const updatedData = [...data];
+    const itemToDelete = updatedData[index];
+
+    itemToDelete.status = true;
   };
 
   const showDrawer = () => {

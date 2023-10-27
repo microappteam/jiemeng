@@ -33,7 +33,6 @@ export default async function handler(req, res) {
       res.status(500).json({ error: 'Internal server error' });
     }
   } else if (req.method === 'GET') {
-    // 处理GET请求
     try {
       const client = await pool.connect();
       const query = 'SELECT * FROM dreams';
@@ -42,9 +41,6 @@ export default async function handler(req, res) {
       client.release();
 
       res.status(200).json(result.rows);
-      console.log('////////////////////////////////////////////');
-      console.log(result.rows);
-      console.log('GET compelete');
     } catch (error) {
       console.error('Error executing query:', error);
       res.status(500).json({ error: 'Internal server error' });

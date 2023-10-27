@@ -31,7 +31,7 @@ const DreamHistoryDrawer = ({
               const response = await fetch('/api/storage', { method: 'GET' });
               const data = await response.json();
               return {
-                data: data,
+                data: data.filter((item) => item.status === true), // 仅显示状态为 true 的数据
                 success: true,
               };
             }}
@@ -54,11 +54,16 @@ const DreamHistoryDrawer = ({
               {
                 title: '操作',
                 valueType: 'option',
-                render: (_, record, index, action) => [
-                  <a key="delete" onClick={() => handleDelete(index)}>
-                    删除
-                  </a>,
-                ],
+                render: (_, record, index, action) => {
+                  if (record.status === false) {
+                    return (
+                      <a key="delete" onClick={() => handleDelete(index)}>
+                        删除
+                      </a>
+                    );
+                  }
+                  return null;
+                },
               },
             ]}
             rowKey="id"
