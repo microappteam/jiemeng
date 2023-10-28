@@ -18,9 +18,22 @@ export default function Home() {
   const { data: session } = useSession();
   const [open, setOpen] = useState(false);
   const [dreamHistory, setDreamHistory] = useState([]);
-
+  const [dreamData, setDreamData] = useState([]);
   useEffect(() => {
     setIsHydrated(true);
+
+    fetch('/api/storage', { method: 'GET' })
+      .then((response) => response.json())
+      .then((responseData) => {
+        const dataWithStatus = responseData.map((item) => ({
+          ...item,
+          status: true,
+        }));
+        setDreamData(dataWithStatus);
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+      });
 
     navigator.geolocation.getCurrentPosition(async (position) => {
       const { latitude, longitude } = position.coords;
@@ -138,11 +151,10 @@ export default function Home() {
     }
   };
 
-  const handleDelete = (index) => {
-    const updatedData = [...data];
-    const itemToDelete = updatedData[index];
-
-    itemToDelete.status = true;
+  const handleDelete = (record) => {
+    // 在点击删除后，从 dataSource 中移除相应的数据项
+    const updatedData = dreamData.filter((item) => item.id !== record.id);
+    setDreamData(updatedData); // 假设你有一个设置数据的函数来更新 dataSource
   };
 
   const showDrawer = () => {
@@ -171,6 +183,7 @@ export default function Home() {
               onClose={onClose}
               dreamHistory={dreamHistory}
               handleDelete={handleDelete}
+              dreamData={dreamData}
             />
           )}
         </div>

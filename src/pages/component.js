@@ -26,6 +26,7 @@ export default function YourPage({
   onClose,
   dreamHistory,
   handleDelete,
+  dreamData,
 }) {
   const router = useRouter();
   const { data: session } = useSession();
@@ -150,6 +151,7 @@ export default function YourPage({
                 onClose={onClose}
                 dreamHistory={dreamHistory}
                 handleDelete={handleDelete}
+                dreamData={dreamData}
               />
               <WeatherDisplay
                 weatherText={weatherText}

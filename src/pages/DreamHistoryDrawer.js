@@ -6,8 +6,8 @@ const DreamHistoryDrawer = ({
   open,
   showDrawer,
   onClose,
-  dreamHistory,
   handleDelete,
+  dreamData,
 }) => {
   const params = {
     pageSize: 10,
@@ -27,20 +27,7 @@ const DreamHistoryDrawer = ({
         >
           <ProTable
             params={params}
-            request={async (params) => {
-              const response = await fetch('/api/storage', { method: 'GET' });
-              const data = await response.json();
-              return {
-                data: data.filter((item) => item.status === true), // 仅显示状态为 true 的数据
-                success: true,
-              };
-            }}
             columns={[
-              {
-                title: 'ID',
-                dataIndex: 'id',
-                key: 'id',
-              },
               {
                 title: '梦境',
                 dataIndex: 'dream',
@@ -55,9 +42,9 @@ const DreamHistoryDrawer = ({
                 title: '操作',
                 valueType: 'option',
                 render: (_, record, index, action) => {
-                  if (record.status === false) {
+                  if (record.status === true) {
                     return (
-                      <a key="delete" onClick={() => handleDelete(index)}>
+                      <a key="delete" onClick={() => handleDelete(record)}>
                         删除
                       </a>
                     );
@@ -67,6 +54,7 @@ const DreamHistoryDrawer = ({
               },
             ]}
             rowKey="id"
+            dataSource={dreamData}
           />
         </Drawer>
         <button className="history-button" onClick={showDrawer}>
