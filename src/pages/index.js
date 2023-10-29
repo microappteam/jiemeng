@@ -25,11 +25,7 @@ export default function Home() {
     fetch('/api/storage', { method: 'GET' })
       .then((response) => response.json())
       .then((responseData) => {
-        const dataWithStatus = responseData.map((item) => ({
-          ...item,
-          status: true,
-        }));
-        setDreamData(dataWithStatus);
+        setDreamData(responseData);
       })
       .catch((error) => {
         console.error('Error fetching data:', error);
@@ -152,9 +148,35 @@ export default function Home() {
   };
 
   const handleDelete = (record) => {
-    // 在点击删除后，从 dataSource 中移除相应的数据项
-    const updatedData = dreamData.filter((item) => item.id !== record.id);
-    setDreamData(updatedData); // 假设你有一个设置数据的函数来更新 dataSource
+    // 从 record 中获取 id
+    const id = record.id;
+
+    // 发送 PUT 请求来更新数据状态为 false
+    fetch(`/api/storage`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ id, status: false }), // 更新为 false
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.message === 'Record updated') {
+          // 更新成功后，刷新数据或从前端中移除该项
+          // 这取决于你的需求，你可以选择刷新整个数据或只是将该项从前端移除
+          // 这里只是一个示例
+          const updatedData = dreamData.map((item) => {
+            if (item.id === id) {
+              return { ...item, status: false };
+            }
+            return item;
+          });
+          setDreamData(updatedData);
+        }
+      })
+      .catch((error) => {
+        console.error('Error updating data:', error);
+      });
   };
 
   const showDrawer = () => {
