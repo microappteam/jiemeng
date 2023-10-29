@@ -148,29 +148,19 @@ export default function Home() {
   };
 
   const handleDelete = (record) => {
-    // 从 record 中获取 id
     const id = record.id;
 
-    // 发送 PUT 请求来更新数据状态为 false
     fetch(`/api/storage`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ id, status: false }), // 更新为 false
+      body: JSON.stringify({ id, status: false }),
     })
       .then((response) => response.json())
       .then((data) => {
         if (data.message === 'Record updated') {
-          // 更新成功后，刷新数据或从前端中移除该项
-          // 这取决于你的需求，你可以选择刷新整个数据或只是将该项从前端移除
-          // 这里只是一个示例
-          const updatedData = dreamData.map((item) => {
-            if (item.id === id) {
-              return { ...item, status: false };
-            }
-            return item;
-          });
+          const updatedData = dreamData.filter((item) => item.id !== id);
           setDreamData(updatedData);
         }
       })
@@ -178,7 +168,6 @@ export default function Home() {
         console.error('Error updating data:', error);
       });
   };
-
   const showDrawer = () => {
     setOpen(true);
   };
