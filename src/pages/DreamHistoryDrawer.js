@@ -13,7 +13,7 @@ const DreamHistoryDrawer = ({
     pageSize: 10,
     current: 1,
   };
-
+  const filteredData = dreamData.filter((item) => item.status === true);
   return (
     <div>
       <>
@@ -54,7 +54,7 @@ const DreamHistoryDrawer = ({
               },
             ]}
             rowKey="id"
-            dataSource={dreamData}
+            dataSource={filteredData}
           />
         </Drawer>
         <button className="history-button" onClick={showDrawer}>
