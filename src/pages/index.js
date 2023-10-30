@@ -19,6 +19,7 @@ export default function Home() {
   const [open, setOpen] = useState(false);
   const [dreamHistory, setDreamHistory] = useState([]);
   const [dreamData, setDreamData] = useState([]);
+  const [deleteLoading, setDeleteLoading] = useState(false);
   useEffect(() => {
     setIsHydrated(true);
 
@@ -148,6 +149,7 @@ export default function Home() {
   };
 
   const handleDelete = (record) => {
+    setDeleteLoading(true);
     const id = record.id;
 
     fetch(`/api/storage`, {
@@ -195,6 +197,8 @@ export default function Home() {
               dreamHistory={dreamHistory}
               handleDelete={handleDelete}
               dreamData={dreamData}
+              deleteLoading={deleteLoading}
+              setDeleteLoading={setDeleteLoading}
             />
           )}
         </div>

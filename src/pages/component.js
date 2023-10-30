@@ -27,6 +27,8 @@ export default function YourPage({
   dreamHistory,
   handleDelete,
   dreamData,
+  deleteLoading,
+  setDeleteLoading,
 }) {
   const router = useRouter();
   const { data: session } = useSession();
@@ -152,6 +154,8 @@ export default function YourPage({
                 dreamHistory={dreamHistory}
                 handleDelete={handleDelete}
                 dreamData={dreamData}
+                deleteLoading={deleteLoading}
+                setDeleteLoading={setDeleteLoading}
               />
               <WeatherDisplay
                 weatherText={weatherText}

@@ -1,4 +1,4 @@
-import { Drawer, Table } from 'antd';
+import { Drawer, Spin } from 'antd';
 import { ProTable } from '@ant-design/pro-components';
 import React from 'react';
 
@@ -8,6 +8,7 @@ const DreamHistoryDrawer = ({
   onClose,
   handleDelete,
   dreamData,
+  deleteLoading,
 }) => {
   const params = {
     pageSize: 10,
@@ -44,9 +45,19 @@ const DreamHistoryDrawer = ({
                 render: (_, record, index, action) => {
                   if (record.status === true) {
                     return (
-                      <a key="delete" onClick={() => handleDelete(record)}>
-                        删除
-                      </a>
+                      <span>
+                        {deleteLoading ? (
+                          <Spin size="small" />
+                        ) : (
+                          <a
+                            key="delete"
+                            onClick={() => handleDelete(record)}
+                            style={{ cursor: 'pointer' }}
+                          >
+                            删除
+                          </a>
+                        )}
+                      </span>
                     );
                   }
                   return null;
