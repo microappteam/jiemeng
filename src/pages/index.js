@@ -4,7 +4,7 @@ import axios from 'axios';
 import zhCN from 'antd/lib/locale/zh_CN';
 import StyledComponentsRegistry from './component';
 import { useSession } from 'next-auth/react';
-import { preProcessFile } from 'typescript';
+//import { preProcessFile } from 'typescript';
 
 const utf8Decoder = new TextDecoder('utf-8');
 

@@ -64,47 +64,57 @@ const WeatherDisplay = ({ weatherText, futureWeatherText }) => {
 
   const formatFutureWeatherText = (futureWeatherText) => {
     try {
-      const { forecasts } = JSON.parse(futureWeatherText);
-      const { city, casts } = forecasts[0];
+      const parsedData = JSON.parse(futureWeatherText);
 
-      const formattedText = casts.slice(1).map((cast, index) => {
-        const { dayweather, nightweather, daytemp, nighttemp } = cast;
+      if (
+        parsedData &&
+        parsedData.forecasts &&
+        parsedData.forecasts.length > 0
+      ) {
+        const { city, casts } = parsedData.forecasts[0];
 
-        const today = new Date();
-        const futureDate = new Date(today);
-        futureDate.setDate(today.getDate() + index + 1);
+        const formattedText = casts.slice(1).map((cast, index) => {
+          const { dayweather, nightweather, daytemp, nighttemp } = cast;
 
-        let dateDescription;
-        switch (index + 1) {
-          case 1:
-            dateDescription = '明天';
-            break;
-          case 2:
-            dateDescription = '后天';
-            break;
-          case 3:
-            dateDescription = '大后天';
-            break;
-          default:
-            dateDescription = `${
-              futureDate.getMonth() + 1
-            }/${futureDate.getDate()}`;
-            break;
-        }
-        const dayWeatherIcon = getWeatherIcon(dayweather);
-        return (
-          <div key={index}>
-            <div>{dateDescription}</div>
+          const today = new Date();
+          const futureDate = new Date(today);
+          futureDate.setDate(today.getDate() + index + 1);
 
-            <div>{dayWeatherIcon}</div>
+          let dateDescription;
+          switch (index + 1) {
+            case 1:
+              dateDescription = '明天';
+              break;
+            case 2:
+              dateDescription = '后天';
+              break;
+            case 3:
+              dateDescription = '大后天';
+              break;
+            default:
+              dateDescription = `${
+                futureDate.getMonth() + 1
+              }/${futureDate.getDate()}`;
+              break;
+          }
+          const dayWeatherIcon = getWeatherIcon(dayweather);
+          return (
+            <div key={index}>
+              <div>{dateDescription}</div>
 
-            <div>{dayweather}</div>
-            <div>{`${nighttemp} - ${daytemp}°`}</div>
-          </div>
-        );
-      });
+              <div>{dayWeatherIcon}</div>
 
-      return formattedText;
+              <div>{dayweather}</div>
+              <div>{`${nighttemp} - ${daytemp}°`}</div>
+            </div>
+          );
+        });
+
+        return formattedText;
+      } else {
+        console.error('Invalid futureWeatherText JSON: Invalid structure');
+        return '';
+      }
     } catch (error) {
       console.error('Invalid futureWeatherText JSON:', error);
       return '';

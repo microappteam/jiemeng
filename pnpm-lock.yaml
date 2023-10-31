@@ -34,7 +34,7 @@ dependencies:
     version: 0.4.2(kysely@0.26.3)
   ai:
     specifier: ^2.2.18
-    version: 2.2.18(react@18.2.0)(solid-js@1.8.3)(svelte@4.2.2)(vue@3.3.7)
+    version: 2.2.18(react@18.2.0)(solid-js@1.8.5)(svelte@4.2.2)(vue@3.3.7)
   antd:
     specifier: ^5.10.2
     version: 5.10.2(react-dom@18.2.0)(react@18.2.0)
@@ -116,9 +116,6 @@ dependencies:
   tailwindcss:
     specifier: 3.3.3
     version: 3.3.3
-  typescript:
-    specifier: 5.2.2
-    version: 5.2.2
   uuid:
     specifier: ^9.0.1
     version: 9.0.1
@@ -133,6 +130,9 @@ devDependencies:
   prettier:
     specifier: ^3.0.3
     version: 3.0.3
+  typescript:
+    specifier: 5.2.2
+    version: 5.2.2
 
 packages:
 
@@ -943,8 +943,8 @@ packages:
       '@types/ms': 0.7.33
     dev: false
 
-  /@types/estree@1.0.3:
-    resolution: {integrity: sha512-CS2rOaoQ/eAgAfcTfq6amKG7bsN+EMcgGY4FAFQdvSj2y1ixvOZTUA9mOtCai7E1SYu283XNw7urKK30nP3wkQ==}
+  /@types/estree@1.0.4:
+    resolution: {integrity: sha512-2JwWnHK9H+wUZNorf2Zr6ves96WHoWDJIftkcxPKsS7Djta6Zu519LarhRNljPXkpsZR2ZMwNCPeW7omW07BJw==}
     dev: false
 
   /@types/hast@2.3.7:
@@ -1236,6 +1236,12 @@ packages:
     hasBin: true
     dev: false
 
+  /acorn@8.11.2:
+    resolution: {integrity: sha512-nc0Axzp/0FILLEVsm4fNwLCwMttvhEI263QtVPQcbpfZZ3ts0hLsZGOpE6czNlid7CJ9MlyH8reXkpsf3YUY4w==}
+    engines: {node: '>=0.4.0'}
+    hasBin: true
+    dev: false
+
   /add-dom-event-listener@1.1.0:
     resolution: {integrity: sha512-WCxx1ixHT0GQU9hb0KI/mhgRQhnU+U3GvwY6ZvVjYq8rsihIGoaIOUbY0yMPBxLH5MDtr0kz3fisWGNcbWW7Jw==}
     dependencies:
@@ -1249,7 +1255,7 @@ packages:
       humanize-ms: 1.2.1
     dev: false
 
-  /ai@2.2.18(react@18.2.0)(solid-js@1.8.3)(svelte@4.2.2)(vue@3.3.7):
+  /ai@2.2.18(react@18.2.0)(solid-js@1.8.5)(svelte@4.2.2)(vue@3.3.7):
     resolution: {integrity: sha512-29wVZp58HJwCST90pvHLo3gTJ+BObD93mVsL5aHU7q01K8hD+wD7RaVDekmlDnHTXdCOYndoRdFeE0OHsdpheQ==}
     engines: {node: '>=14.6'}
     peerDependencies:
@@ -1270,8 +1276,8 @@ packages:
       eventsource-parser: 1.0.0
       nanoid: 3.3.6
       react: 18.2.0
-      solid-js: 1.8.3
-      solid-swr-store: 0.10.7(solid-js@1.8.3)(swr-store@0.10.6)
+      solid-js: 1.8.5
+      solid-swr-store: 0.10.7(solid-js@1.8.5)(swr-store@0.10.6)
       sswr: 2.0.0(svelte@4.2.2)
       svelte: 4.2.2
       swr: 2.2.0(react@18.2.0)
@@ -1760,8 +1766,8 @@ packages:
     resolution: {integrity: sha512-7qJWqItLA8/VPVlKJlFXU+NBlo/qyfs39aJcuMT/2ere32ZqvF5OSxgdM5xOfJJ7O429gg2HM47y8v9P+9wrNw==}
     dependencies:
       '@jridgewell/sourcemap-codec': 1.4.15
-      '@types/estree': 1.0.3
-      acorn: 8.10.0
+      '@types/estree': 1.0.4
+      acorn: 8.11.2
       estree-walker: 3.0.3
       periscopic: 3.1.0
     dev: false
@@ -2451,7 +2457,7 @@ packages:
   /estree-walker@3.0.3:
     resolution: {integrity: sha512-7RUKfXgSMMkzt6ZuXmqapOurLGPPfgj6l9uRZ7lRGolvk0y2yocc35LdcxKC5PQZdn2DMqioAQ2NoWcrTKmm6g==}
     dependencies:
-      '@types/estree': 1.0.3
+      '@types/estree': 1.0.4
     dev: false
 
   /esutils@2.0.3:
@@ -3008,7 +3014,7 @@ packages:
   /is-reference@3.0.2:
     resolution: {integrity: sha512-v3rht/LgVcsdZa3O2Nqs+NMowLOxeOm7Ay9+/ARQ2F+qEoANRcqrjAZKGN0v8ymUetZGgkp26LTnGT7H0Qo9Pg==}
     dependencies:
-      '@types/estree': 1.0.3
+      '@types/estree': 1.0.4
     dev: false
 
   /is-regex@1.1.4:
@@ -4284,7 +4290,7 @@ packages:
   /periscopic@3.1.0:
     resolution: {integrity: sha512-vKiQ8RRtkl9P+r/+oefh25C3fhybptkHKCZSPlcXiJux2tJF55GnEj3BVn4A5gKfq9NWWXXrxkHBwVPUfH0opw==}
     dependencies:
-      '@types/estree': 1.0.3
+      '@types/estree': 1.0.4
       estree-walker: 3.0.3
       is-reference: 3.0.2
     dev: false
@@ -5378,8 +5384,8 @@ packages:
       lru-cache: 6.0.0
     dev: false
 
-  /seroval@0.11.6:
-    resolution: {integrity: sha512-Lhy+94CNcNza6d0vM4sQKLsaLaX39q0ELqIBc7DkdiFljI8Q387Yb+xKgLxRWXs7uuHRu/ZcJ64xfVJ0Bj4LPg==}
+  /seroval@0.12.0:
+    resolution: {integrity: sha512-5qvk9WRORhvOdHVtDv6KEKrTDbG8O9nODDdETfQcJ0u9iaZJ6mAASg/nQgPzqtuV9cqln9msE7WNmD+sJomrIw==}
     engines: {node: '>=10'}
     dev: false
 
@@ -5439,21 +5445,21 @@ packages:
     engines: {node: '>=8'}
     dev: false
 
-  /solid-js@1.8.3:
-    resolution: {integrity: sha512-S7ztgPI6X4tUaWmhZe3aDx0E9F6FGxXVU8NsocrPqqUbxHoFi8eTPlDMcenOlXuo2ITQ97j2URaj0StfJci4KQ==}
+  /solid-js@1.8.5:
+    resolution: {integrity: sha512-xvtJvzJzWbsn35oKFhW9kNwaxG1Z/YLMsDp4tLVcYZTMPzvzQ8vEZuyDQ6nt7xDArVgZJ7TUFrJUwrui/oq53A==}
     dependencies:
       csstype: 3.1.2
-      seroval: 0.11.6
+      seroval: 0.12.0
     dev: false
 
-  /solid-swr-store@0.10.7(solid-js@1.8.3)(swr-store@0.10.6):
+  /solid-swr-store@0.10.7(solid-js@1.8.5)(swr-store@0.10.6):
     resolution: {integrity: sha512-A6d68aJmRP471aWqKKPE2tpgOiR5fH4qXQNfKIec+Vap+MGQm3tvXlT8n0I8UgJSlNAsSAUuw2VTviH2h3Vv5g==}
     engines: {node: '>=10'}
     peerDependencies:
       solid-js: ^1.2
       swr-store: ^0.10
     dependencies:
-      solid-js: 1.8.3
+      solid-js: 1.8.5
       swr-store: 0.10.6
     dev: false
 
@@ -5649,7 +5655,7 @@ packages:
       '@ampproject/remapping': 2.2.1
       '@jridgewell/sourcemap-codec': 1.4.15
       '@jridgewell/trace-mapping': 0.3.20
-      acorn: 8.10.0
+      acorn: 8.11.2
       aria-query: 5.3.0
       axobject-query: 3.2.1
       code-red: 1.0.4
@@ -5874,7 +5880,6 @@ packages:
     resolution: {integrity: sha512-mI4WrpHsbCIcwT9cF4FZvr80QUeKvsUsUvKDoR+X/7XHQH98xYD8YHZg7ANtz2GtZt/CBq2QJ0thkGJMHfqc1w==}
     engines: {node: '>=14.17'}
     hasBin: true
-    dev: false
 
   /unbox-primitive@1.0.2:
     resolution: {integrity: sha512-61pPlCD9h51VoreyJ0BReideM3MDKMKnh6+V9L08331ipq6Q8OFXZYiqP6n/tbHx4s5I9uRhcye6BrbkizkBDw==}

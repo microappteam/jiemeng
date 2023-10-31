@@ -14,7 +14,11 @@ const DreamHistoryDrawer = ({
     pageSize: 10,
     current: 1,
   };
-  const filteredData = dreamData.filter((item) => item.status === true);
+
+  const filteredData = dreamData
+    ? dreamData.filter((item) => item.status === true)
+    : [];
+
   return (
     <div>
       <>
