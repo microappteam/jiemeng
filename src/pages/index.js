@@ -4,7 +4,6 @@ import axios from 'axios';
 import zhCN from 'antd/lib/locale/zh_CN';
 import StyledComponentsRegistry from './component';
 import { useSession } from 'next-auth/react';
-//import { preProcessFile } from 'typescript';
 
 const utf8Decoder = new TextDecoder('utf-8');
 
@@ -115,10 +114,6 @@ export default function Home() {
             });
 
             tempText += utf8Decoder.decode(chunk, { stream: true });
-            console.log(
-              'Received data chunk',
-              utf8Decoder.decode(chunk, { stream: true }),
-            );
 
             return reader.read().then(process);
           });
@@ -129,7 +124,7 @@ export default function Home() {
         ...dreamHistory,
         { dream, response: tempText },
       ]);
-      console.log('111');
+
       const response2 = await axios.post(
         `/api/storage`,
         {
@@ -139,8 +134,6 @@ export default function Home() {
         },
         { timeout: 10000 },
       );
-      console.log('123123');
-      console.log('response2', response2.data);
     } catch (error) {
       console.error(error);
     } finally {
