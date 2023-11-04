@@ -64,6 +64,11 @@ const WeatherDisplay = ({ weatherText, futureWeatherText }) => {
 
   const formatFutureWeatherText = (futureWeatherText) => {
     try {
+      if (!futureWeatherText) {
+        // 如果 futureWeatherText 为 undefined 或者空，返回空文本或者其他处理方式
+        return '';
+      }
+
       const parsedData = JSON.parse(futureWeatherText);
 
       if (
