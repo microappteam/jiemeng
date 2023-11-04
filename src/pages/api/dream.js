@@ -1,6 +1,6 @@
 import OpenAI from 'openai';
 import { v4 as uuidv4 } from 'uuid';
-import { insertedRow } from './storage';
+
 const openai = new OpenAI({
   apiKey: process.env.API_KEY,
 });
@@ -15,7 +15,7 @@ export default async function handler(req, res) {
       const { dream } = await req.json();
 
       const userId = uuidv4();
-      const rolePlayText = ` 我希望你扮演周公解梦的解梦人的角色。我将给你提供梦境，请你结合梦境并做出一些合理的对现实生活的推测来解读我的梦境。
+      const rolePlayText = `我希望你扮演周公解梦的解梦人的角色。我将给你提供梦境，请你结合梦境并做出一些合理的对现实生活的推测来解读我的梦境。
 
       你的回答只需包含两部分内容，其一先重申一下梦境再做出总体的解梦，其二按分类再对梦境做出各自的简短的解读。
 
@@ -34,18 +34,6 @@ export default async function handler(req, res) {
       格式为梦境+预示着什么。
 
       下面是一些示例：
-
-      Q:梦见别人送馒头
-
-      A:\n\n梦见别人送馒头，预示着运势很不错，自己不管遇到什么问题，很快就可以解决掉。
-  
-      \n\n商人梦见别人送馒头，预示着运势很不错，生意上需要借助他人的力量，成就一些好的计划。
-      
-      \n\n办公族梦见别人送馒头，预示着运势很不佳，出现一些工作上的麻烦，同事则是不愿意帮助自己。
-      
-      \n\n学生梦见别人送馒头，预示着学习运很差，学习的成绩很不优异，心情方面非常的糟糕。
-      
-      \n\n未成年梦见别人送馒头，预示着健康运很差，自己的精神出现一些懒散的状态，还是需要好好听振奋的音乐
   
       Q:梦见富士山
   
@@ -77,8 +65,7 @@ export default async function handler(req, res) {
       
       \n\n病人梦见买彩票中大奖，病情恶化的凶兆，要想恢复健康的身体，还需要治疗一段时间，耐心等待吧。
       
-      \n\n老人梦见买彩票中大奖，此梦预兆近期梦者身体健康运势不佳，会有突发疾病缠身，平时要多注意保养和休息。
-      `;
+      \n\n老人梦见买彩票中大奖，此梦预兆近期梦者身体健康运势不佳，会有突发疾病缠身，平时要多注意保养和休息。 `;
       const encoder = new TextEncoder();
       const stream = new ReadableStream({
         async start(controller) {
@@ -94,13 +81,7 @@ export default async function handler(req, res) {
               max_tokens: 888,
               stream: true,
             });
-            insertedRow({
-              dream,
-              response: chatData,
-              username: userId,
-            });
             for await (const part of chatData) {
-              console.log(part.choices[0]?.delta?.content + '///');
               controller.enqueue(
                 encoder.encode(part.choices[0]?.delta?.content || ''),
               );

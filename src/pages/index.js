@@ -1,17 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Layout, ConfigProvider, Drawer, Table, Button } from 'antd';
-import { ProTable } from '@ant-design/pro-components';
+import axios from 'axios';
 import zhCN from 'antd/lib/locale/zh_CN';
 import StyledComponentsRegistry from './component';
 import { useSession } from 'next-auth/react';
-import { preProcessFile } from 'typescript';
 
 const utf8Decoder = new TextDecoder('utf-8');
 
-const params = {
-  pageSize: 10,
-  current: 1,
-};
 export default function Home() {
   const [dream, setDream] = useState('');
   const [responseText, setResponseText] = useState('');
@@ -20,17 +15,36 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
   const { data: session } = useSession();
-  const [isDrawerVisible, setIsDrawerVisible] = useState(false);
+  const [open, setOpen] = useState(false);
   const [dreamHistory, setDreamHistory] = useState([]);
-
+  const [dreamData, setDreamData] = useState([]);
+  const [deleteLoading, setDeleteLoading] = useState(false);
   useEffect(() => {
     setIsHydrated(true);
-    const fetchData = async () => {
+
+    fetch('/api/storage', { method: 'GET' })
+      .then((response) => response.json())
+      .then((responseData) => {
+        setDreamData(responseData);
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+      });
+
+    navigator.geolocation.getCurrentPosition(async (position) => {
+      const { latitude, longitude } = position.coords;
+      const location = `${longitude},${latitude}`;
+
       try {
         const response = await fetch('/api/weather', {
-          method: 'GET',
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+
+          body: JSON.stringify({ location }),
         });
-        if (response.status !== 200) return;
+
         const reader = response.body.getReader();
 
         const process = ({ done, value: chunk }) => {
@@ -47,7 +61,6 @@ export default function Home() {
           ) {
             setWeatherText(decodedChunk);
           }
-          console.log('Received data chunk', decodedChunk);
 
           return reader.read().then(process);
         };
@@ -56,9 +69,7 @@ export default function Home() {
       } catch (error) {
         console.error(error);
       }
-    };
-
-    fetchData();
+    });
   }, []);
 
   const loadingTexts = [
@@ -103,10 +114,6 @@ export default function Home() {
             });
 
             tempText += utf8Decoder.decode(chunk, { stream: true });
-            console.log(
-              'Received data chunk',
-              utf8Decoder.decode(chunk, { stream: true }),
-            );
 
             return reader.read().then(process);
           });
@@ -117,16 +124,16 @@ export default function Home() {
         ...dreamHistory,
         { dream, response: tempText },
       ]);
+
       const response2 = await axios.post(
         `/api/storage`,
         {
           dream,
-          response: responseText,
+          response: tempText,
           username: session?.user?.name,
         },
         { timeout: 10000 },
       );
-      console.log('response2', response2.data);
     } catch (error) {
       console.error(error);
     } finally {
@@ -134,18 +141,33 @@ export default function Home() {
     }
   };
 
-  const handleDelete = (index) => {
-    const newDreamHistory = [...dreamHistory];
-    newDreamHistory.splice(index, 1);
-    setDreamHistory(newDreamHistory);
-  };
+  const handleDelete = (record) => {
+    setDeleteLoading(true);
+    const id = record.id;
 
+    fetch(`/api/storage`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ id, status: false }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.message === 'Record updated') {
+          const updatedData = dreamData.filter((item) => item.id !== id);
+          setDreamData(updatedData);
+        }
+      })
+      .catch((error) => {
+        console.error('Error updating data:', error);
+      });
+  };
   const showDrawer = () => {
-    setIsDrawerVisible(true);
+    setOpen(true);
   };
-
-  const closeDrawer = () => {
-    setIsDrawerVisible(false);
+  const onClose = () => {
+    setOpen(false);
   };
 
   return (
@@ -153,75 +175,24 @@ export default function Home() {
       <ConfigProvider locale={zhCN}>
         <div className="container">
           {isHydrated && (
-            <>
-              <Drawer
-                title="解梦记录"
-                placement="right"
-                closable={false}
-                onClose={closeDrawer}
-                visible={isDrawerVisible}
-                width={1200}
-              >
-                <ProTable
-                  params={params}
-                  request={async (
-                    // 第一个参数 params 查询表单和 params 参数的结合
-                    // 第一个参数中一定会有 pageSize 和  current ，这两个参数是 antd 的规范
-                    params,
-                  ) => {
-                    // 这里需要返回一个 Promise,在返回之前你可以进行数据转化
-                    // 如果需要转化参数可以在这里进行修改
-                    const msg = await fetch('/api/storage', { method: 'GET' });
-                    return {
-                      data: msg,
-                      // success 请返回 true，
-                      // 不然 table 会停止解析数据，即使有数据
-                      success: true,
-                      // 不传会使用 data 的长度，如果是分页一定要传
-                      //total: number,
-                    };
-                  }}
-                  columns={[
-                    {
-                      title: '梦境',
-                      dataIndex: 'dream',
-                      key: 'dream',
-                    },
-                    {
-                      title: '解梦结果',
-                      dataIndex: 'response',
-                      key: 'response',
-                    },
-                    {
-                      title: '操作',
-                      valueType: 'option',
-                      render: (_, record, index, action) => [
-                        <a key="delete" onClick={() => handleDelete(index)}>
-                          删除
-                        </a>,
-                      ],
-                    },
-                  ]}
-                  dataSource={dreamHistory}
-                  rowKey="dream"
-                />
-              </Drawer>
-
-              <StyledComponentsRegistry
-                dream={dream}
-                setDream={setDream}
-                handleSubmit={handleSubmit}
-                response={responseText}
-                isLoading={isLoading}
-                loadingTexts={loadingTexts}
-                weatherText={weatherText}
-                futureWeatherText={futureWeatherText}
-              />
-
-              <button className="history-button" onClick={showDrawer}>
-                历史
-              </button>
-            </>
+            <StyledComponentsRegistry
+              dream={dream}
+              setDream={setDream}
+              handleSubmit={handleSubmit}
+              response={responseText}
+              isLoading={isLoading}
+              loadingTexts={loadingTexts}
+              weatherText={weatherText}
+              futureWeatherText={futureWeatherText}
+              open={open}
+              showDrawer={showDrawer}
+              onClose={onClose}
+              dreamHistory={dreamHistory}
+              handleDelete={handleDelete}
+              dreamData={dreamData}
+              deleteLoading={deleteLoading}
+              setDeleteLoading={setDeleteLoading}
+            />
           )}
         </div>
       </ConfigProvider>
@@ -234,25 +205,6 @@ export default function Home() {
           background-color: #fffbe9;
           overflow-y: auto;
           height: 100vh;
-        }
-        .history-button {
-          position: absolute;
-          top: 10px;
-          right: 240px;
-          height: 40px;
-          padding: 10px 20px;
-          background-color: rgba(255, 255, 255, 0.6);
-          color: rgba(0, 0, 0, 0.75);
-          border: none;
-          border-radius: 4px;
-          cursor: pointer;
-
-          transition: background-color 0.3s ease;
-          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .history-button:hover {
-          background-color: #e0e0e0;
         }
       `}</style>
     </Layout>
