@@ -10,7 +10,6 @@ export default async function handler(req, res) {
   if (req.method === 'POST') {
     const { dream, response, username } = req.body;
 
-    console.log('Received data:', dream, response, username);
     try {
       const client = await pool.connect();
       const query =
@@ -24,8 +23,6 @@ export default async function handler(req, res) {
       const result = await client.query(query, values);
 
       client.release();
-
-      console.log('Inserted row:', result.rows[0]);
 
       res.status(200).json(result.rows[0]);
     } catch (error) {
