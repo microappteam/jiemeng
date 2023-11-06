@@ -65,7 +65,6 @@ const WeatherDisplay = ({ weatherText, futureWeatherText }) => {
   const formatFutureWeatherText = (futureWeatherText) => {
     try {
       if (!futureWeatherText) {
-        // 如果 futureWeatherText 为 undefined 或者空，返回空文本或者其他处理方式
         return '';
       }
 
@@ -136,8 +135,13 @@ const WeatherDisplay = ({ weatherText, futureWeatherText }) => {
     setShowFutureWeather(false);
   };
 
-  const formattedWeatherText = formatWeatherText(weatherText);
-  const formattedFutureWeatherText = formatFutureWeatherText(futureWeatherText);
+  // 检查 weatherText 和 futureWeatherText 是否为空，渲染 loading 或实际数据
+  const formattedWeatherText = weatherText
+    ? formatWeatherText(weatherText)
+    : 'Loading...';
+  const formattedFutureWeatherText = futureWeatherText
+    ? formatFutureWeatherText(futureWeatherText)
+    : ['Loading...', 'Loading...', 'Loading...'];
 
   return (
     <>
@@ -187,9 +191,11 @@ const WeatherDisplay = ({ weatherText, futureWeatherText }) => {
           backdropFilter: 'blur(4px)',
         }}
       >
-        <div style={{ flex: 1 }}>{formattedFutureWeatherText[0]}</div>
-        <div style={{ flex: 1 }}>{formattedFutureWeatherText[1]}</div>
-        <div style={{ flex: 1 }}>{formattedFutureWeatherText[2]}</div>
+        {formattedFutureWeatherText.map((text, index) => (
+          <div key={index} style={{ flex: 1 }}>
+            {text}
+          </div>
+        ))}
       </div>
     </>
   );
