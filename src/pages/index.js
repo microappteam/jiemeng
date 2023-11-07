@@ -93,47 +93,46 @@ export default function Home() {
     let tempText = '';
 
     try {
-      await fetch('/api/dream', {
+      const response = await fetch('/api/dream', {
         method: 'POST',
         body: JSON.stringify({ dream }),
         headers: {
           'Content-Type': 'application/json',
         },
-      })
-        .then((response) => {
-          if (response.status !== 200) return;
-          const reader = response.body.getReader();
+      });
 
-          return reader.read().then(function process({ done, value: chunk }) {
-            if (done) {
-              console.log('Stream finished');
-              return;
-            }
-            setResponseText((responseText) => {
-              return responseText + utf8Decoder.decode(chunk, { stream: true });
-            });
+      if (response.status === 200) {
+        const reader = response.body.getReader();
 
-            tempText += utf8Decoder.decode(chunk, { stream: true });
-
-            return reader.read().then(process);
+        const processData = ({ done, value: chunk }) => {
+          if (done) {
+            console.log('Stream finished');
+            return;
+          }
+          setResponseText((responseText) => {
+            return responseText + utf8Decoder.decode(chunk, { stream: true });
           });
-        })
-        .catch(console.error);
 
-      setDreamHistory((dreamHistory) => [
-        ...dreamHistory,
-        { dream, response: tempText },
-      ]);
+          tempText += utf8Decoder.decode(chunk, { stream: true });
 
-      const response2 = await axios.post(
-        `/api/storage`,
-        {
-          dream,
-          response: tempText,
-          username: session?.user?.name,
-        },
-        { timeout: 10000 },
-      );
+          return reader.read().then(processData);
+        };
+
+        await processData(await reader.read());
+
+        const newDreamData = [...dreamData, { dream, response: tempText }];
+        setDreamData(newDreamData);
+
+        await axios.post(
+          `/api/storage`,
+          {
+            dream,
+            response: tempText,
+            username: session?.user?.name,
+          },
+          { timeout: 10000 },
+        );
+      }
     } catch (error) {
       console.error(error);
     } finally {

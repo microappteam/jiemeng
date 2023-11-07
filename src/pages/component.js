@@ -35,7 +35,7 @@ export default function YourPage({
   const [username, setUsername] = useState('');
   const [buttonText, setButtonText] = useState('解梦');
   const [isInputDisabled, setIsInputDisabled] = useState(false);
-
+  const [filteredData, setFilteredData] = useState([]);
   const isSignedIn = session !== null;
 
   const handleLogin = async () => {
@@ -54,6 +54,10 @@ export default function YourPage({
   };
 
   useEffect(() => {
+    setButtonText('解梦');
+  }, [dream]);
+
+  useEffect(() => {
     setIsInputDisabled(isLoading);
     if (isLoading) {
       const randomIndex = Math.floor(Math.random() * loadingTexts.length);
@@ -66,6 +70,15 @@ export default function YourPage({
   useEffect(() => {
     setButtonText('解梦');
   }, [dream]);
+  useEffect(() => {
+    if (deleteLoading) {
+      const timer = setTimeout(() => {
+        setDeleteLoading(false);
+      }, 500);
+
+      return () => clearTimeout(timer);
+    }
+  }, [deleteLoading]);
 
   useEffect(() => {
     if (session?.user?.name) {
@@ -154,7 +167,6 @@ export default function YourPage({
                 dreamHistory={dreamHistory}
                 handleDelete={handleDelete}
                 dreamData={dreamData}
-                deleteLoading={deleteLoading}
                 setDeleteLoading={setDeleteLoading}
               />
               <WeatherDisplay

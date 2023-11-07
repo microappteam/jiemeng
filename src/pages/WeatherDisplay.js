@@ -8,7 +8,8 @@ import {
   FaSmog,
   FaQuestionCircle,
 } from 'react-icons/fa';
-
+import { Spin } from 'antd';
+import { LoadingOutlined } from '@ant-design/icons';
 const WeatherDisplay = ({ weatherText, futureWeatherText }) => {
   const getWeatherIcon = (weather) => {
     switch (weather) {
@@ -31,6 +32,10 @@ const WeatherDisplay = ({ weatherText, futureWeatherText }) => {
 
   const formatWeatherText = (weatherText) => {
     try {
+      if (!weatherText) {
+        return '';
+      }
+
       const { lives } = JSON.parse(weatherText);
       const {
         reporttime,
@@ -116,7 +121,6 @@ const WeatherDisplay = ({ weatherText, futureWeatherText }) => {
 
         return formattedText;
       } else {
-        console.error('Invalid futureWeatherText JSON: Invalid structure');
         return '';
       }
     } catch (error) {
@@ -135,13 +139,8 @@ const WeatherDisplay = ({ weatherText, futureWeatherText }) => {
     setShowFutureWeather(false);
   };
 
-  // 检查 weatherText 和 futureWeatherText 是否为空，渲染 loading 或实际数据
-  const formattedWeatherText = weatherText
-    ? formatWeatherText(weatherText)
-    : 'Loading...';
-  const formattedFutureWeatherText = futureWeatherText
-    ? formatFutureWeatherText(futureWeatherText)
-    : ['Loading...', 'Loading...', 'Loading...'];
+  const formattedWeatherText = formatWeatherText(weatherText);
+  const formattedFutureWeatherText = formatFutureWeatherText(futureWeatherText);
 
   return (
     <>
@@ -168,7 +167,19 @@ const WeatherDisplay = ({ weatherText, futureWeatherText }) => {
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-        {formattedWeatherText}
+        {formattedWeatherText ? (
+          formattedWeatherText
+        ) : (
+          // eslint-disable-next-line react/jsx-no-undef
+          <Spin
+            indicator={
+              <LoadingOutlined
+                style={{ fontSize: 24, color: 'rgba(0,0,0,0.65)' }}
+                spin
+              />
+            }
+          />
+        )}
       </label>
 
       <div
@@ -191,11 +202,48 @@ const WeatherDisplay = ({ weatherText, futureWeatherText }) => {
           backdropFilter: 'blur(4px)',
         }}
       >
-        {formattedFutureWeatherText.map((text, index) => (
-          <div key={index} style={{ flex: 1 }}>
-            {text}
+        {formattedFutureWeatherText[0] ? (
+          <div style={{ flex: 1 }}>{formattedFutureWeatherText[0]}</div>
+        ) : (
+          <div style={{ flex: 1 }}>
+            <Spin
+              indicator={
+                <LoadingOutlined
+                  style={{ fontSize: 24, color: 'rgba(0,0,0,0.65)' }}
+                  spin
+                />
+              }
+            />
           </div>
-        ))}
+        )}
+        {formattedFutureWeatherText[1] ? (
+          <div style={{ flex: 1 }}>{formattedFutureWeatherText[1]}</div>
+        ) : (
+          <div style={{ flex: 1 }}>
+            <Spin
+              indicator={
+                <LoadingOutlined
+                  style={{ fontSize: 24, color: 'rgba(0,0,0,0.65)' }}
+                  spin
+                />
+              }
+            />
+          </div>
+        )}
+        {formattedFutureWeatherText[2] ? (
+          <div style={{ flex: 1 }}>{formattedFutureWeatherText[2]}</div>
+        ) : (
+          <div style={{ flex: 1 }}>
+            <Spin
+              indicator={
+                <LoadingOutlined
+                  style={{ fontSize: 24, color: 'rgba(0,0,0,0.65)' }}
+                  spin
+                />
+              }
+            />
+          </div>
+        )}
       </div>
     </>
   );

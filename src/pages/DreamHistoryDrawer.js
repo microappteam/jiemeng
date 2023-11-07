@@ -1,6 +1,7 @@
 import { Drawer, Spin } from 'antd';
 import { ProTable } from '@ant-design/pro-components';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { LoadingOutlined } from '@ant-design/icons';
 
 const DreamHistoryDrawer = ({
   open,
@@ -8,16 +9,24 @@ const DreamHistoryDrawer = ({
   onClose,
   handleDelete,
   dreamData,
-  deleteLoading,
 }) => {
   const params = {
     pageSize: 10,
     current: 1,
   };
 
-  const filteredData = dreamData
-    ? dreamData.filter((item) => item.status === true)
-    : [];
+  const [filteredData, setFilteredData] = useState([]);
+
+  useEffect(() => {
+    const newFilteredData = dreamData
+      ? dreamData.filter((item) => item.status === true)
+      : [];
+    setFilteredData(newFilteredData);
+  }, [dreamData]);
+
+  useEffect(() => {
+    console.log('filteredData=', filteredData);
+  }, [filteredData]);
 
   return (
     <div>
@@ -50,12 +59,25 @@ const DreamHistoryDrawer = ({
                   if (record.status === true) {
                     return (
                       <span>
-                        {deleteLoading ? (
-                          <Spin size="small" />
+                        {record.loading ? (
+                          <Spin
+                            indicator={
+                              <LoadingOutlined
+                                style={{
+                                  fontSize: 16,
+                                  color: 'rgba(0,0,0,0.65)',
+                                }}
+                                spin
+                              />
+                            }
+                          />
                         ) : (
                           <a
                             key="delete"
-                            onClick={() => handleDelete(record)}
+                            onClick={() => {
+                              record.loading = true;
+                              handleDelete(record);
+                            }}
                             style={{ cursor: 'pointer' }}
                           >
                             删除
