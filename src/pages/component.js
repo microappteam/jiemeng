@@ -97,14 +97,15 @@ export default function YourPage({
               height={70}
               alt="周公解梦"
               className={styles.logo}
+              priority={true}
             />
           </h1>
           {username && (
             <div className={styles.welcome}>
               欢迎你，{username}！
-              <text onClick={handleLogout} style={{ cursor: 'pointer' }}>
+              <span onClick={handleLogout} style={{ cursor: 'pointer' }}>
                 登出
-              </text>
+              </span>
             </div>
           )}
           <form onSubmit={handleSubmit}>
