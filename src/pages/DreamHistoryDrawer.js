@@ -1,35 +1,38 @@
 import { Drawer, Spin } from 'antd';
 import { ProTable } from '@ant-design/pro-components';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { LoadingOutlined } from '@ant-design/icons';
 
-const DreamHistoryDrawer = ({ open, showDrawer, onClose, handleDelete }) => {
+const DreamHistoryDrawer = ({
+  open,
+  showDrawer,
+  onClose,
+  handleDelete,
+  dreamData,
+}) => {
   const params = {};
+
+  const [data, setData] = useState([]);
 
   const fetchData = async (params) => {
     try {
       const response = await fetch('/api/storage', {
         method: 'GET',
       });
-      const data = await response.json();
-      console.log('success!');
+      const responseData = await response.json();
 
-      const filteredData = data.filter((item) => item.status === true);
+      const filteredData = responseData.filter((item) => item.status === true);
 
-      return {
-        data: filteredData,
-        success: true,
-        total: filteredData.length,
-      };
+      setData(filteredData);
     } catch (error) {
       console.error('Error fetching data:', error);
-      return {
-        data: [],
-        success: false,
-        total: 0,
-      };
+      setData([]);
     }
   };
+
+  useEffect(() => {
+    fetchData();
+  }, [dreamData]);
 
   return (
     <div>
@@ -43,7 +46,6 @@ const DreamHistoryDrawer = ({ open, showDrawer, onClose, handleDelete }) => {
           width={1200}
         >
           <ProTable
-            request={fetchData}
             columns={[
               {
                 title: '梦境',
@@ -94,6 +96,7 @@ const DreamHistoryDrawer = ({ open, showDrawer, onClose, handleDelete }) => {
               },
             ]}
             rowKey="id"
+            dataSource={data}
           />
         </Drawer>
         <button className="history-button" onClick={showDrawer}>

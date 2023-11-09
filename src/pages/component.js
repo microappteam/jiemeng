@@ -10,9 +10,10 @@ import StyledComponentsRegistry from '../styles/registry';
 import RootLayout from '../layout';
 import WeatherDisplay from './WeatherDisplay';
 import DreamHistoryDrawer from './DreamHistoryDrawer';
+import Head from 'next/head';
 const { TextArea } = Input;
 
-export default function YourPage({
+export default function MyPage({
   open,
   dream,
   setDream,
@@ -35,7 +36,6 @@ export default function YourPage({
   const [username, setUsername] = useState('');
   const [buttonText, setButtonText] = useState('解梦');
   const [isInputDisabled, setIsInputDisabled] = useState(false);
-  const [filteredData, setFilteredData] = useState([]);
   const isSignedIn = session !== null;
 
   const handleLogin = async () => {
@@ -87,105 +87,109 @@ export default function YourPage({
   }, [session]);
 
   return (
-    <RootLayout>
-      <StyledComponentsRegistry>
-        <div className={styles.content}>
-          <h1 className={styles.title}>
-            <Image
-              src="/zgjm.png"
-              width={256}
-              height={70}
-              alt="周公解梦"
-              className={styles.logo}
-              priority={true}
-            />
-          </h1>
-          {username && (
-            <div className={styles.welcome}>
-              欢迎你，{username}！
-              <span onClick={handleLogout} style={{ cursor: 'pointer' }}>
-                登出
-              </span>
-            </div>
-          )}
-          <form onSubmit={handleSubmit}>
-            <TextArea
-              style={{
-                borderColor: '#CEAB93',
-                borderWidth: '1px',
-                width: 340,
-                marginBottom: '28px',
-              }}
-              value={dream}
-              showCount
-              rows={5}
-              maxLength={400}
-              placeholder="请输入梦境"
-              onChange={(e) => setDream(e.target.value)}
-              disabled={!isSignedIn || isInputDisabled}
-            />
-            {isSignedIn ? (
-              <Button
-                block
-                size="large"
+    <div>
+      <RootLayout>
+        <StyledComponentsRegistry>
+          <div className={styles.content}>
+            <h1 className={styles.title}>
+              <Image
+                src="/zgjm.png"
+                width={256}
+                height={70}
+                alt="周公解梦"
+                className={styles.logo}
+                priority={true}
+              />
+            </h1>
+            {username && (
+              <div className={styles.welcome}>
+                欢迎你，{username}！
+                <span onClick={handleLogout} style={{ cursor: 'pointer' }}>
+                  登出
+                </span>
+              </div>
+            )}
+            <form onSubmit={handleSubmit}>
+              <TextArea
                 style={{
-                  width: 336,
-                  backgroundColor: '#CEAB93',
                   borderColor: '#CEAB93',
                   borderWidth: '1px',
-                  color: '#000',
+                  width: 340,
                   marginBottom: '28px',
                 }}
-                onClick={handleSubmit}
-                loading={isLoading}
-              >
-                {buttonText}
-              </Button>
-            ) : (
-              <Button
-                block
-                size="large"
-                style={{
-                  width: 308,
-                  backgroundColor: '#CEAB93',
-                  borderColor: '#CEAB93',
-                  borderWidth: '1px',
-                  color: '#000',
-                  marginBottom: '10px',
-                }}
-                onClick={handleLogin}
-              >
-                登录到GitHub
-              </Button>
+                value={dream}
+                showCount
+                rows={5}
+                maxLength={400}
+                placeholder="请输入梦境"
+                onChange={(e) => setDream(e.target.value)}
+                disabled={!isSignedIn || isInputDisabled}
+              />
+              {isSignedIn ? (
+                <Button
+                  block
+                  size="large"
+                  style={{
+                    width: 336,
+                    backgroundColor: '#CEAB93',
+                    borderColor: '#CEAB93',
+                    borderWidth: '1px',
+                    color: '#000',
+                    marginBottom: '28px',
+                  }}
+                  onClick={handleSubmit}
+                  loading={isLoading}
+                >
+                  {buttonText}
+                </Button>
+              ) : (
+                <Button
+                  block
+                  size="large"
+                  style={{
+                    width: 308,
+                    backgroundColor: '#CEAB93',
+                    borderColor: '#CEAB93',
+                    borderWidth: '1px',
+                    color: '#000',
+                    marginBottom: '10px',
+                  }}
+                  onClick={handleLogin}
+                >
+                  登录到GitHub
+                </Button>
+              )}
+            </form>
+            {isSignedIn && (
+              <div>
+                <DreamHistoryDrawer
+                  open={open}
+                  showDrawer={showDrawer}
+                  onClose={onClose}
+                  dreamHistory={dreamHistory}
+                  handleDelete={handleDelete}
+                  dreamData={dreamData}
+                />
+                <WeatherDisplay
+                  weatherText={weatherText}
+                  futureWeatherText={futureWeatherText}
+                />
+              </div>
             )}
-          </form>
-          {isSignedIn && (
-            <div>
-              <DreamHistoryDrawer
-                open={open}
-                showDrawer={showDrawer}
-                onClose={onClose}
-                dreamHistory={dreamHistory}
-                handleDelete={handleDelete}
-                dreamData={dreamData}
-                setDeleteLoading={setDeleteLoading}
-              />
-              <WeatherDisplay
-                weatherText={weatherText}
-                futureWeatherText={futureWeatherText}
-              />
-            </div>
-          )}
-          {response && (
-            <div className={styles.response}>
-              <p>解梦结果：</p>
-              <ReactMarkdown className={styles['response-text']}>
-                {response}
-              </ReactMarkdown>
-            </div>
-          )}
-        </div>
-      </StyledComponentsRegistry>
-    </RootLayout>
+            {response && (
+              <div className={styles.response}>
+                <p>解梦结果：</p>
+                <ReactMarkdown className={styles['response-text']}>
+                  {response}
+                </ReactMarkdown>
+              </div>
+            )}
+          </div>
+        </StyledComponentsRegistry>
+      </RootLayout>
+      <Head>
+        <title>周公解梦</title>
+      </Head>
+    </div>
   );
 }

@@ -16,7 +16,6 @@ export default function Home() {
   const [isHydrated, setIsHydrated] = useState(false);
   const { data: session } = useSession();
   const [open, setOpen] = useState(false);
-  const [dreamHistory, setDreamHistory] = useState([]);
   const [dreamData, setDreamData] = useState([]);
   const [deleteLoading, setDeleteLoading] = useState(false);
   useEffect(() => {
@@ -186,7 +185,6 @@ export default function Home() {
               open={open}
               showDrawer={showDrawer}
               onClose={onClose}
-              dreamHistory={dreamHistory}
               handleDelete={handleDelete}
               dreamData={dreamData}
               deleteLoading={deleteLoading}
