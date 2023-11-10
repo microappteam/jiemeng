@@ -141,7 +141,8 @@ const WeatherDisplay = ({ weatherText, futureWeatherText }) => {
 
   const formattedWeatherText = formatWeatherText(weatherText);
   const formattedFutureWeatherText = formatFutureWeatherText(futureWeatherText);
-  const [a, b, c] = formattedFutureWeatherText;
+  const [tomorrow, dayaftertomorrow, thedayaftertomorrow] =
+    formattedFutureWeatherText;
 
   return (
     <>
@@ -202,8 +203,8 @@ const WeatherDisplay = ({ weatherText, futureWeatherText }) => {
           backdropFilter: 'blur(4px)',
         }}
       >
-        {a ? (
-          <div style={{ flex: 1 }}>{a}</div>
+        {tomorrow ? (
+          <div style={{ flex: 1 }}>{tomorrow}</div>
         ) : (
           <div style={{ flex: 1 }}>
             <Spin
@@ -216,8 +217,8 @@ const WeatherDisplay = ({ weatherText, futureWeatherText }) => {
             />
           </div>
         )}
-        {b ? (
-          <div style={{ flex: 1 }}>{b}</div>
+        {dayaftertomorrow ? (
+          <div style={{ flex: 1 }}>{dayaftertomorrow}</div>
         ) : (
           <div style={{ flex: 1 }}>
             <Spin
@@ -230,8 +231,8 @@ const WeatherDisplay = ({ weatherText, futureWeatherText }) => {
             />
           </div>
         )}
-        {c ? (
-          <div style={{ flex: 1 }}>{c}</div>
+        {thedayaftertomorrow ? (
+          <div style={{ flex: 1 }}>{thedayaftertomorrow}</div>
         ) : (
           <div style={{ flex: 1 }}>
             <Spin

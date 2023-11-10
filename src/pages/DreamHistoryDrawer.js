@@ -10,11 +10,33 @@ const DreamHistoryDrawer = ({
   handleDelete,
   dreamData,
 }) => {
-  const params = {};
-
   const [data, setData] = useState([]);
+  const [total, setTotal] = useState(0);
+  const [pageSize, setPageSize] = useState(6);
+  const [current, setCurrent] = useState(1);
 
-  const fetchData = async (params) => {
+  const fetchData = async () => {
+    try {
+      const response = await fetch('/api/storage', {
+        method: 'GET',
+      });
+      const responseData = await response.json();
+
+      const filteredData = responseData.filter((item) => item.status === true);
+      setData(filteredData);
+      setTotal(filteredData.length);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      setData([]);
+      setTotal(0);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [dreamData]);
+
+  const handleRequestData = async ({ pageSize, current, ...restParams }) => {
     try {
       const response = await fetch('/api/storage', {
         method: 'GET',
@@ -23,16 +45,24 @@ const DreamHistoryDrawer = ({
 
       const filteredData = responseData.filter((item) => item.status === true);
 
-      setData(filteredData);
+      const start = (current - 1) * pageSize;
+      const end = start + pageSize;
+      const slicedData = filteredData.slice(start, end);
+
+      return {
+        data: slicedData,
+        success: true,
+        total: filteredData.length,
+      };
     } catch (error) {
       console.error('Error fetching data:', error);
-      setData([]);
+      return {
+        data: [],
+        success: false,
+        total: 0,
+      };
     }
   };
-
-  useEffect(() => {
-    fetchData();
-  }, [dreamData]);
 
   return (
     <div>
@@ -99,7 +129,17 @@ const DreamHistoryDrawer = ({
               },
             ]}
             rowKey="id"
+            request={handleRequestData}
             dataSource={data}
+            pagination={{
+              pageSize,
+              total,
+              current,
+              onChange: (page, pageSize) => {
+                setCurrent(page);
+                setPageSize(pageSize);
+              },
+            }}
           />
         </Drawer>
         <button className="history-button" onClick={showDrawer}>
