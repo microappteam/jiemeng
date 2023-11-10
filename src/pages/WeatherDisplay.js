@@ -141,6 +141,7 @@ const WeatherDisplay = ({ weatherText, futureWeatherText }) => {
 
   const formattedWeatherText = formatWeatherText(weatherText);
   const formattedFutureWeatherText = formatFutureWeatherText(futureWeatherText);
+  const [a, b, c] = formattedFutureWeatherText;
 
   return (
     <>
@@ -170,7 +171,6 @@ const WeatherDisplay = ({ weatherText, futureWeatherText }) => {
         {formattedWeatherText ? (
           formattedWeatherText
         ) : (
-          // eslint-disable-next-line react/jsx-no-undef
           <Spin
             indicator={
               <LoadingOutlined
@@ -202,8 +202,8 @@ const WeatherDisplay = ({ weatherText, futureWeatherText }) => {
           backdropFilter: 'blur(4px)',
         }}
       >
-        {formattedFutureWeatherText[0] ? (
-          <div style={{ flex: 1 }}>{formattedFutureWeatherText[0]}</div>
+        {a ? (
+          <div style={{ flex: 1 }}>{a}</div>
         ) : (
           <div style={{ flex: 1 }}>
             <Spin
@@ -216,8 +216,8 @@ const WeatherDisplay = ({ weatherText, futureWeatherText }) => {
             />
           </div>
         )}
-        {formattedFutureWeatherText[1] ? (
-          <div style={{ flex: 1 }}>{formattedFutureWeatherText[1]}</div>
+        {b ? (
+          <div style={{ flex: 1 }}>{b}</div>
         ) : (
           <div style={{ flex: 1 }}>
             <Spin
@@ -230,8 +230,8 @@ const WeatherDisplay = ({ weatherText, futureWeatherText }) => {
             />
           </div>
         )}
-        {formattedFutureWeatherText[2] ? (
-          <div style={{ flex: 1 }}>{formattedFutureWeatherText[2]}</div>
+        {c ? (
+          <div style={{ flex: 1 }}>{c}</div>
         ) : (
           <div style={{ flex: 1 }}>
             <Spin

@@ -43,7 +43,7 @@ const DreamHistoryDrawer = ({
           closable={false}
           onClose={onClose}
           open={open}
-          width={1200}
+          width={1300}
         >
           <ProTable
             columns={[
@@ -51,15 +51,18 @@ const DreamHistoryDrawer = ({
                 title: '梦境',
                 dataIndex: 'dream',
                 key: 'dream',
+                width: 250,
               },
               {
                 title: '解梦结果',
                 dataIndex: 'response',
                 key: 'response',
+                width: 1000,
               },
               {
                 title: '操作',
                 valueType: 'option',
+                width: 50,
                 render: (_, record, index, action) => {
                   if (record.status === true) {
                     return (
