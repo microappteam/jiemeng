@@ -12,7 +12,7 @@ const DreamHistoryDrawer = ({
 }) => {
   const [data, setData] = useState([]);
   const [total, setTotal] = useState(0);
-  const [pageSize, setPageSize] = useState(6);
+  const [pageSize, setPageSize] = useState(7);
   const [current, setCurrent] = useState(1);
 
   const fetchData = async () => {
