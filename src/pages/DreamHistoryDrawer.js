@@ -17,7 +17,7 @@ const DreamHistoryDrawer = ({
 
   const fetchData = async () => {
     try {
-      const response = await fetch('/api/storage', {
+      const response = await fetch('/api/query', {
         method: 'GET',
       });
       const responseData = await response.json();
@@ -38,7 +38,7 @@ const DreamHistoryDrawer = ({
 
   const handleRequestData = async ({ pageSize, current, ...restParams }) => {
     try {
-      const response = await fetch('/api/storage', {
+      const response = await fetch('/api/query', {
         method: 'GET',
       });
       const responseData = await response.json();

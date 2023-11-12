@@ -21,7 +21,7 @@ export default function Home() {
   useEffect(() => {
     setIsHydrated(true);
 
-    fetch('/api/storage', { method: 'GET' })
+    fetch('/api/query', { method: 'GET' })
       .then((response) => response.json())
       .then((responseData) => {
         setDreamData(responseData);
@@ -143,7 +143,7 @@ export default function Home() {
     setDeleteLoading(true);
     const id = record.id;
 
-    fetch(`/api/storage`, {
+    fetch(`/api/delete`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
