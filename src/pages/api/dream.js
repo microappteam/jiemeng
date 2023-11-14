@@ -78,6 +78,7 @@ export default async function handler(req, res) {
       \n\n病人梦见买彩票中大奖，病情恶化的凶兆，要想恢复健康的身体，还需要治疗一段时间，耐心等待吧。
       
       \n\n老人梦见买彩票中大奖，此梦预兆近期梦者身体健康运势不佳，会有突发疾病缠身，平时要多注意保养和休息。 `;
+
       const encoder = new TextEncoder();
       const stream = new ReadableStream({
         async start(controller) {
