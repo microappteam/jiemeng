@@ -36,7 +36,7 @@ const DreamHistoryDrawer = ({
     fetchData();
   }, [dreamData]);
 
-  const handleRequestData = async ({ pageSize, current, ...restParams }) => {
+  const handleRequestData = async ({ pageSize, current }) => {
     try {
       const response = await fetch('/api/query', {
         method: 'GET',
@@ -76,6 +76,7 @@ const DreamHistoryDrawer = ({
           width={1300}
         >
           <ProTable
+            request={handleRequestData}
             columns={[
               {
                 title: '梦境',
@@ -129,7 +130,6 @@ const DreamHistoryDrawer = ({
               },
             ]}
             rowKey="id"
-            request={handleRequestData}
             dataSource={data}
             pagination={{
               pageSize,
