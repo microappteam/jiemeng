@@ -14,7 +14,9 @@ const DreamHistoryDrawer = ({
   const [total, setTotal] = useState(0);
   const [pageSize, setPageSize] = useState(7);
   const [current, setCurrent] = useState(1);
+
   const actionRef = useRef();
+
   const fetchData = async () => {
     try {
       const response = await fetch('/api/query', {
@@ -36,34 +38,6 @@ const DreamHistoryDrawer = ({
     fetchData();
   }, [dreamData]);
 
-  const handleRequestData = async ({ pageSize, current }) => {
-    try {
-      const response = await fetch('/api/query', {
-        method: 'GET',
-      });
-      const responseData = await response.json();
-
-      const filteredData = responseData.filter((item) => item.status === true);
-
-      const start = (current - 1) * pageSize;
-      const end = start + pageSize;
-      const slicedData = filteredData.slice(start, end);
-
-      return {
-        data: slicedData,
-        success: true,
-        total: filteredData.length,
-      };
-    } catch (error) {
-      console.error('Error fetching data:', error);
-      return {
-        data: [],
-        success: false,
-        total: 0,
-      };
-    }
-  };
-
   return (
     <div>
       <>
@@ -76,7 +50,26 @@ const DreamHistoryDrawer = ({
           width={1300}
         >
           <ProTable
-            request={handleRequestData}
+            request={async ({ pageSize, current }) => {
+              const response = await fetch('/api/query', {
+                method: 'GET',
+              });
+              const responseData = await response.json();
+
+              const filteredData = responseData.filter(
+                (item) => item.status === true,
+              );
+
+              const start = (current - 1) * pageSize;
+              const end = start + pageSize;
+              const slicedData = filteredData.slice(start, end);
+
+              return {
+                data: slicedData,
+                success: true,
+                total: filteredData.length,
+              };
+            }}
             actionRef={actionRef}
             columns={[
               {
