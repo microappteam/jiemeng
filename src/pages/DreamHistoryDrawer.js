@@ -2,7 +2,7 @@ import { Drawer, Spin } from 'antd';
 import { ProTable } from '@ant-design/pro-components';
 import React, { useState, useEffect } from 'react';
 import { LoadingOutlined } from '@ant-design/icons';
-
+import { useRef } from 'react';
 const DreamHistoryDrawer = ({
   open,
   showDrawer,
@@ -14,7 +14,7 @@ const DreamHistoryDrawer = ({
   const [total, setTotal] = useState(0);
   const [pageSize, setPageSize] = useState(7);
   const [current, setCurrent] = useState(1);
-
+  const actionRef = useRef();
   const fetchData = async () => {
     try {
       const response = await fetch('/api/query', {
@@ -77,6 +77,7 @@ const DreamHistoryDrawer = ({
         >
           <ProTable
             request={handleRequestData}
+            actionRef={actionRef}
             columns={[
               {
                 title: '梦境',
@@ -130,7 +131,7 @@ const DreamHistoryDrawer = ({
               },
             ]}
             rowKey="id"
-            dataSource={data}
+            /* dataSource={data}
             pagination={{
               pageSize,
               total,
@@ -140,6 +141,7 @@ const DreamHistoryDrawer = ({
                 setPageSize(pageSize);
               },
             }}
+            */
           />
         </Drawer>
         <button className="history-button" onClick={showDrawer}>
