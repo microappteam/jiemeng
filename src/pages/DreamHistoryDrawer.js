@@ -110,6 +110,7 @@ const DreamHistoryDrawer = ({
                             onClick={() => {
                               record.loading = true;
                               handleDelete(record);
+                              actionRef.current?.reload();
                             }}
                             style={{ cursor: 'pointer' }}
                           >
@@ -131,7 +132,6 @@ const DreamHistoryDrawer = ({
               onChange: (page, pageSize) => {
                 setCurrent(page);
                 setPageSize(pageSize);
-                actionRef.current?.reload();
               },
             }}
           />
