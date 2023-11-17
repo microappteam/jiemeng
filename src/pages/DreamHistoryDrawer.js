@@ -124,7 +124,6 @@ const DreamHistoryDrawer = ({
               },
             ]}
             rowKey="id"
-            /* dataSource={data}
             pagination={{
               pageSize,
               total,
@@ -132,9 +131,9 @@ const DreamHistoryDrawer = ({
               onChange: (page, pageSize) => {
                 setCurrent(page);
                 setPageSize(pageSize);
+                actionRef.current?.reload();
               },
             }}
-            */
           />
         </Drawer>
         <button className="history-button" onClick={showDrawer}>
