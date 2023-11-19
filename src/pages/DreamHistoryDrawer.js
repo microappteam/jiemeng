@@ -50,7 +50,7 @@ const DreamHistoryDrawer = ({
           width={1300}
         >
           <ProTable
-            request={async ({ pageSize, current }) => {
+            request={async () => {
               const response = await fetch('/api/query', {
                 method: 'GET',
               });
@@ -66,6 +66,7 @@ const DreamHistoryDrawer = ({
 
               return {
                 data: slicedData,
+
                 success: true,
                 total: filteredData.length,
               };
