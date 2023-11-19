@@ -27,7 +27,6 @@ export default function MyPage({
   onClose,
   dreamHistory,
   handleDelete,
-  dreamData,
   deleteLoading,
   setDeleteLoading,
 }) {
@@ -168,7 +167,6 @@ export default function MyPage({
                   onClose={onClose}
                   dreamHistory={dreamHistory}
                   handleDelete={handleDelete}
-                  dreamData={dreamData}
                 />
                 <WeatherDisplay
                   weatherText={weatherText}

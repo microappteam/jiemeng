@@ -186,7 +186,6 @@ export default function Home() {
               showDrawer={showDrawer}
               onClose={onClose}
               handleDelete={handleDelete}
-              dreamData={dreamData}
               deleteLoading={deleteLoading}
               setDeleteLoading={setDeleteLoading}
             />
