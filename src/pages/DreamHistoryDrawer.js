@@ -12,8 +12,6 @@ const DreamHistoryDrawer = ({
 }) => {
   const [data, setData] = useState([]);
   const [total, setTotal] = useState(0);
-  const [pageSize, setPageSize] = useState(7);
-  const [current, setCurrent] = useState(1);
 
   const actionRef = useRef();
 
@@ -50,7 +48,8 @@ const DreamHistoryDrawer = ({
           width={1300}
         >
           <ProTable
-            request={async () => {
+            request={async (params) => {
+              console.log('params===', params);
               const response = await fetch('/api/query', {
                 method: 'GET',
               });
@@ -60,17 +59,17 @@ const DreamHistoryDrawer = ({
                 (item) => item.status === true,
               );
 
-              const start = (current - 1) * pageSize;
-              const end = start + pageSize;
-              const slicedData = filteredData.slice(start, end);
+              //const start = (current - 1) * pageSize;
+              // const end = start + pageSize;
+              //const slicedData = filteredData.slice(start, end);
 
               return {
-                data: slicedData,
-
+                data: filteredData,
                 success: true,
                 total: filteredData.length,
               };
             }}
+            defaultPageSize="7"
             actionRef={actionRef}
             columns={[
               {
@@ -127,13 +126,7 @@ const DreamHistoryDrawer = ({
             ]}
             rowKey="id"
             pagination={{
-              pageSize,
-              total,
-              current,
-              onChange: (page, pageSize) => {
-                setCurrent(page);
-                setPageSize(pageSize);
-              },
+              defaultPageSize: 7, // 设置默认的分页大小为 7
             }}
           />
         </Drawer>
