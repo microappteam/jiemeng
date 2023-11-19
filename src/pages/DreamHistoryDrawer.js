@@ -3,38 +3,8 @@ import { ProTable } from '@ant-design/pro-components';
 import React, { useState, useEffect } from 'react';
 import { LoadingOutlined } from '@ant-design/icons';
 import { useRef } from 'react';
-const DreamHistoryDrawer = ({
-  open,
-  showDrawer,
-  onClose,
-  handleDelete,
-  dreamData,
-}) => {
-  const [data, setData] = useState([]);
-  const [total, setTotal] = useState(0);
-
+const DreamHistoryDrawer = ({ open, showDrawer, onClose, handleDelete }) => {
   const actionRef = useRef();
-
-  const fetchData = async () => {
-    try {
-      const response = await fetch('/api/query', {
-        method: 'GET',
-      });
-      const responseData = await response.json();
-
-      const filteredData = responseData.filter((item) => item.status === true);
-      setData(filteredData);
-      setTotal(filteredData.length);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-      setData([]);
-      setTotal(0);
-    }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, [dreamData]);
 
   return (
     <div>
@@ -46,6 +16,7 @@ const DreamHistoryDrawer = ({
           onClose={onClose}
           open={open}
           width={1300}
+          forceRender={true}
         >
           <ProTable
             request={async (params) => {
@@ -59,17 +30,12 @@ const DreamHistoryDrawer = ({
                 (item) => item.status === true,
               );
 
-              //const start = (current - 1) * pageSize;
-              // const end = start + pageSize;
-              //const slicedData = filteredData.slice(start, end);
-
               return {
                 data: filteredData,
                 success: true,
                 total: filteredData.length,
               };
             }}
-            defaultPageSize="7"
             actionRef={actionRef}
             columns={[
               {
@@ -126,7 +92,7 @@ const DreamHistoryDrawer = ({
             ]}
             rowKey="id"
             pagination={{
-              defaultPageSize: 7, // 设置默认的分页大小为 7
+              defaultPageSize: 7,
             }}
           />
         </Drawer>
