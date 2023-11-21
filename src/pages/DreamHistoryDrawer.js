@@ -5,7 +5,6 @@ import { LoadingOutlined } from '@ant-design/icons';
 import { useRef } from 'react';
 const DreamHistoryDrawer = ({ open, showDrawer, onClose, handleDelete }) => {
   const actionRef = useRef();
-
   return (
     <div>
       <>
@@ -20,7 +19,6 @@ const DreamHistoryDrawer = ({ open, showDrawer, onClose, handleDelete }) => {
         >
           <ProTable
             request={async (params) => {
-              console.log('params===', params);
               const response = await fetch('/api/query', {
                 method: 'GET',
               });
