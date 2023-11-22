@@ -26,10 +26,8 @@ export default async function handler(req, res) {
               controller.enqueue(
                 encoder.encode(JSON.stringify(currentWeather)),
               );
-
               const response2 = await fetch(futureWeatherUrl);
               const futureWeather = await response2.json();
-
               controller.enqueue(encoder.encode(JSON.stringify(futureWeather)));
               controller.close();
             } catch (e) {
@@ -45,7 +43,6 @@ export default async function handler(req, res) {
       console.error('Error fetching location and weather data:', error);
     }
 
-    // 如果发生任何错误，返回适当的错误响应
     const res = new Response(
       JSON.stringify({
         message: '发生错误',

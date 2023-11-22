@@ -10,9 +10,10 @@ import StyledComponentsRegistry from '../styles/registry';
 import RootLayout from '../layout';
 import WeatherDisplay from './WeatherDisplay';
 import DreamHistoryDrawer from './DreamHistoryDrawer';
+import Head from 'next/head';
 const { TextArea } = Input;
 
-export default function YourPage({
+export default function MyPage({
   open,
   dream,
   setDream,
@@ -26,7 +27,6 @@ export default function YourPage({
   onClose,
   dreamHistory,
   handleDelete,
-  dreamData,
   deleteLoading,
   setDeleteLoading,
 }) {
@@ -35,7 +35,6 @@ export default function YourPage({
   const [username, setUsername] = useState('');
   const [buttonText, setButtonText] = useState('解梦');
   const [isInputDisabled, setIsInputDisabled] = useState(false);
-
   const isSignedIn = session !== null;
 
   const handleLogin = async () => {
@@ -54,6 +53,10 @@ export default function YourPage({
   };
 
   useEffect(() => {
+    setButtonText('解梦');
+  }, [dream]);
+
+  useEffect(() => {
     setIsInputDisabled(isLoading);
     if (isLoading) {
       const randomIndex = Math.floor(Math.random() * loadingTexts.length);
@@ -66,6 +69,15 @@ export default function YourPage({
   useEffect(() => {
     setButtonText('解梦');
   }, [dream]);
+  useEffect(() => {
+    if (deleteLoading) {
+      const timer = setTimeout(() => {
+        setDeleteLoading(false);
+      }, 500);
+
+      return () => clearTimeout(timer);
+    }
+  }, [deleteLoading]);
 
   useEffect(() => {
     if (session?.user?.name) {
@@ -74,105 +86,108 @@ export default function YourPage({
   }, [session]);
 
   return (
-    <RootLayout>
-      <StyledComponentsRegistry>
-        <div className={styles.content}>
-          <h1 className={styles.title}>
-            <Image
-              src="/zgjm.png"
-              width={256}
-              height={70}
-              alt="周公解梦"
-              className={styles.logo}
-            />
-          </h1>
-          {username && (
-            <div className={styles.welcome}>
-              欢迎你，{username}！
-              <text onClick={handleLogout} style={{ cursor: 'pointer' }}>
-                登出
-              </text>
-            </div>
-          )}
-          <form onSubmit={handleSubmit}>
-            <TextArea
-              style={{
-                borderColor: '#CEAB93',
-                borderWidth: '1px',
-                width: 340,
-                marginBottom: '28px',
-              }}
-              value={dream}
-              showCount
-              rows={5}
-              maxLength={400}
-              placeholder="请输入梦境"
-              onChange={(e) => setDream(e.target.value)}
-              disabled={!isSignedIn || isInputDisabled}
-            />
-            {isSignedIn ? (
-              <Button
-                block
-                size="large"
+    <div>
+      <RootLayout>
+        <StyledComponentsRegistry>
+          <div className={styles.content}>
+            <h1 className={styles.title}>
+              <Image
+                src="/zgjm.png"
+                width={256}
+                height={70}
+                alt="周公解梦"
+                className={styles.logo}
+                priority={true}
+              />
+            </h1>
+            {username && (
+              <div className={styles.welcome}>
+                欢迎你，{username}！
+                <span onClick={handleLogout} style={{ cursor: 'pointer' }}>
+                  登出
+                </span>
+              </div>
+            )}
+            <form onSubmit={handleSubmit}>
+              <TextArea
                 style={{
-                  width: 336,
-                  backgroundColor: '#CEAB93',
                   borderColor: '#CEAB93',
                   borderWidth: '1px',
-                  color: '#000',
+                  width: 340,
                   marginBottom: '28px',
                 }}
-                onClick={handleSubmit}
-                loading={isLoading}
-              >
-                {buttonText}
-              </Button>
-            ) : (
-              <Button
-                block
-                size="large"
-                style={{
-                  width: 308,
-                  backgroundColor: '#CEAB93',
-                  borderColor: '#CEAB93',
-                  borderWidth: '1px',
-                  color: '#000',
-                  marginBottom: '10px',
-                }}
-                onClick={handleLogin}
-              >
-                登录到GitHub
-              </Button>
+                value={dream}
+                showCount
+                rows={5}
+                maxLength={400}
+                placeholder="请输入梦境"
+                onChange={(e) => setDream(e.target.value)}
+                disabled={!isSignedIn || isInputDisabled}
+              />
+              {isSignedIn ? (
+                <Button
+                  block
+                  size="large"
+                  style={{
+                    width: 336,
+                    backgroundColor: '#CEAB93',
+                    borderColor: '#CEAB93',
+                    borderWidth: '1px',
+                    color: '#000',
+                    marginBottom: '28px',
+                  }}
+                  onClick={handleSubmit}
+                  loading={isLoading}
+                >
+                  {buttonText}
+                </Button>
+              ) : (
+                <Button
+                  block
+                  size="large"
+                  style={{
+                    width: 308,
+                    backgroundColor: '#CEAB93',
+                    borderColor: '#CEAB93',
+                    borderWidth: '1px',
+                    color: '#000',
+                    marginBottom: '10px',
+                  }}
+                  onClick={handleLogin}
+                >
+                  登录到GitHub
+                </Button>
+              )}
+            </form>
+            {isSignedIn && (
+              <div>
+                <DreamHistoryDrawer
+                  open={open}
+                  showDrawer={showDrawer}
+                  onClose={onClose}
+                  dreamHistory={dreamHistory}
+                  handleDelete={handleDelete}
+                />
+                <WeatherDisplay
+                  weatherText={weatherText}
+                  futureWeatherText={futureWeatherText}
+                />
+              </div>
             )}
-          </form>
-          {isSignedIn && (
-            <div>
-              <DreamHistoryDrawer
-                open={open}
-                showDrawer={showDrawer}
-                onClose={onClose}
-                dreamHistory={dreamHistory}
-                handleDelete={handleDelete}
-                dreamData={dreamData}
-                deleteLoading={deleteLoading}
-                setDeleteLoading={setDeleteLoading}
-              />
-              <WeatherDisplay
-                weatherText={weatherText}
-                futureWeatherText={futureWeatherText}
-              />
-            </div>
-          )}
-          {response && (
-            <div className={styles.response}>
-              <p>解梦结果：</p>
-              <ReactMarkdown className={styles['response-text']}>
-                {response}
-              </ReactMarkdown>
-            </div>
-          )}
-        </div>
-      </StyledComponentsRegistry>
-    </RootLayout>
+            {response && (
+              <div className={styles.response}>
+                <p>解梦结果：</p>
+                <ReactMarkdown className={styles['response-text']}>
+                  {response}
+                </ReactMarkdown>
+              </div>
+            )}
+          </div>
+        </StyledComponentsRegistry>
+      </RootLayout>
+      <Head>
+        <title>周公解梦</title>
+      </Head>
+    </div>
   );
 }

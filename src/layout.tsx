@@ -5,11 +5,5 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return (
-    <html>
-      <body>
-        <StyledJsxRegistry>{children}</StyledJsxRegistry>
-      </body>
-    </html>
-  );
+  return <StyledJsxRegistry>{children}</StyledJsxRegistry>;
 }

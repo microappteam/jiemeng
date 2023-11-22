@@ -1,24 +1,10 @@
 import { Drawer, Spin } from 'antd';
 import { ProTable } from '@ant-design/pro-components';
-import React from 'react';
-
-const DreamHistoryDrawer = ({
-  open,
-  showDrawer,
-  onClose,
-  handleDelete,
-  dreamData,
-  deleteLoading,
-}) => {
-  const params = {
-    pageSize: 10,
-    current: 1,
-  };
-
-  const filteredData = dreamData
-    ? dreamData.filter((item) => item.status === true)
-    : [];
-
+import React, { useState, useEffect } from 'react';
+import { LoadingOutlined } from '@ant-design/icons';
+import { useRef } from 'react';
+const DreamHistoryDrawer = ({ open, showDrawer, onClose, handleDelete }) => {
+  const actionRef = useRef();
   return (
     <div>
       <>
@@ -28,34 +14,69 @@ const DreamHistoryDrawer = ({
           closable={false}
           onClose={onClose}
           open={open}
-          width={1200}
+          width={1300}
+          forceRender={true}
         >
           <ProTable
-            params={params}
+            request={async (params) => {
+              const { current, pageSize } = params;
+
+              const response = await fetch(
+                `/api/query?current=${current}&pageSize=${pageSize}`,
+                {
+                  method: 'GET',
+                },
+              );
+
+              const responseData = await response.json();
+              return {
+                data: responseData.data,
+                success: responseData.success,
+                total: responseData.total,
+              };
+            }}
+            actionRef={actionRef}
             columns={[
               {
                 title: '梦境',
                 dataIndex: 'dream',
                 key: 'dream',
+                width: 250,
               },
               {
                 title: '解梦结果',
                 dataIndex: 'response',
                 key: 'response',
+                width: 1000,
               },
               {
                 title: '操作',
                 valueType: 'option',
+                width: 50,
                 render: (_, record, index, action) => {
                   if (record.status === true) {
                     return (
                       <span>
-                        {deleteLoading ? (
-                          <Spin size="small" />
+                        {record.loading ? (
+                          <Spin
+                            indicator={
+                              <LoadingOutlined
+                                style={{
+                                  fontSize: 16,
+                                  color: 'rgba(0,0,0,0.65)',
+                                }}
+                                spin
+                              />
+                            }
+                          />
                         ) : (
                           <a
                             key="delete"
-                            onClick={() => handleDelete(record)}
+                            onClick={() => {
+                              record.loading = true;
+                              handleDelete(record);
+                              actionRef.current?.reload();
+                            }}
                             style={{ cursor: 'pointer' }}
                           >
                             删除
@@ -69,7 +90,9 @@ const DreamHistoryDrawer = ({
               },
             ]}
             rowKey="id"
-            dataSource={filteredData}
+            pagination={{
+              defaultPageSize: 7,
+            }}
           />
         </Drawer>
         <button className="history-button" onClick={showDrawer}>

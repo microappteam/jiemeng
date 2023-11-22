@@ -8,6 +8,12 @@ import {
   FaSmog,
   FaQuestionCircle,
 } from 'react-icons/fa';
+import { Spin } from 'antd';
+import { LoadingOutlined } from '@ant-design/icons';
+import moment from 'moment';
+import 'moment/locale/zh-cn';
+
+moment.locale('zh-cn');
 
 const WeatherDisplay = ({ weatherText, futureWeatherText }) => {
   const getWeatherIcon = (weather) => {
@@ -31,6 +37,10 @@ const WeatherDisplay = ({ weatherText, futureWeatherText }) => {
 
   const formatWeatherText = (weatherText) => {
     try {
+      if (!weatherText) {
+        return '';
+      }
+
       const { lives } = JSON.parse(weatherText);
       const {
         reporttime,
@@ -64,6 +74,10 @@ const WeatherDisplay = ({ weatherText, futureWeatherText }) => {
 
   const formatFutureWeatherText = (futureWeatherText) => {
     try {
+      if (!futureWeatherText) {
+        return '';
+      }
+
       const parsedData = JSON.parse(futureWeatherText);
 
       if (
@@ -80,30 +94,15 @@ const WeatherDisplay = ({ weatherText, futureWeatherText }) => {
           const futureDate = new Date(today);
           futureDate.setDate(today.getDate() + index + 1);
 
-          let dateDescription;
-          switch (index + 1) {
-            case 1:
-              dateDescription = '明天';
-              break;
-            case 2:
-              dateDescription = '后天';
-              break;
-            case 3:
-              dateDescription = '大后天';
-              break;
-            default:
-              dateDescription = `${
-                futureDate.getMonth() + 1
-              }/${futureDate.getDate()}`;
-              break;
-          }
           const dayWeatherIcon = getWeatherIcon(dayweather);
+
           return (
             <div key={index}>
-              <div>{dateDescription}</div>
+              <div>{index + 1 === 1 && '明天'}</div>
+              <div>{index + 1 === 2 && '后天'}</div>
+              <div>{index + 1 === 3 && '大后天'}</div>
 
               <div>{dayWeatherIcon}</div>
-
               <div>{dayweather}</div>
               <div>{`${nighttemp} - ${daytemp}°`}</div>
             </div>
@@ -112,7 +111,6 @@ const WeatherDisplay = ({ weatherText, futureWeatherText }) => {
 
         return formattedText;
       } else {
-        console.error('Invalid futureWeatherText JSON: Invalid structure');
         return '';
       }
     } catch (error) {
@@ -133,6 +131,8 @@ const WeatherDisplay = ({ weatherText, futureWeatherText }) => {
 
   const formattedWeatherText = formatWeatherText(weatherText);
   const formattedFutureWeatherText = formatFutureWeatherText(futureWeatherText);
+  const [tomorrow, dayaftertomorrow, thedayaftertomorrow] =
+    formattedFutureWeatherText;
 
   return (
     <>
@@ -159,7 +159,18 @@ const WeatherDisplay = ({ weatherText, futureWeatherText }) => {
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-        {formattedWeatherText}
+        {formattedWeatherText ? (
+          formattedWeatherText
+        ) : (
+          <Spin
+            indicator={
+              <LoadingOutlined
+                style={{ fontSize: 24, color: 'rgba(0,0,0,0.65)' }}
+                spin
+              />
+            }
+          />
+        )}
       </label>
 
       <div
@@ -182,9 +193,48 @@ const WeatherDisplay = ({ weatherText, futureWeatherText }) => {
           backdropFilter: 'blur(4px)',
         }}
       >
-        <div style={{ flex: 1 }}>{formattedFutureWeatherText[0]}</div>
-        <div style={{ flex: 1 }}>{formattedFutureWeatherText[1]}</div>
-        <div style={{ flex: 1 }}>{formattedFutureWeatherText[2]}</div>
+        {tomorrow ? (
+          <div style={{ flex: 1 }}>{tomorrow}</div>
+        ) : (
+          <div style={{ flex: 1 }}>
+            <Spin
+              indicator={
+                <LoadingOutlined
+                  style={{ fontSize: 24, color: 'rgba(0,0,0,0.65)' }}
+                  spin
+                />
+              }
+            />
+          </div>
+        )}
+        {dayaftertomorrow ? (
+          <div style={{ flex: 1 }}>{dayaftertomorrow}</div>
+        ) : (
+          <div style={{ flex: 1 }}>
+            <Spin
+              indicator={
+                <LoadingOutlined
+                  style={{ fontSize: 24, color: 'rgba(0,0,0,0.65)' }}
+                  spin
+                />
+              }
+            />
+          </div>
+        )}
+        {thedayaftertomorrow ? (
+          <div style={{ flex: 1 }}>{thedayaftertomorrow}</div>
+        ) : (
+          <div style={{ flex: 1 }}>
+            <Spin
+              indicator={
+                <LoadingOutlined
+                  style={{ fontSize: 24, color: 'rgba(0,0,0,0.65)' }}
+                  spin
+                />
+              }
+            />
+          </div>
+        )}
       </div>
     </>
   );
