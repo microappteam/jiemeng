@@ -19,19 +19,22 @@ const DreamHistoryDrawer = ({ open, showDrawer, onClose, handleDelete }) => {
         >
           <ProTable
             request={async (params) => {
-              const response = await fetch('/api/query', {
-                method: 'GET',
-              });
-              const responseData = await response.json();
+              const { current, pageSize } = params;
 
-              const filteredData = responseData.filter(
-                (item) => item.status === true,
+              const response = await fetch(
+                `/api/query?current=${current}&pageSize=${pageSize}`,
+                {
+                  method: 'GET',
+                },
               );
 
+              const responseData = await response.json();
+              console.log('responseData===', responseData);
+
               return {
-                data: filteredData,
+                data: responseData.data,
                 success: true,
-                total: filteredData.length,
+                total: responseData.total,
               };
             }}
             actionRef={actionRef}
