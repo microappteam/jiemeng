@@ -29,11 +29,9 @@ const DreamHistoryDrawer = ({ open, showDrawer, onClose, handleDelete }) => {
               );
 
               const responseData = await response.json();
-              console.log('responseData===', responseData);
-
               return {
                 data: responseData.data,
-                success: true,
+                success: responseData.success,
                 total: responseData.total,
               };
             }}
