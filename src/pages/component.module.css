@@ -10,12 +10,14 @@
 }
 
 .response {
+  
   font-size: 18px;
   text-align: left;
   align-self: flex-start;
 }
 
 .response-text {
+  
   font-size: 16px;
   overflow-wrap: break-word;
   text-align: left;
