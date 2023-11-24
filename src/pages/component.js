@@ -108,13 +108,19 @@ export default function MyPage({
                 </span>
               </div>
             )}
-            <form onSubmit={handleSubmit}>
+            <form
+              onSubmit={handleSubmit}
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'stretch',
+              }}
+            >
               <TextArea
                 style={{
                   borderColor: '#CEAB93',
                   borderWidth: '1px',
-                  width: 340,
-                  marginBottom: '28px',
+                  marginBottom: '28px', // 调整间距
                 }}
                 value={dream}
                 showCount
@@ -129,12 +135,11 @@ export default function MyPage({
                   block
                   size="large"
                   style={{
-                    width: 336,
                     backgroundColor: '#CEAB93',
                     borderColor: '#CEAB93',
                     borderWidth: '1px',
                     color: '#000',
-                    marginBottom: '28px',
+                    marginBottom: '10px',
                   }}
                   onClick={handleSubmit}
                   loading={isLoading}
@@ -146,7 +151,6 @@ export default function MyPage({
                   block
                   size="large"
                   style={{
-                    width: 308,
                     backgroundColor: '#CEAB93',
                     borderColor: '#CEAB93',
                     borderWidth: '1px',

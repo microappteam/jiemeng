@@ -4,13 +4,14 @@
   background-color: #fffbe9;
   padding: 12px;
   text-align: center;
-  width: 90%;
   box-sizing: border-box;
   max-width: 400px;
+  align-items: center;
 }
 
 .response {
-  
+  display: flex; 
+  flex-direction: column; 
   font-size: 18px;
   text-align: left;
   align-self: flex-start;
@@ -20,7 +21,7 @@
   
   font-size: 16px;
   overflow-wrap: break-word;
-  text-align: left;
+ 
 }
 
 .welcome {
