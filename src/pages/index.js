@@ -21,15 +21,6 @@ export default function Home() {
   useEffect(() => {
     setIsHydrated(true);
 
-    fetch('/api/query', { method: 'GET' })
-      .then((response) => response.json())
-      .then((responseData) => {
-        setDreamData(responseData);
-      })
-      .catch((error) => {
-        console.error('Error fetching data:', error);
-      });
-
     navigator.geolocation.getCurrentPosition(async (position) => {
       const { latitude, longitude } = position.coords;
       const location = `${longitude},${latitude}`;

@@ -29,6 +29,7 @@ const DreamHistoryDrawer = ({ open, showDrawer, onClose, handleDelete }) => {
               );
 
               const responseData = await response.json();
+
               return {
                 data: responseData.data,
                 success: responseData.success,
@@ -52,7 +53,7 @@ const DreamHistoryDrawer = ({ open, showDrawer, onClose, handleDelete }) => {
               {
                 title: '操作',
                 valueType: 'option',
-                width: 50,
+                width: 75,
                 render: (_, record, index, action) => {
                   if (record.status === true) {
                     return (
@@ -88,6 +89,7 @@ const DreamHistoryDrawer = ({ open, showDrawer, onClose, handleDelete }) => {
                   return null;
                 },
               },
+              {},
             ]}
             rowKey="id"
             pagination={{
