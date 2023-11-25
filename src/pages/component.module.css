@@ -5,7 +5,8 @@
   padding: 12px;
   text-align: center;
   box-sizing: border-box;
-  width:18vw;
+  width:30vw;
+  min-width: 320px;
   align-items: center;
 }
 
