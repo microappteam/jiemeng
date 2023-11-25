@@ -108,57 +108,72 @@ export default function MyPage({
                 </span>
               </div>
             )}
-            <form onSubmit={handleSubmit}>
-              <TextArea
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <form
+                onSubmit={handleSubmit}
                 style={{
-                  borderColor: '#CEAB93',
-                  borderWidth: '1px',
-                  width: 340,
-                  marginBottom: '28px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'stretch',
+                  marginBottom: '10px',
                 }}
-                value={dream}
-                showCount
-                rows={5}
-                maxLength={400}
-                placeholder="请输入梦境"
-                onChange={(e) => setDream(e.target.value)}
-                disabled={!isSignedIn || isInputDisabled}
-              />
-              {isSignedIn ? (
-                <Button
-                  block
-                  size="large"
+              >
+                <TextArea
                   style={{
-                    width: 336,
-                    backgroundColor: '#CEAB93',
                     borderColor: '#CEAB93',
                     borderWidth: '1px',
-                    color: '#000',
                     marginBottom: '28px',
                   }}
-                  onClick={handleSubmit}
-                  loading={isLoading}
-                >
-                  {buttonText}
-                </Button>
-              ) : (
-                <Button
-                  block
-                  size="large"
-                  style={{
-                    width: 308,
-                    backgroundColor: '#CEAB93',
-                    borderColor: '#CEAB93',
-                    borderWidth: '1px',
-                    color: '#000',
-                    marginBottom: '10px',
-                  }}
-                  onClick={handleLogin}
-                >
-                  登录到GitHub
-                </Button>
+                  value={dream}
+                  showCount
+                  rows={5}
+                  maxLength={400}
+                  placeholder="请输入梦境"
+                  onChange={(e) => setDream(e.target.value)}
+                  disabled={!isSignedIn || isInputDisabled}
+                />
+                {isSignedIn ? (
+                  <Button
+                    block
+                    size="large"
+                    style={{
+                      backgroundColor: '#CEAB93',
+                      borderColor: '#CEAB93',
+                      borderWidth: '1px',
+                      color: '#000',
+                      marginBottom: '10px',
+                    }}
+                    onClick={handleSubmit}
+                    loading={isLoading}
+                  >
+                    {buttonText}
+                  </Button>
+                ) : (
+                  <Button
+                    block
+                    size="large"
+                    style={{
+                      backgroundColor: '#CEAB93',
+                      borderColor: '#CEAB93',
+                      borderWidth: '1px',
+                      color: '#000',
+                      marginBottom: '10px',
+                    }}
+                    onClick={handleLogin}
+                  >
+                    登录到GitHub
+                  </Button>
+                )}
+              </form>
+              {response && (
+                <div className={styles.response}>
+                  <p>解梦结果：</p>
+                  <ReactMarkdown className={styles['response-text']}>
+                    {response}
+                  </ReactMarkdown>
+                </div>
               )}
-            </form>
+            </div>
             {isSignedIn && (
               <div>
                 <DreamHistoryDrawer
@@ -172,14 +187,6 @@ export default function MyPage({
                   weatherText={weatherText}
                   futureWeatherText={futureWeatherText}
                 />
-              </div>
-            )}
-            {response && (
-              <div className={styles.response}>
-                <p>解梦结果：</p>
-                <ReactMarkdown className={styles['response-text']}>
-                  {response}
-                </ReactMarkdown>
               </div>
             )}
           </div>
