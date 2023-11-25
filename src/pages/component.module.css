@@ -5,7 +5,7 @@
   padding: 12px;
   text-align: center;
   box-sizing: border-box;
-  max-width: 400px;
+  width:18vw;
   align-items: center;
 }
 
@@ -25,7 +25,6 @@
 }
 
 .welcome {
-  
   font-size: 16px;
   align-self: flex-end;
   margin-bottom: 10px; 

@@ -111,7 +111,7 @@ export default function MyPage({
                 <div className={styles.welcome}>
                   欢迎你，{username}！
                   <span onClick={handleLogout} style={{ cursor: 'pointer' }}>
-                    登出
+                    退出
                   </span>
                 </div>
               )}
@@ -119,7 +119,6 @@ export default function MyPage({
                 onSubmit={handleSubmit}
                 style={{
                   display: 'flex',
-
                   flexDirection: 'column',
                   alignItems: 'stretch',
                   marginBottom: '10px',
@@ -134,7 +133,7 @@ export default function MyPage({
                   value={dream}
                   showCount
                   rows={5}
-                  maxLength={400}
+                  maxLength={200}
                   placeholder="请输入梦境"
                   onChange={(e) => setDream(e.target.value)}
                   disabled={!isSignedIn || isInputDisabled}

@@ -141,7 +141,7 @@ const WeatherDisplay = ({ weatherText, futureWeatherText }) => {
         style={{
           position: 'fixed',
           top: '10px',
-          right: '10px',
+          right: '20px',
           width: '200px',
           height: '40px',
           overflow: 'auto',
