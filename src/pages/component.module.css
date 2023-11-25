@@ -20,7 +20,7 @@
 .response-text {
   
   font-size: 16px;
-  ;
+  overflow-wrap: break-word;
  
 }
 
@@ -28,7 +28,5 @@
   
   font-size: 16px;
   align-self: flex-end;
-  text-align: right;
-  margin-bottom: 10px;
-  margin-left: -10px; 
+  margin-bottom: 10px; 
 }

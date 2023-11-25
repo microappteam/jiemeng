@@ -100,19 +100,26 @@ export default function MyPage({
                 priority={true}
               />
             </h1>
-            {username && (
-              <div className={styles.welcome}>
-                欢迎你，{username}！
-                <span onClick={handleLogout} style={{ cursor: 'pointer' }}>
-                  登出
-                </span>
-              </div>
-            )}
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                width: '136%',
+              }}
+            >
+              {username && (
+                <div className={styles.welcome}>
+                  欢迎你，{username}！
+                  <span onClick={handleLogout} style={{ cursor: 'pointer' }}>
+                    登出
+                  </span>
+                </div>
+              )}
               <form
                 onSubmit={handleSubmit}
                 style={{
                   display: 'flex',
+
                   flexDirection: 'column',
                   alignItems: 'stretch',
                   marginBottom: '10px',
