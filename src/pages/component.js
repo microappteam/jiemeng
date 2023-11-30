@@ -98,6 +98,7 @@ export default function MyPage({
                 alt="周公解梦"
                 className={styles.logo}
                 priority={true}
+                style={{ marginTop: '40px' }}
               />
             </h1>
             <div

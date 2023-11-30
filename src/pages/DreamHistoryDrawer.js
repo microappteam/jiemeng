@@ -9,7 +9,13 @@ const DreamHistoryDrawer = ({ open, showDrawer, onClose, handleDelete }) => {
     <div>
       <>
         <Drawer
-          title="解梦记录"
+          title={
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <button className="close-button" onClick={onClose}>
+                返回
+              </button>
+            </div>
+          }
           placement="right"
           closable={false}
           onClose={onClose}
@@ -116,6 +122,17 @@ const DreamHistoryDrawer = ({ open, showDrawer, onClose, handleDelete }) => {
 
           transition: background-color 0.3s ease;
           box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .close-button {
+          padding: 8px 16px;
+          background-color: #ffffff;
+          color: #333333;
+          border: 1px solid #cccccc;
+          border-radius: 4px;
+          font-size: 14px;
+          cursor: pointer;
+          transition: background-color 0.3s ease;
         }
 
         .history-button:hover {
