@@ -178,7 +178,7 @@ const WeatherDisplay = ({ weatherText, futureWeatherText }) => {
           display: 'flex',
           position: 'fixed',
           top: showFutureWeather ? '60px' : '160px',
-          right: '10px',
+          right: '20px',
           width: '200px',
           height: '100px',
           overflow: 'auto',

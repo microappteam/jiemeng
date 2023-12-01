@@ -35,28 +35,36 @@ export default async function handler(req, res) {
             }
           },
         });
-        return new Response(stream);
+
+        const headers = {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type',
+        };
+
+        const response = new Response(stream, { headers });
+        return response;
       } else {
         console.error('逆地理编码查询结果无效');
+        const errorResponse = new Response(
+          JSON.stringify({ message: '逆地理编码查询结果无效' }),
+          { status: 500 },
+        );
+        return errorResponse;
       }
     } catch (error) {
       console.error('Error fetching location and weather data:', error);
+      const errorResponse = new Response(
+        JSON.stringify({ message: '发生错误' }),
+        { status: 500 },
+      );
+      return errorResponse;
     }
-
-    const res = new Response(
-      JSON.stringify({
-        message: '发生错误',
-      }),
-      {
-        status: 500,
-      },
-    );
-    return res;
   } else {
-    const res = new Response({
+    const methodNotAllowedResponse = new Response({
       status: 405,
       statusText: '不允许的方法',
     });
-    return res;
+    return methodNotAllowedResponse;
   }
 }
