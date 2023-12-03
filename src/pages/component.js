@@ -98,17 +98,24 @@ export default function MyPage({
                 alt="周公解梦"
                 className={styles.logo}
                 priority={true}
+                style={{ marginTop: '40px' }}
               />
             </h1>
-            {username && (
-              <div className={styles.welcome}>
-                欢迎你，{username}！
-                <span onClick={handleLogout} style={{ cursor: 'pointer' }}>
-                  登出
-                </span>
-              </div>
-            )}
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                width: '136%',
+              }}
+            >
+              {username && (
+                <div className={styles.welcome}>
+                  欢迎你，{username}！
+                  <span onClick={handleLogout} style={{ cursor: 'pointer' }}>
+                    退出
+                  </span>
+                </div>
+              )}
               <form
                 onSubmit={handleSubmit}
                 style={{
@@ -127,7 +134,7 @@ export default function MyPage({
                   value={dream}
                   showCount
                   rows={5}
-                  maxLength={400}
+                  maxLength={200}
                   placeholder="请输入梦境"
                   onChange={(e) => setDream(e.target.value)}
                   disabled={!isSignedIn || isInputDisabled}
