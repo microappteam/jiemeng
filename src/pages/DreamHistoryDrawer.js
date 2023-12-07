@@ -24,7 +24,11 @@ const DreamHistoryDrawer = ({ open, showDrawer, onClose, handleDelete }) => {
           forceRender={true}
         >
           <ProTable
-            request={async (params) => {
+            search={{ filterType: 'query', labelWidth: 'auto' }}
+            request={async (params, sort, filter) => {
+              console.log(params);
+              console.log(sort);
+              console.log(filter);
               const { current, pageSize } = params;
 
               const response = await fetch(
@@ -60,6 +64,7 @@ const DreamHistoryDrawer = ({ open, showDrawer, onClose, handleDelete }) => {
                 title: '操作',
                 valueType: 'option',
                 width: 75,
+                hideInSearch: true,
                 render: (_, record, index, action) => {
                   if (record.status === true) {
                     return (
@@ -95,7 +100,6 @@ const DreamHistoryDrawer = ({ open, showDrawer, onClose, handleDelete }) => {
                   return null;
                 },
               },
-              {},
             ]}
             rowKey="id"
             pagination={{
