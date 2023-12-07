@@ -8,7 +8,7 @@ const pool = new Pool({
 export default async function query(req, res) {
   if (req.method === 'GET') {
     try {
-      const { current, pageSize } = req.query;
+      const { current, pageSize, dream, response } = req.query;
       const parsedCurrent = parseInt(current, 10);
       const parsedPageSize = parseInt(pageSize, 10);
 
@@ -18,15 +18,24 @@ export default async function query(req, res) {
         );
       }
 
-      const offset = (parsedCurrent - 1) * parsedPageSize;
-
       const client = await pool.connect();
-      const queryCount =
-        'SELECT COUNT(*) AS total FROM dreams WHERE status = true';
+
+      let filterQuery = 'WHERE status = true';
+
+      if (dream) {
+        filterQuery += ` AND dream ILIKE '%${dream}%'`;
+      }
+
+      if (response) {
+        filterQuery += ` AND response ILIKE '%${response}%'`;
+      }
+
+      const queryCount = `SELECT COUNT(*) AS total FROM dreams ${filterQuery}`;
       const resultCount = await client.query(queryCount);
       const total = parseInt(resultCount.rows[0].total);
 
-      const queryData = `SELECT * FROM dreams WHERE status = true LIMIT ${parsedPageSize} OFFSET ${offset}`;
+      const offset = (parsedCurrent - 1) * parsedPageSize;
+      const queryData = `SELECT * FROM dreams ${filterQuery} LIMIT ${parsedPageSize} OFFSET ${offset}`;
       const resultData = await client.query(queryData);
 
       client.release();
