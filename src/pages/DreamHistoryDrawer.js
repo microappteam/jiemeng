@@ -26,18 +26,20 @@ const DreamHistoryDrawer = ({ open, showDrawer, onClose, handleDelete }) => {
           <ProTable
             search={{ filterType: 'query', labelWidth: 'auto' }}
             request={async (params, _) => {
-              console.log(params);
-
               const { current, pageSize, dream, response } = params;
-
               // 发起数据请求，包括分页和筛选信息
-              const data = await fetch(
-                `/api/query?current=${current}&pageSize=${pageSize}&dream=${dream}&response=${response}`,
-                {
-                  method: 'GET',
-                  // 可以根据实际情况设置其他请求参数
-                },
-              );
+              const baseApiUrl = '/api/query';
+              let apiUrl = `${baseApiUrl}?current=${current}&pageSize=${pageSize}`;
+              if (dream) {
+                apiUrl += `&dream=${dream}`;
+              }
+              if (response) {
+                apiUrl += `&response=${response}`;
+              }
+              const data = await fetch(apiUrl, {
+                method: 'GET',
+                // 其他请求参数
+              });
 
               const responseData = await data.json();
 
