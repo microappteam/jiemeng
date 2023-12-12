@@ -38,7 +38,6 @@ const DreamHistoryDrawer = ({ open, showDrawer, onClose, handleDelete }) => {
               }
               const data = await fetch(apiUrl, {
                 method: 'GET',
-                // 其他请求参数
               });
 
               const responseData = await data.json();

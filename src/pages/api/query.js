@@ -1,4 +1,5 @@
 import { Pool } from 'pg';
+import querystring from 'querystring';
 require('dotenv').config();
 
 const pool = new Pool({
@@ -8,7 +9,12 @@ const pool = new Pool({
 export default async function query(req, res) {
   if (req.method === 'GET') {
     try {
-      const { current, pageSize, dream, response } = req.query;
+      const parsedUrl = req.url.split('?'); // 分离路径和查询参数部分
+      const queryParameters = parsedUrl[1]; // 获取查询字符串部分
+
+      const queryParamsObject = querystring.parse(queryParameters); // 使用 querystring 解析查询参数
+
+      const { current, pageSize, dream, response } = queryParamsObject;
       const parsedCurrent = parseInt(current, 10);
       const parsedPageSize = parseInt(pageSize, 10);
 
