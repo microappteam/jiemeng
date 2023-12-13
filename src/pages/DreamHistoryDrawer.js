@@ -3,6 +3,7 @@ import { ProTable } from '@ant-design/pro-components';
 import React, { useState, useEffect } from 'react';
 import { LoadingOutlined } from '@ant-design/icons';
 import { useRef } from 'react';
+import querystring from 'querystring';
 const DreamHistoryDrawer = ({ open, showDrawer, onClose, handleDelete }) => {
   const actionRef = useRef();
   return (
@@ -26,16 +27,10 @@ const DreamHistoryDrawer = ({ open, showDrawer, onClose, handleDelete }) => {
           <ProTable
             search={{ filterType: 'query', labelWidth: 'auto' }}
             request={async (params, _) => {
-              const { current, pageSize, dream, response } = params;
-              // 发起数据请求，包括分页和筛选信息
-              const baseApiUrl = '/api/query';
-              let apiUrl = `${baseApiUrl}?current=${current}&pageSize=${pageSize}`;
-              if (dream) {
-                apiUrl += `&dream=${dream}`;
-              }
-              if (response) {
-                apiUrl += `&response=${response}`;
-              }
+              const queryString = querystring.stringify(params);
+
+              const apiUrl = `/api/query?${queryString}`;
+
               const data = await fetch(apiUrl, {
                 method: 'GET',
               });
