@@ -3,6 +3,7 @@ import { ProTable } from '@ant-design/pro-components';
 import React, { useState, useEffect } from 'react';
 import { LoadingOutlined } from '@ant-design/icons';
 import { useRef } from 'react';
+import querystring from 'querystring';
 const DreamHistoryDrawer = ({ open, showDrawer, onClose, handleDelete }) => {
   const actionRef = useRef();
   return (
@@ -24,17 +25,17 @@ const DreamHistoryDrawer = ({ open, showDrawer, onClose, handleDelete }) => {
           forceRender={true}
         >
           <ProTable
-            request={async (params) => {
-              const { current, pageSize } = params;
+            search={{ filterType: 'query', labelWidth: 'auto' }}
+            request={async (params, _) => {
+              const queryString = querystring.stringify(params);
 
-              const response = await fetch(
-                `/api/query?current=${current}&pageSize=${pageSize}`,
-                {
-                  method: 'GET',
-                },
-              );
+              const apiUrl = `/api/query?${queryString}`;
 
-              const responseData = await response.json();
+              const data = await fetch(apiUrl, {
+                method: 'GET',
+              });
+
+              const responseData = await data.json();
 
               return {
                 data: responseData.data,
@@ -60,6 +61,7 @@ const DreamHistoryDrawer = ({ open, showDrawer, onClose, handleDelete }) => {
                 title: '操作',
                 valueType: 'option',
                 width: 75,
+                hideInSearch: true,
                 render: (_, record, index, action) => {
                   if (record.status === true) {
                     return (
@@ -95,7 +97,6 @@ const DreamHistoryDrawer = ({ open, showDrawer, onClose, handleDelete }) => {
                   return null;
                 },
               },
-              {},
             ]}
             rowKey="id"
             pagination={{
