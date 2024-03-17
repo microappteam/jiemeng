@@ -94,6 +94,7 @@ export default async function handler(req, res) {
               max_tokens: 888,
               stream: true,
             });
+
             for await (const part of chatData) {
               controller.enqueue(
                 encoder.encode(part.choices[0]?.delta?.content || ''),
