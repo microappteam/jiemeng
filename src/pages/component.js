@@ -145,6 +145,7 @@ export default function MyPage({
                 />
                 {isSignedIn ? (
                   <Button
+                    className={styles.xingkai}
                     block
                     size="large"
                     style={{
@@ -153,6 +154,7 @@ export default function MyPage({
                       borderWidth: '1px',
                       color: '#000',
                       marginBottom: '10px',
+                      fontSize: ' 20px',
                     }}
                     onClick={handleSubmit}
                     loading={isLoading}
@@ -178,7 +180,7 @@ export default function MyPage({
               </form>
               {response && (
                 <div className={styles.response}>
-                  <p>解梦结果：</p>
+                  <p className={styles.xingkai}>解梦结果：</p>
                   <ReactMarkdown className={styles['response-text']}>
                     {response}
                   </ReactMarkdown>
