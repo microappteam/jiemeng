@@ -1,8 +1,8 @@
-import { Button } from 'antd';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import React, { useState, useEffect } from 'react';
-import { Input } from 'antd';
+import { GithubOutlined } from '@ant-design/icons';
+import { Input, Button } from 'antd';
 import ReactMarkdown from 'react-markdown';
 import Image from 'next/image';
 import styles from './component.module.css';
@@ -84,6 +84,10 @@ export default function MyPage({
       setUsername(session.user.name);
     }
   }, [session]);
+
+  const handleGitHubClick = () => {
+    window.location.href = 'https://github.com/microappteam/jiemeng';
+  };
 
   return (
     <div>
@@ -196,6 +200,20 @@ export default function MyPage({
                 />
               </div>
             )}
+          </div>
+          <div
+            style={{
+              position: 'fixed',
+              bottom: '24px',
+              right: '24px',
+            }}
+          >
+            <GithubOutlined
+              onClick={handleGitHubClick}
+              style={{
+                transform: 'scale(1.8)',
+              }}
+            />
           </div>
         </StyledComponentsRegistry>
       </RootLayout>
