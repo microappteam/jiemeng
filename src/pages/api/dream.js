@@ -3,8 +3,9 @@ import { v4 as uuidv4 } from 'uuid';
 
 const openai = new OpenAI({
   apiKey: process.env.API_KEY,
+  base: process.env.PROXY_URL,
 });
-
+console.log('process.env.PROXY_URL==', process.env.PROXY_URL);
 export const config = {
   runtime: 'edge',
 };
@@ -94,6 +95,7 @@ export default async function handler(req, res) {
               max_tokens: 888,
               stream: true,
             });
+
             for await (const part of chatData) {
               controller.enqueue(
                 encoder.encode(part.choices[0]?.delta?.content || ''),
