@@ -2,31 +2,31 @@
 
 <img height="120" src="public/logo.png">
 
-<h1>Duke of Zhou Interprets Dreams</h1>
+<h1>周公解梦</h1>
 
-A dream interpreter built with ChatGPT.
+用 ChatGPT 构建的梦境解释器。
 
-English · [简体中文](./README.zh-CN.md) · [Report Bug][github-issues-link] · [Request Feature][github-issues-link]
+[English](./README.md) · 简体中文 · [Report Bug][github-issues-link] · [Request Feature][github-issues-link]
 
 [![][ant-design-shield]][ant-design-link]
 
 </div>
 
-## 🔨 Usage
+## 🔨 使用
 
-Just enter the dream in the input box.
+只需在输入框里输入梦境。
 
 <br/>
 
-## ✨ Features
+## ✨ 特性
 
-- Build with Next.js.
+- 使用Next.js作为脚手架。
 
   <br/><img src="https://www.arkasoftwares.com/blog/wp-content/uploads/2020/09/Next-JS.jpg">
 
   <br/>
 
-- Use gpt-3.5-turbo to interprets dreams.
+- 使用chatgpt进行解梦。
 
 ```jsx
 const chatData = await openai.chat.completions.create({
@@ -42,7 +42,7 @@ const chatData = await openai.chat.completions.create({
 });
 ```
 
-- Beautify the page with antd.
+- 使用Antd美化页面。
 
 <img height="160" src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg">
 
