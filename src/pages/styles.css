@@ -1,5 +1,11 @@
-body,html{
-    margin: 0;
-    padding: 0;
-    background-color: #fffbe9;
-  }
+body,
+html {
+  margin: 0;
+  padding: 0;
+  background-color: #fffbe9;
+}
+@font-face {
+  font-family: 'Xingkai';
+  src: url('C:\Users\2Chaos\jiemeng\public\fonts/xingkai.ttf')
+    format('truetype');
+}
